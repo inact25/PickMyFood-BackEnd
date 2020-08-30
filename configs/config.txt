@@ -1,0 +1,14 @@
+#change this file extension to .env
+
+#Database Config
+DbEngine = 'mysql'
+DbUser = 'root'
+DbPass = 'yourPass'
+DbHost = 'localhost'
+DbPort = '8080'
+DbConnection = '@tcp'
+DbSchema = 'yourSchema'
+
+#Router Config
+RouterHost = 'yourRouterHost
+RouterPort = 'yourRouterPort'
