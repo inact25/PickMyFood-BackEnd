@@ -3,7 +3,7 @@ package usecases
 import (
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
-	"github.com/inact25/PickMyFood-BackEnd/utils/validation"
+	//"github.com/inact25/PickMyFood-BackEnd/utils/validation"
 )
 
 type UsersUseCaseImpl struct {
