@@ -1,8 +1,6 @@
 package usecases
 
 import (
-	"fmt"
-
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
 	"github.com/inact25/PickMyFood-BackEnd/utils/validation"
@@ -78,7 +76,6 @@ func (u *UserUseCaseImpl) Auth(username, password string) (*models.Auth, error) 
 	return auth, nil
 }
 func (u *UserUseCaseImpl) ReadUserByUsername(username string) (*models.Auth, error) {
-	fmt.Println("MASUK USECASE")
 	user, err := u.userRepo.ReadUserByUsername(username)
 	if err != nil {
 		return nil, err

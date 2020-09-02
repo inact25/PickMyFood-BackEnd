@@ -9,5 +9,5 @@ const (
 	UPDATE_AUTH             = "UPDATE tb_auth SET username=?,password=? WHERE user_id=?"
 	DELETE_AUTH             = "UPDATE tb_auth SET user_status = NA WHERE user_id = ?"
 	LOGIN                   = "select user_id, user_level_id, user_status from tb_auth where username = ? and password= ?;"
-	SELECT_AUTH_BY_USERNAME = "SELECT * FROM tb_auth WHERE username=?"
+	SELECT_AUTH_BY_USERNAME = "SELECT * FROM tb_auth WHERE username = ?"
 )

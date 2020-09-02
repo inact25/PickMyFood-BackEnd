@@ -15,15 +15,18 @@ type UsersHandler struct {
 	UserUsecases usecases.UserUseCase
 }
 
-func UsersController(r *mux.Router, service usecases.UserUseCase) {
-	userHandler := UsersHandler{service}
+func UsersController(UserUsecases usecases.UserUseCase) *UsersHandler {
+	return &UsersHandler{UserUsecases: UserUsecases}
+}
+
+func (u *UsersHandler) Authenticate(r *mux.Router) {
 	user := r.PathPrefix("/user").Subrouter()
-	user.HandleFunc("", userHandler.ListAllUser).Methods(http.MethodGet)
-	user.HandleFunc("/{id}", userHandler.GetUserId).Methods(http.MethodGet)
-	user.HandleFunc("/register", userHandler.Register).Methods(http.MethodPost)
-	user.HandleFunc("/login", userHandler.Login).Methods(http.MethodPost)
-	user.HandleFunc("/update/{id}", userHandler.UpdateUser).Methods(http.MethodPut)
-	user.HandleFunc("/delete/{id}", userHandler.DeleteUser).Methods(http.MethodDelete)
+	user.HandleFunc("", u.ListAllUser).Methods(http.MethodGet)
+	user.HandleFunc("/{id}", u.GetUserId).Methods(http.MethodGet)
+	user.HandleFunc("/register", u.Register).Methods(http.MethodPost)
+	user.HandleFunc("/login", u.Login).Methods(http.MethodPost)
+	user.HandleFunc("/update/{id}", u.UpdateUser).Methods(http.MethodPut)
+	user.HandleFunc("/delete/{id}", u.DeleteUser).Methods(http.MethodDelete)
 }
 
 func (u *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
@@ -66,8 +69,8 @@ func (u *UsersHandler) Login(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(isValid)
 		if isValid {
 			token, err := utils.JwtEncoder(authTemp.Username, "Rahasia")
-			fmt.Println("Berhasil Login")
-			w.Write([]byte("Berhasil Login"))
+			// fmt.Println("Berhasil Login")
+			// w.Write([]byte("Berhasil Login"))
 			if err != nil {
 				utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
 			}

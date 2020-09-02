@@ -3,6 +3,7 @@ package repositories
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	"errors"
 
@@ -16,7 +17,7 @@ type UserRepoImpl struct {
 }
 
 func InitUserRepoImpl(db *sql.DB) UserRepo {
-	return &UserRepoImpl{db}
+	return &UserRepoImpl{db: db}
 }
 
 func (u *UserRepoImpl) AddUser(user *models.User) error {
@@ -171,24 +172,15 @@ func (u *UserRepoImpl) Auth(username, password string) (*models.Auth, error) {
 
 //login 2
 func (u *UserRepoImpl) ReadUserByUsername(username string) (*models.Auth, error) {
-	fmt.Println(username)
-	// var user = new(models.Auth)
-	// row := u.db.QueryRow(`select username,password from tb_auth where username=?`, username)
-
-	// err := row.Scan(&user.Password)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// fmt.Println(user.Password)
-	// return user, nil
+	fmt.Println("MASUK REPO", username)
 	stmt, err := u.db.Prepare(utils.SELECT_AUTH_BY_USERNAME)
 	user := models.Auth{}
 	if err != nil {
 		fmt.Println(err)
 		return &user, err
 	}
-	errQuery := stmt.QueryRow(utils.SELECT_AUTH_BY_USERNAME, username).Scan(&user.AuthID, &user.Username, &user.Password, &user.UserID, &user.UserLevelID, &user.UserStatus)
-
+	errQuery := stmt.QueryRow(username).Scan(&user.AuthID, &user.Username, &user.Password, &user.UserID, &user.UserLevelID, &user.UserStatus)
+	log.Println(errQuery)
 	if errQuery != nil {
 		return &user, err
 	}
