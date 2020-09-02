@@ -102,7 +102,7 @@ func (s *StoreRepoImpl) GetStoresCategory() ([]*models.StoreCategory, error) {
 	return storesCategory, nil
 }
 
-func InitStoreRepoImpl(db *sql.DB) StoresRepository {
+func InitStoreRepoImpl(db *sql.DB) StoresRepo {
 	return &StoreRepoImpl{db}
 
 }

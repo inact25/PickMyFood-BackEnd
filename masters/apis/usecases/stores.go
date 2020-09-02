@@ -6,7 +6,7 @@ import (
 )
 
 type StoreUsecaseImpl struct {
-	storeRepo repositories.StoresRepository
+	storeRepo repositories.StoresRepo
 }
 
 func (s StoreUsecaseImpl) GetStores() ([]*models.StoreModels, error) {
@@ -43,6 +43,6 @@ func (s StoreUsecaseImpl) GetStoresCategory() ([]*models.StoreCategory, error) {
 	return storesCategory, nil
 }
 
-func InitStoreUsecase(storeRepo repositories.StoresRepository) StoresUseCases {
+func InitStoreUsecase(storeRepo repositories.StoresRepo) StoresUseCases {
 	return &StoreUsecaseImpl{storeRepo}
 }

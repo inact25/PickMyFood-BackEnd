@@ -102,7 +102,7 @@ func (s *ProductRepoImpl) GetProductsCategory() ([]*models.ProductCategory, erro
 	return productsCategory, nil
 }
 
-func InitProductRepoImpl(db *sql.DB) ProductsRepository {
+func InitProductRepoImpl(db *sql.DB) ProductsRepo {
 	return &ProductRepoImpl{db}
 
 }

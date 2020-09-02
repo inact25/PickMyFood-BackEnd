@@ -6,7 +6,7 @@ import (
 )
 
 type ProductUsecaseImpl struct {
-	productRepo repositories.ProductsRepository
+	productRepo repositories.ProductsRepo
 }
 
 func (s ProductUsecaseImpl) GetProducts() ([]*models.ProductModels, error) {
@@ -42,6 +42,6 @@ func (s ProductUsecaseImpl) GetProductsCategory() ([]*models.ProductCategory, er
 	return productsCategory, nil
 }
 
-func InitProductUsecase(productRepo repositories.ProductsRepository) ProductsUseCases {
+func InitProductUsecase(productRepo repositories.ProductsRepo) ProductsUseCases {
 	return &ProductUsecaseImpl{productRepo}
 }
