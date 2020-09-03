@@ -124,6 +124,7 @@ func (u *UsersHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//a
 func (u *UsersHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id := utils.DecodePathVariabel("id", r)
 	if len(id) > 0 {
