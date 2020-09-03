@@ -45,7 +45,7 @@ func (u *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Print(err)
 			} else {
-				utils.HandleResponse(w, http.StatusCreated, user)
+				utils.HandleResponse(w, http.StatusOK, user)
 			}
 		}
 	}
@@ -114,11 +114,11 @@ func (u *UsersHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 			log.Print(err)
 			utils.HandleRequest(w, http.StatusBadGateway)
 		} else {
-			user, err := u.UserUsecases.GetUserByID(user.UserID)
+			user, err := u.UserUsecases.GetUserByID(id)
 			if err != nil {
 				log.Print(err)
 			} else {
-				utils.HandleResponse(w, http.StatusAccepted, user)
+				utils.HandleResponse(w, http.StatusOK, user)
 			}
 		}
 	}

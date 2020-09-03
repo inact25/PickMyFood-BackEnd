@@ -45,7 +45,7 @@ func (u *UserUseCaseImpl) GetAllUser() ([]*models.User, error) {
 }
 
 func (u *UserUseCaseImpl) UpdateUser(id string, user *models.User) error {
-	err := validation.CheckEmpty(user)
+	err := validation.CheckEmpty(user.UserAddress, user.UserLastName, user.UserAddress, user.UserPhone, user.UserImage, user.UserStatus, user.Auth.Username, user.Auth.Password)
 	if err != nil {
 		return err
 	}

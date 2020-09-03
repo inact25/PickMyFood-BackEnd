@@ -34,7 +34,7 @@ func (u *UserRepoImpl) AddUser(user *models.User) error {
 		return err
 	}
 
-	if _, err := stmt.Exec(id, user.UserFirstName, user.UserLastName, user.UserAddress, user.UserPhone, user.UserPoin, user.UserImage, user.UserStatus); err != nil {
+	if _, err := stmt.Exec(id, user.UserFirstName, user.UserLastName, user.UserAddress, user.UserPhone, user.UserImage, user.UserStatus); err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -48,6 +48,19 @@ func (u *UserRepoImpl) AddUser(user *models.User) error {
 
 	// profileID := guuid.New()
 	if _, err := stmt.Exec(user.Auth.Username, user.Auth.Password, id); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	stmt, err = tx.Prepare(utils.INSERT_WALLET)
+	defer stmt.Close()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	walletID := guuid.New()
+	if _, err := stmt.Exec(walletID, id); err != nil {
 		tx.Rollback()
 		return err
 	}
