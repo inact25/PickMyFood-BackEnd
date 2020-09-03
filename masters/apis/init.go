@@ -2,8 +2,12 @@ package apis
 
 import (
 	"database/sql"
+
 	"github.com/gorilla/mux"
+	"github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/middlewares"
+	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
 )
 
 func Init(r *mux.Router, db *sql.DB) {
@@ -23,9 +27,10 @@ func Init(r *mux.Router, db *sql.DB) {
 	//transactionUseCase := usecases.InitTransactionUseCase(transactionRepo)
 	//controllers.TransactionControll(r, transactionUseCase)
 	//
-	//usersRepo := repositories.InitUserRepoImpl(db)
-	//usersUseCases := usecases.InitUsersUseCase(usersRepo)
-	//controllers.UsersControll(r, usersUseCases)
+	userRepo := repositories.InitUserRepoImpl(db)
+	userUseCases := usecases.InitUsersUseCase(userRepo)
+	usersController := controllers.UsersController(userUseCases)
+	usersController.Authenticate(r)
 
 	r.Use(middlewares.ActivityLogMiddleware)
 }
