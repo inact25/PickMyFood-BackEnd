@@ -99,7 +99,7 @@ func (u *UserRepoImpl) GetAllUser() ([]*models.User, error) {
 	listUser := []*models.User{}
 	for rows.Next() {
 		p := models.User{}
-		err := rows.Scan(&p.UserFirstName, &p.UserLastName, &p.Auth.Username, &p.Auth.UserStatus)
+		err := rows.Scan(&p.UserID, &p.UserFirstName, &p.UserLastName, &p.UserAddress, &p.UserPhone, &p.UserPoin, &p.UserImage, &p.UserStatus, &p.Auth.Username, &p.Auth.Password, &p.Auth.UserLevelID, &p.Auth.UserStatus)
 		if err != nil {
 			return nil, err
 		}
