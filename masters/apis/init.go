@@ -7,7 +7,9 @@ import (
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/middlewares"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	walletrepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/wallet"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
+	walletusecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/wallet"
 )
 
 func Init(r *mux.Router, db *sql.DB) {
@@ -26,11 +28,17 @@ func Init(r *mux.Router, db *sql.DB) {
 	//transactionRepo := repositories.InitTransactionRepoImpl(db)
 	//transactionUseCase := usecases.InitTransactionUseCase(transactionRepo)
 	//controllers.TransactionControll(r, transactionUseCase)
-	//
+
+	// user
 	userRepo := repositories.InitUserRepoImpl(db)
 	userUseCases := usecases.InitUsersUseCase(userRepo)
 	usersController := controllers.UsersController(userUseCases)
 	usersController.Authenticate(r)
+	// wallet
+	walletRepo := walletrepositories.InitWalletRepoImpl(db)
+	walletUseCases := walletusecases.InitWalletUseCase(walletRepo)
+	walletController := controllers.WalletController(walletUseCases)
+	walletController.WalletApi(r)
 
 	r.Use(middlewares.ActivityLogMiddleware)
 }
