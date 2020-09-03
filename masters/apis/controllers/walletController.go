@@ -22,6 +22,7 @@ func (wa *WalletHandler) WalletApi(r *mux.Router) {
 	wallet := r.PathPrefix("/wallet").Subrouter()
 	wallet.HandleFunc("/{id}", wa.WalletByID).Methods(http.MethodGet)
 	wallet.HandleFunc("/topUp/{id}", wa.WalletTopUp).Methods(http.MethodPost)
+	wallet.HandleFunc("/transfer/{id}", wa.WalletUpdateAmount).Methods(http.MethodPost)
 }
 
 func (wa *WalletHandler) WalletByID(w http.ResponseWriter, r *http.Request) {
@@ -33,6 +34,8 @@ func (wa *WalletHandler) WalletByID(w http.ResponseWriter, r *http.Request) {
 		utils.HandleResponse(w, http.StatusOK, wallet)
 	}
 }
+
+//WalletTopUp
 func (wa *WalletHandler) WalletTopUp(w http.ResponseWriter, r *http.Request) {
 	var topUp models.TopUp
 	id := utils.DecodePathVariabel("id", r)
@@ -46,6 +49,24 @@ func (wa *WalletHandler) WalletTopUp(w http.ResponseWriter, r *http.Request) {
 			utils.HandleRequest(w, http.StatusBadGateway)
 		} else {
 			utils.HandleResponse(w, http.StatusOK, topUp)
+		}
+	}
+}
+
+//UpdateAmount
+func (wa *WalletHandler) WalletUpdateAmount(w http.ResponseWriter, r *http.Request) {
+	var wallet models.Wallet
+	id := utils.DecodePathVariabel("id", r)
+	err := utils.JsonDecoder(&wallet, r)
+	if err != nil {
+		utils.HandleRequest(w, http.StatusBadRequest)
+	} else {
+		err = wa.WalletUsecases.UpdateAmountWallet(&wallet, id)
+		if err != nil {
+			log.Print(err)
+			utils.HandleRequest(w, http.StatusBadGateway)
+		} else {
+			utils.HandleResponse(w, http.StatusOK, wallet)
 		}
 	}
 }

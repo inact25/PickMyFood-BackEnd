@@ -1,6 +1,8 @@
 package walletusecases
 
 import (
+	"strconv"
+
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	walletrepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/wallet"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
@@ -36,17 +38,26 @@ func (w *WalletUseCaseImpl) TopUpWallet(topUP *models.TopUp, userID string) erro
 	return nil
 }
 
-// func (w *WalletUseCaseImpl) UpdateWallet(id string, wallet *models.Wallet) error {
-// 	err := validation.CheckEmpty(wallet.Amount)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	error := w.walletRepo.UpdateWallet(id, wallet)
-// 	if error != nil {
-// 		return error
-// 	}
-// 	return nil
-// }
+func (w *WalletUseCaseImpl) UpdateAmountWallet(wallet *models.Wallet, userID string) error {
+	amount, _ := strconv.Atoi(wallet.Amount)
+	println(amount)
+	var totalAmount int = amount
+	totalAmount = totalAmount + amount
+	println(totalAmount)
+	newTotalAmount := strconv.Itoa(totalAmount)
+	println(newTotalAmount)
+
+	wallet.Amount = newTotalAmount
+	err := validation.CheckEmpty(wallet.Amount)
+	if err != nil {
+		return err
+	}
+	error := w.walletRepo.UpdateAmountWallet(wallet, userID)
+	if error != nil {
+		return error
+	}
+	return nil
+}
 
 // func (w *WalletUseCaseImpl) UpdatePoin(id string, user *models.User) error {
 // 	err := validation.CheckEmpty(user.UserPoin)

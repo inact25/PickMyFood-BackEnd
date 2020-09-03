@@ -15,4 +15,5 @@ const (
 	UPDATE_AMOUNT_WALLET    = "UPDATE tb_wallet SET amount = ? WHERE user_id = ?"
 	UPDATE_POIN_USER        = "UPDATE tb_user SET user_poin = ? WHERE user_id = ?"
 	INSERT_TOP_UP           = "INSERT INTO tb_top_up (top_up_id,top_up_amount,user_id,top_up_date) VALUES (?,?,?,?)"
+	UPDATE_STATUS_TOP_UP    = "UPDATE tb_top_up SET top_up_status = ? WHERE user_id = ?"
 )
