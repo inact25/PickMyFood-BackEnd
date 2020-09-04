@@ -12,64 +12,64 @@ import (
 	"github.com/inact25/PickMyFood-BackEnd/utils/tools"
 )
 
-type PointsHandler struct {
-	poinUsecases usecases.PoinUseCases
+type FeedbacksHandler struct {
+	feedbackUsecases usecases.FeedbackUseCases
 }
 
-func PointsController(r *mux.Router, service usecases.PoinUseCases) {
-	PointsHandler := PointsHandler{service}
-	r.HandleFunc("/points", PointsHandler.GetPoints).Methods(http.MethodGet)
-	r.HandleFunc("/point/{sid}", PointsHandler.GetPointByID).Methods(http.MethodGet)
-	r.HandleFunc("/point", PointsHandler.PostPoint()).Methods(http.MethodPost)
-	r.HandleFunc("/point/{sid}", PointsHandler.UpdatePoint()).Methods(http.MethodPut)
-	r.HandleFunc("/point/{sid}", PointsHandler.DeletePoint()).Methods(http.MethodDelete)
+func FeedbacksController(r *mux.Router, service usecases.FeedbackUseCases) {
+	FeedbacksHandler := FeedbacksHandler{service}
+	r.HandleFunc("/points", FeedbacksHandler.GetFeedbacks).Methods(http.MethodGet)
+	r.HandleFunc("/product/{sid}", FeedbacksHandler.GetFeedbackByID).Methods(http.MethodGet)
+	r.HandleFunc("/product", FeedbacksHandler.PostFeedback()).Methods(http.MethodPost)
+	r.HandleFunc("/product/{sid}", FeedbacksHandler.UpdateFeedback()).Methods(http.MethodPut)
+	r.HandleFunc("/product/{sid}", FeedbacksHandler.DeleteFeedback()).Methods(http.MethodDelete)
 
 }
 
-func (s *PointsHandler) GetPoints(w http.ResponseWriter, r *http.Request) {
-	points, err := s.poinUsecases.GetPoints()
+func (s *FeedbacksHandler) GetFeedbacks(w http.ResponseWriter, r *http.Request) {
+	feedbacks, err := s.feedbackUsecases.GetFeedbacks()
 	if err != nil {
 		w.Write([]byte("Data not found!"))
 	}
 
-	byteOfPoints, err := json.Marshal(points)
+	byteOfFeedbacks, err := json.Marshal(feedbacks)
 
 	if err != nil {
 		w.Write([]byte("Data not found!"))
 	}
 
-	w.Write([]byte(byteOfPoints))
+	w.Write([]byte(byteOfFeedbacks))
 	w.Write([]byte("Data successfully found"))
 }
 
-func (s *PointsHandler) GetPointByID(w http.ResponseWriter, r *http.Request) {
+func (s *FeedbacksHandler) GetFeedbackByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	strID := vars["sid"]
 
-	points, err := s.poinUsecases.GetPointByID(strID)
+	feedbacks, err := s.feedbackUsecases.GetFeedbackByID(strID)
 	if err != nil {
 		w.Write([]byte("Data Not Found!"))
 	}
 
-	byteOfPoints, err := json.Marshal(points)
+	byteOfFeedbacks, err := json.Marshal(feedbacks)
 
 	if err != nil {
 		w.Write([]byte("Data not found!"))
 	}
 
-	w.Write([]byte(byteOfPoints))
+	w.Write([]byte(byteOfFeedbacks))
 }
 
-func (s *PointsHandler) PostPoint() func(w http.ResponseWriter, r *http.Request) {
+func (s *FeedbacksHandler) PostFeedback() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		var data models.PoinModels
+		var data models.FeedbackModels
 		tools.Parser(r, &data)
 
 		fmt.Println(data)
 
-		result, err := s.poinUsecases.PostPoint(data)
+		result, err := s.feedbackUsecases.PostFeedback(data)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Response("Posting Failed", http.StatusBadRequest, err.Error()))
@@ -80,13 +80,13 @@ func (s *PointsHandler) PostPoint() func(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func (s *PointsHandler) UpdatePoint() func(w http.ResponseWriter, r *http.Request) {
+func (s *FeedbacksHandler) UpdateFeedback() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		var data models.PoinModels
+		var data models.FeedbackModels
 		tools.Parser(r, &data)
 
-		result, err := s.poinUsecases.UpdatePoint(tools.GetPathVar("sid", r), data)
+		result, err := s.feedbackUsecases.UpdateFeedback(tools.GetPathVar("sid", r), data)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Response("Update Failed", http.StatusBadRequest, err.Error()))
@@ -97,11 +97,11 @@ func (s *PointsHandler) UpdatePoint() func(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-func (s *PointsHandler) DeletePoint() func(w http.ResponseWriter, r *http.Request) {
+func (s *FeedbacksHandler) DeleteFeedback() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		result, err := s.poinUsecases.DeletePoint(tools.GetPathVar("sid", r))
+		result, err := s.feedbackUsecases.DeleteFeedback(tools.GetPathVar("sid", r))
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Response("Delete By ID Failed", http.StatusBadRequest, err.Error()))

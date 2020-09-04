@@ -42,7 +42,7 @@ func (s *PoinRepoImpl) GetPointByID(ID string) (*models.PoinModels, error) {
 	var d models.PoinModels
 	err := results.Scan(&d.PoinID, &d.StoreID)
 	if err != nil {
-		return nil, errors.New("Menu ID Not Found")
+		return nil, errors.New("ID Not Found")
 	}
 
 	return &d, nil

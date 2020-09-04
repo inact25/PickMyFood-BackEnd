@@ -42,7 +42,7 @@ func (s *StoreRepoImpl) GetStoreByID(ID string) (*models.StoreModels, error) {
 	var d models.StoreModels
 	err := results.Scan(&d.StoreID, &d.StoreName, &d.StoreCategoryID, &d.StoreAddress, &d.StoreOwner, &d.StoreStatus, &d.StorePassword, &d.StoreImages)
 	if err != nil {
-		return nil, errors.New("Menu ID Not Found")
+		return nil, errors.New("ID Not Found")
 	}
 
 	return &d, nil

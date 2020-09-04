@@ -42,7 +42,7 @@ func (s *RatingRepoImpl) GetRatingByID(ID string) (*models.RatingModels, error) 
 	var d models.RatingModels
 	err := results.Scan(&d.RatingID, &d.StoreID, &d.UserID, &d.RatingValue, &d.RatingDescription, &d.RatingDescription)
 	if err != nil {
-		return nil, errors.New("Menu ID Not Found")
+		return nil, errors.New("ID Not Found")
 	}
 
 	return &d, nil
