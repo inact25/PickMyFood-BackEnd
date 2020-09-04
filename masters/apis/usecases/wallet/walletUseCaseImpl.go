@@ -39,16 +39,26 @@ func (w *WalletUseCaseImpl) TopUpWallet(topUP *models.TopUp, userID string) erro
 }
 
 func (w *WalletUseCaseImpl) UpdateAmountWallet(wallet *models.Wallet, userID string) error {
-	amount, _ := strconv.Atoi(wallet.Amount)
+
+	currentCash, err := w.walletRepo.GetWalletByID(userID)
+	if err != nil {
+		return err
+	}
+	println(currentCash.Amount)
+
+	amount, _ := strconv.Atoi(currentCash.Amount)
 	println(amount)
-	var totalAmount int = amount
-	totalAmount = totalAmount + amount
+
+	walletAmount, _ := strconv.Atoi(wallet.Amount)
+
+	totalAmount := amount + walletAmount
 	println(totalAmount)
+
 	newTotalAmount := strconv.Itoa(totalAmount)
 	println(newTotalAmount)
 
 	wallet.Amount = newTotalAmount
-	err := validation.CheckEmpty(wallet.Amount)
+	err = validation.CheckEmpty(wallet)
 	if err != nil {
 		return err
 	}
