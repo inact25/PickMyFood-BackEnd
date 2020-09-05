@@ -2,6 +2,9 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
+	"log"
+	"strconv"
 
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 )
@@ -33,50 +36,78 @@ func (s *StoreRepoImpl) GetStores() ([]*models.StoreModels, error) {
 	return stores, nil
 }
 
-func (s *StoreRepoImpl) GetStoreByID(ID string) ([]*models.StoreModels, error) {
-	var stores []*models.StoreModels
-	query := "SELECT * FROM tb_store WHERE store_id = ?"
-	rows, err := s.db.Query(query, ID)
+func (s *StoreRepoImpl) GetStoreByID(ID string) (*models.StoreModels, error) {
+	results := s.db.QueryRow("SELECT * FROM tb_store WHERE store_id = ?", ID)
+
+	var d models.StoreModels
+	err := results.Scan(&d.StoreID, &d.StoreName, &d.StoreCategoryID, &d.StoreAddress, &d.StoreOwner, &d.StoreStatus, &d.StorePassword, &d.StoreImages)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("ID Not Found")
 	}
 
-	for rows.Next() {
-		store := models.StoreModels{}
-		err := rows.Scan(&store.StoreID, &store.StoreName, &store.StoreCategoryID, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StorePassword, &store.StoreImages)
-
-		if err != nil {
-			return nil, err
-		}
-
-		stores = append(stores, &store)
-
-	}
-
-	return stores, nil
+	return &d, nil
 }
 
-func (s *StoreRepoImpl) DeleteStore(ID string) ([]*models.StoreModels, error) {
-	var stores []*models.StoreModels
-	query := "DELETE FROM tb_store WHERE store_id = ?"
-	_, err := s.db.Query(query, ID)
+func (s *StoreRepoImpl) PostStore(d models.StoreModels) (*models.StoreModels, error) {
+	tx, err := s.db.Begin()
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
-	// for rows.Next() {
-	// 	store := models.StoreModels{}
-	// 	err := rows.Scan(&store.StoreID, &store.StoreName, &store.StoreCategoryID, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StorePassword, &store.StoreImages)
+	stmnt, _ := tx.Prepare(`INSERT INTO tb_store(store_id, store_name, store_category_id, store_address, store_owner, store_status, store_password, store_images) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`)
+	defer stmnt.Close()
 
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
+	result, err := stmnt.Exec(d.StoreID, d.StoreName, d.StoreCategoryID, d.StoreAddress, d.StoreOwner, d.StoreStatus, d.StorePassword, d.StoreImages)
+	if err != nil {
+		log.Println(err)
+		tx.Rollback()
+		return nil, err
+	}
 
-	// 	stores = append(stores, &store)
+	lastInsertID, _ := result.LastInsertId()
+	tx.Commit()
+	return s.GetStoreByID(strconv.Itoa(int(lastInsertID)))
+}
 
-	// }
+func (s *StoreRepoImpl) UpdateStore(ID string, data models.StoreModels) (*models.StoreModels, error) {
+	tx, err := s.db.Begin()
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
 
-	return stores, nil
+	_, err = tx.Exec(`UPDATE tb_store SET store_name=?, store_category_id=?, store_address=?, store_owner=?, store_status=?, store_password=?, store_images=? WHERE store_id=?`,
+		data.StoreName, data.StoreCategoryID, data.StoreAddress, data.StoreOwner, data.StoreStatus, data.StorePassword, data.StoreImages, ID)
+
+	if err != nil {
+		log.Println(err)
+		tx.Rollback()
+		return nil, err
+	}
+
+	tx.Commit()
+
+	return s.GetStoreByID(ID)
+}
+
+func (s *StoreRepoImpl) DeleteStore(ID string) (*models.StoreModels, error) {
+	tx, err := s.db.Begin()
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	_, err = tx.Exec("DELETE FROM tb_store WHERE store_id = ?", ID)
+	if err != nil {
+		log.Println(err)
+		tx.Rollback()
+		return nil, err
+	}
+	tx.Commit()
+
+	return s.GetStoreByID(ID)
+
 }
 
 func (s *StoreRepoImpl) GetStoresCategory() ([]*models.StoreCategory, error) {
@@ -102,7 +133,7 @@ func (s *StoreRepoImpl) GetStoresCategory() ([]*models.StoreCategory, error) {
 	return storesCategory, nil
 }
 
-func InitStoreRepoImpl(db *sql.DB) StoresRepository {
+func InitStoreRepoImpl(db *sql.DB) StoresRepo {
 	return &StoreRepoImpl{db}
 
 }

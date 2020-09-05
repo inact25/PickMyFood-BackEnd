@@ -5,6 +5,7 @@ type ProductModels struct {
 	StoreID           string `json:"store_id"`
 	ProductName       string `json:"product_name"`
 	ProductCategoryID string `json:"product_category_id"`
+	ProductStock      string `json:"product_stock"`
 	ProductStatus     string `json:"product_status"`
 }
 
