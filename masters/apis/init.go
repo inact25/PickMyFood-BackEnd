@@ -5,31 +5,22 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers"
+	productCategoryControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/productCategory"
 	storeCategoryControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/storeCategory"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/middlewares"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	productCategoryRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/productCategory"
 	storerepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/store"
 	storeCategoryRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/storeCategory"
 	walletrepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/wallet"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
+	productCategoryUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/productCategory"
 	storeusecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/store"
 	storeCategoryUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/storeCatergory"
 	walletusecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/wallet"
 )
 
 func Init(r *mux.Router, db *sql.DB) {
-	//menuRepo := repositories.InitMenuRepoImpl(db)
-	//menuUseCase := usecases.InitMenuUseCase(menuRepo)
-	//controllers.MenuControll(r, menuUseCase)
-	//
-	//servicesRepo := repositories.InitServiceRepoImpl(db)
-	//servicesUseCase := usecases.InitServiceUseCase(servicesRepo)
-	//controllers.ServicesControll(r, servicesUseCase)
-	//
-	//transactionRepo := repositories.InitTransactionRepoImpl(db)
-	//transactionUseCase := usecases.InitTransactionUseCase(transactionRepo)
-	//controllers.TransactionControll(r, transactionUseCase)
-
 	// user
 	userRepo := repositories.InitUserRepoImpl(db)
 	userUseCases := usecases.InitUsersUseCase(userRepo)
@@ -50,6 +41,11 @@ func Init(r *mux.Router, db *sql.DB) {
 	storeCategoryUseCase := storeCategoryUsecases.InitStoreCategoryUseCase(storeCategoryRepo)
 	storeCategoryController := storeCategoryControllers.StoreCategoryController(storeCategoryUseCase)
 	storeCategoryController.StoreCategoryAPI(r)
+	// productCategory
+	productCategoryRepo := productCategoryRepositories.InitProductCategoryRepoImpl(db)
+	productCategoryUseCase := productCategoryUsecases.InitProductCategoryUseCase(productCategoryRepo)
+	productCategoryController := productCategoryControllers.ProductCategoryController(productCategoryUseCase)
+	productCategoryController.ProductCategoryAPI(r)
 
 	r.Use(middlewares.ActivityLogMiddleware)
 }

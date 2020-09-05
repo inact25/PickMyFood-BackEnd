@@ -26,5 +26,11 @@ const (
 	SELECT_STORE_CATEGORY_BY_ID = "SELECT * FROM tb_store_category WHERE store_category_id=?"
 	SELECT_ALL_STORE_CATEGORY   = "SELECT * FROM tb_store_category"
 	UPDATE_STORE_CATEGORY       = "UPDATE tb_store_category SET store_category_name=? WHERE store_category_id=?"
-	DELETE_STORE_CATEGORY       = "UPDATE tb_store_category SET store_category_status = NA WHERE store_category_id = ?"
+	DELETE_STORE_CATEGORY       = "UPDATE tb_store_category SET store_category_status = 'NA' WHERE store_category_id = ?"
+	//QUERY PRODUCT CATEGORY
+	INSERT_PRODUCT_CATEGORY       = "INSERT INTO tb_product_category VALUES (?,?)"
+	SELECT_PRODUCT_CATEGORY_BY_ID = "SELECT * FROM tb_product_category WHERE product_category_id = ?"
+	SELECT_ALL_PRODUCT_CATEGORY   = "SELECT * FROM tb_product_category"
+	UPDATE_PRODUCT_CATEGORY       = "UPDATE tb_product_category SET product_category_name=? WHERE product_category_id=?"
+	DELETE_PRODUCT_CATEGORY       = "UPDATE tb_product_category SET product_category_status = 'NA' WHERE product_category_id=? "
 )
