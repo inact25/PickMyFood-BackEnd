@@ -56,24 +56,40 @@ func (w *WalletRepoImpl) TopUpWallet(topUP *models.TopUp, userID string) error {
 }
 
 // update wallet
-// func (w *WalletRepoImpl) UpdateWallet(id string, wallet *models.Wallet) error {
-// 	tx, err := w.db.Begin()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	stmt, err := tx.Prepare(utils.UPDATE_AMOUNT_WALLET)
-// 	defer stmt.Close()
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-// 	_, err = stmt.Exec(wallet.Amount, id)
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-// 	return tx.Commit()
-// }
+func (w *WalletRepoImpl) UpdateAmountWallet(wallet *models.Wallet, userID string) error {
+	println("MASUK REPO")
+	println(wallet.Amount)
+	println(userID)
+	tx, err := w.db.Begin()
+	if err != nil {
+		return err
+	}
+	stmt, err := tx.Prepare(utils.UPDATE_AMOUNT_WALLET)
+	defer stmt.Close()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	_, err = stmt.Exec(wallet.Amount, userID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	println("UPDATE AMOUNT")
+	stmt, err = tx.Prepare(utils.UPDATE_STATUS_TOP_UP)
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	_, err = stmt.Exec("Paid", userID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	println("UPDATE STATUS")
+	return tx.Commit()
+}
 
 // // update poin
 // func (w *WalletRepoImpl) UpdatePoin(id string, user *models.User) error {

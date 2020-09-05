@@ -13,4 +13,5 @@ type TopUp struct {
 	userID      string `json:"userID"`
 	TopUpDate   string `json:"topUpDate"`
 	Status      string `json:"status"`
+	User        User   `json:"user"`
 }
