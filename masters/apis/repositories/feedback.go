@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
+	"github.com/inact25/PickMyFood-BackEnd/utils/queryConstant"
 )
 
 type FeedbackRepoImpl struct {
@@ -15,7 +16,7 @@ type FeedbackRepoImpl struct {
 
 func (s *FeedbackRepoImpl) GetFeedbacks() ([]*models.FeedbackModels, error) {
 	var feedbacks []*models.FeedbackModels
-	query := "SELECT * FROM tb_feedback"
+	query := queryConstant.GET_ALL_FEEDBACK
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -37,7 +38,7 @@ func (s *FeedbackRepoImpl) GetFeedbacks() ([]*models.FeedbackModels, error) {
 }
 
 func (s *FeedbackRepoImpl) GetFeedbackByID(ID string) (*models.FeedbackModels, error) {
-	results := s.db.QueryRow("SELECT * FROM tb_feedback WHERE feedback_id = ?", ID)
+	results := s.db.QueryRow(queryConstant.GET_FEEDBACK_BY_ID, ID)
 
 	var d models.FeedbackModels
 	err := results.Scan(&d.FeedbackID, &d.StoreID, &d.FeedbackValue, &d.FeedbackCreated)
@@ -55,7 +56,7 @@ func (s *FeedbackRepoImpl) PostFeedback(d models.FeedbackModels) (*models.Feedba
 		return nil, err
 	}
 
-	stmnt, _ := tx.Prepare(`INSERT INTO tb_feedback(feedback_id, store_id, feedback_value, feedback_created) VALUES (?, ?, ?, ?)`)
+	stmnt, _ := tx.Prepare(queryConstant.POST_FEEDBACK)
 	defer stmnt.Close()
 
 	result, err := stmnt.Exec(d.FeedbackID, d.StoreID, d.FeedbackValue, d.FeedbackCreated)
@@ -77,7 +78,7 @@ func (s *FeedbackRepoImpl) UpdateFeedback(ID string, data models.FeedbackModels)
 		return nil, err
 	}
 
-	_, err = tx.Exec(`UPDATE tb_feedback SET store_id=?, feedback_value=?, feedback_created=? WHERE feedback_id=?`,
+	_, err = tx.Exec(queryConstant.UPDATE_FEEDBACK,
 		data.StoreID, data.FeedbackValue, data.FeedbackCreated, ID)
 
 	if err != nil {
@@ -98,7 +99,7 @@ func (s *FeedbackRepoImpl) DeleteFeedback(ID string) (*models.FeedbackModels, er
 		return nil, err
 	}
 
-	_, err = tx.Exec("DELETE FROM tb_feedback WHERE feedback_id = ?", ID)
+	_, err = tx.Exec(queryConstant.DELETE_FEEDBACK, ID)
 	if err != nil {
 		log.Println(err)
 		tx.Rollback()

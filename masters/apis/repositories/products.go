@@ -55,7 +55,9 @@ func (s *ProductRepoImpl) PostProduct(d models.ProductModels) (*models.ProductMo
 		return nil, err
 	}
 
-	stmnt, _ := tx.Prepare(`INSERT INTO tb_product(product_id, store_id, product_name, product_category_id, product_stock, product_status) VALUES(?, ?, ?, ?, ?, ?)`)
+	stmnt, _ := tx.Prepare(`INSERT INTO tb_product(product_id, store_id, product_name, product_category_id, product_stock, product_status) VALUES(?, ?, ?, ?, ?, ?);
+							INSERT INTO tb_product_price(product_price_id, product_id, price, date_modified) VALUES(?, ?, ?, ?);`)
+
 	defer stmnt.Close()
 
 	result, err := stmnt.Exec(d.ProductID, d.StoreID, d.ProductName, d.ProductCategoryID, d.ProductStock, d.ProductStatus)
@@ -98,7 +100,7 @@ func (s *ProductRepoImpl) DeleteProduct(ID string) (*models.ProductModels, error
 		return nil, err
 	}
 
-	_, err = tx.Exec("DELETE FROM tb_product WHERE product_id = ?", ID)
+	_, err = tx.Exec("UPDATE tb_product SET product_status='NA' WHERE product_id=?", ID)
 	if err != nil {
 		log.Println(err)
 		tx.Rollback()
