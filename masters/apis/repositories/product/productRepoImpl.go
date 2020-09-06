@@ -101,7 +101,7 @@ func (p *ProductRepoImpl) UpdateProductWithPrice(id string, product *models.Prod
 		tx.Rollback()
 		return err
 	}
-	_, err = stmt.Exec(p, id)
+	_, err = stmt.Exec(product.ProductName, product.ProductCategory.ProductCategoryID, product.ProductStock, id)
 	if err != nil {
 		tx.Rollback()
 		return err
