@@ -26,5 +26,18 @@ const (
 	SELECT_STORE_CATEGORY_BY_ID = "SELECT * FROM tb_store_category WHERE store_category_id=?"
 	SELECT_ALL_STORE_CATEGORY   = "SELECT * FROM tb_store_category"
 	UPDATE_STORE_CATEGORY       = "UPDATE tb_store_category SET store_category_name=? WHERE store_category_id=?"
-	DELETE_STORE_CATEGORY       = "UPDATE tb_store_category SET store_category_status = NA WHERE store_category_id = ?"
+	DELETE_STORE_CATEGORY       = "UPDATE tb_store_category SET store_category_status = 'NA' WHERE store_category_id = ?"
+	//QUERY PRODUCT CATEGORY
+	INSERT_PRODUCT_CATEGORY       = "INSERT INTO tb_product_category VALUES (?,?)"
+	SELECT_PRODUCT_CATEGORY_BY_ID = "SELECT * FROM tb_product_category WHERE product_category_id = ?"
+	SELECT_ALL_PRODUCT_CATEGORY   = "SELECT * FROM tb_product_category"
+	UPDATE_PRODUCT_CATEGORY       = "UPDATE tb_product_category SET product_category_name=? WHERE product_category_id=?"
+	DELETE_PRODUCT_CATEGORY       = "UPDATE tb_product_category SET product_category_status = 'NA' WHERE product_category_id=? "
+	//QUERY PRODUCT
+	SELECT_ALL_PRODUCT_BY_STORE = "select pp.product_id, p.product_name, pc.product_category_name, pp.price, p.product_status, pp.date_modified from tb_product_price pp inner join tb_product p on p.product_id = pp.product_id inner join tb_product_category pc on p.product_category_id = pc.product_category_id inner join (select product_id, max(date_modified) as maxDate from tb_product_price group by product_id) pj on pp.product_id = pj.product_id and pp.date_modified = pj.maxDate where p.store_id= ? AND p.product_status = 'A'"
+	INSERT_PRODUCT              = "INSERT INTO tb_product VALUES (?,?,?,?,?,?)"
+	INSERT_PRODUCT_PRICE        = "INSERT INTO tb_product_price VALUES(?,?,?,?)"
+	SELECT_PRODUCT_BY_ID        = "select pp.product_id, p.product_name, p.product_stock,p.product_status,pc.product_category_id,pc.product_category_name, pp.price, pp.date_modified from tb_product_price pp inner join tb_product p on p.product_id = pp.product_id inner join tb_product_category pc on p.product_category_id = pc.product_category_id inner join (select product_id, max(date_modified) as maxDate from tb_product_price group by product_id) pj on pp.product_id = pj.product_id and pp.date_modified = pj.maxDate where p.product_id= ? AND p.product_status = 'A'"
+	UPDATE_PRODUCT_WITH_PRICE   = "UPDATE tb_product SET product_name=?,product_category_id_=?,product_stock=? WHERE product_id=?"
+	DELETE_PRODUCT              = "UPDATE tb_product SET product_status = 'NA' WHERE product_id = ?"
 )
