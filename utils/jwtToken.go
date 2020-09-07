@@ -35,7 +35,7 @@ func JwtDecoder(tokenString string) (jwt.MapClaims, error) {
 	//Check payload token
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		return []byte(hmacSampleSecret), nil
@@ -56,7 +56,7 @@ func JwtDecoder(tokenString string) (jwt.MapClaims, error) {
 		if diffTime > 0 {
 			return claims, nil
 		} else {
-			return nil, errors.New("Expired Token")
+			return nil, errors.New("expired token")
 		}
 
 	} else {
