@@ -3,16 +3,16 @@ package models
 type Order struct {
 	OrderID      string      `json:"orderId"`
 	OrderCreated string      `json:"orderCreated"`
-	OrderDetail  OrderDetail `json:"orderDetail"`
-	Store        Store       `json;"store"`
+	StoreID      string      `json:"storeID"`
+	SoldItems    []SoldItems `json:"soldItems"`
 }
 
-type OrderDetail struct {
-	Qty               int        `json;"qty"`
-	Product           []*Product `json:"product"`
-	User              User       `json:"user"`
-	Price             string     `json:"price"`
-	OrderDetailStatus string     `json:"orderDetailStatus"`
+type SoldItems struct {
+	Qty               string `json;"qty"`
+	ProductID         string `json:"productID"`
+	UserID            string `json:"userId"`
+	Price             string `json:"price"`
+	OrderDetailStatus string `json:"orderDetailStatus"`
 }
 
 type Payment struct {
