@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
+	utils "github.com/inact25/PickMyFood-BackEnd/utils/queryConstant"
 )
 
 type RatingRepoImpl struct {
@@ -15,7 +16,7 @@ type RatingRepoImpl struct {
 
 func (s *RatingRepoImpl) GetRatings() ([]*models.RatingModels, error) {
 	var ratings []*models.RatingModels
-	query := "SELECT * FROM tb_rating"
+	query := utils.GET_ALL_RATING
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -37,7 +38,7 @@ func (s *RatingRepoImpl) GetRatings() ([]*models.RatingModels, error) {
 }
 
 func (s *RatingRepoImpl) GetRatingByID(ID string) (*models.RatingModels, error) {
-	results := s.db.QueryRow("SELECT * FROM tb_rating WHERE rating_id = ?", ID)
+	results := s.db.QueryRow(utils.GET_RATING_BY_ID, ID)
 
 	var d models.RatingModels
 	err := results.Scan(&d.RatingID, &d.StoreID, &d.UserID, &d.RatingValue, &d.RatingDescription, &d.RatingDescription)
@@ -55,7 +56,7 @@ func (s *RatingRepoImpl) PostRating(d models.RatingModels) (*models.RatingModels
 		return nil, err
 	}
 
-	stmnt, _ := tx.Prepare(`INSERT INTO tb_rating(rating_id, store_id, user_id, rating_value, rating_description, rating_created) VALUES (?, ?, ?, ?, ?, ?)`)
+	stmnt, _ := tx.Prepare(utils.POST_RATING)
 	defer stmnt.Close()
 
 	result, err := stmnt.Exec(d.RatingID, d.StoreID, d.UserID, d.RatingValue, d.RatingDescription, d.RatingCreated)
@@ -77,7 +78,7 @@ func (s *RatingRepoImpl) UpdateRating(ID string, data models.RatingModels) (*mod
 		return nil, err
 	}
 
-	_, err = tx.Exec(`UPDATE tb_rating SET store_id=?, user_id=?, rating_value=?, rating_description=?, rating_created=? WHERE rating_id=?`,
+	_, err = tx.Exec(utils.UPDATE_RATING,
 		data.StoreID, data.UserID, data.RatingValue, data.RatingDescription, data.RatingCreated, ID)
 
 	if err != nil {
@@ -98,7 +99,7 @@ func (s *RatingRepoImpl) DeleteRating(ID string) (*models.RatingModels, error) {
 		return nil, err
 	}
 
-	_, err = tx.Exec("DELETE FROM tb_rating WHERE rating_id = ?", ID)
+	_, err = tx.Exec(utils.DELETE_RATING, ID)
 	if err != nil {
 		log.Println(err)
 		tx.Rollback()
