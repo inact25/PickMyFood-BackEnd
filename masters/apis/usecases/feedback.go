@@ -3,6 +3,7 @@ package usecases
 import (
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	"github.com/inact25/PickMyFood-BackEnd/utils"
 	"github.com/inact25/PickMyFood-BackEnd/utils/validation"
 
 	"gopkg.in/validator.v2"
@@ -29,33 +30,29 @@ func (s FeedbackUsecaseImpl) GetFeedbackByID(ID string) (*models.FeedbackModels,
 	return feedbacks, nil
 }
 
-func (s FeedbackUsecaseImpl) PostFeedback(d models.FeedbackModels) (*models.FeedbackModels, error) {
-	if err := validator.Validate(d); err != nil {
-		return nil, err
-	}
-
-	result, err := s.feedbackRepo.PostFeedback(d)
+func (s FeedbackUsecaseImpl) PostFeedback(d *models.FeedbackModels, ID string) error {
+	d.FeedbackCreated = utils.GetTimeNow()
+	err := validation.CheckEmpty(d)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	return result, nil
+	error := s.feedbackRepo.PostFeedback(d, ID)
+	if error != nil {
+		return error
+	}
+	return nil
 }
 
-func (s FeedbackUsecaseImpl) UpdateFeedback(ID string, data models.FeedbackModels) (*models.FeedbackModels, error) {
+func (s FeedbackUsecaseImpl) UpdateFeedback(data *models.FeedbackModels, ID string) error {
 	if err := validator.Validate(data); err != nil {
-		return nil, err
+		return err
 	}
 
-	if err := validation.ValidateInputNumber(ID); err != nil {
-		return nil, err
-	}
-
-	result, err := s.feedbackRepo.UpdateFeedback(ID, data)
+	err := s.feedbackRepo.UpdateFeedback(ID, data)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return result, nil
+	return nil
 }
 
 func (s FeedbackUsecaseImpl) DeleteFeedback(ID string) error {
