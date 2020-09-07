@@ -92,23 +92,31 @@ func (s *FeedbackRepoImpl) UpdateFeedback(ID string, data models.FeedbackModels)
 	return s.GetFeedbackByID(ID)
 }
 
-func (s *FeedbackRepoImpl) DeleteFeedback(ID string) (*models.FeedbackModels, error) {
+func (s *FeedbackRepoImpl) DeleteFeedback(ID string) error {
 	tx, err := s.db.Begin()
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return err
 	}
 
-	_, err = tx.Exec(utils.DELETE_FEEDBACK, ID)
+	stmt, err := tx.Prepare(utils.DELETE_FEEDBACK)
+	defer stmt.Close()
 	if err != nil {
-		log.Println(err)
 		tx.Rollback()
-		return nil, err
+		return err
 	}
-	tx.Commit()
 
-	return s.GetFeedbackByID(ID)
+	res, err := stmt.Exec(ID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
 
+	count, err := res.RowsAffected()
+	if count == 0 {
+		return errors.New("gagal delete, id tidak di temukan")
+	}
+
+	return tx.Commit()
 }
 
 func InitFeedbackImpl(db *sql.DB) FeedbackRepo {

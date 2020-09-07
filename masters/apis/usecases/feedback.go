@@ -58,21 +58,12 @@ func (s FeedbackUsecaseImpl) UpdateFeedback(ID string, data models.FeedbackModel
 	return result, nil
 }
 
-func (s FeedbackUsecaseImpl) DeleteFeedback(ID string) (*models.FeedbackModels, error) {
-	if err := validation.ValidateInputNumber(ID); err != nil {
-		return nil, err
-	}
-
-	_, err := s.feedbackRepo.GetFeedbackByID(ID)
+func (s FeedbackUsecaseImpl) DeleteFeedback(ID string) error {
+	err := s.feedbackRepo.DeleteFeedback(ID)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	result, err := s.feedbackRepo.DeleteFeedback(ID)
-	if err != nil {
-		return result, err
-	}
-	return result, nil
+	return nil
 }
 
 func InitFeedbackUsecase(feedbackRepo repositories.FeedbackRepo) FeedbackUseCases {
