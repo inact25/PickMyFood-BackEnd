@@ -28,6 +28,7 @@ func FeedbacksController(r *mux.Router, service usecases.FeedbackUseCases) {
 
 func (s *FeedbacksHandler) GetFeedbacks(w http.ResponseWriter, r *http.Request) {
 	feedbacks, err := s.feedbackUsecases.GetFeedbacks()
+	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
 		w.Write([]byte("Data not found!"))
 	}

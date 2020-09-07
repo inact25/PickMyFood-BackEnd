@@ -54,6 +54,10 @@ func Init(r *mux.Router, db *sql.DB) {
 	productUseCase := productUsecases.InitProductUseCaseImpl(productRepo)
 	productController := productControllers.InitProductController(productUseCase)
 	productController.ProductAPI(r)
+	// Feedback
+	feedbackRepo := repositories.InitFeedbackImpl(db)
+	feedbackUsecase := usecases.InitFeedbackUsecase(feedbackRepo)
+	controllers.FeedbacksController(r, feedbackUsecase)
 
 	r.Use(middlewares.ActivityLogMiddleware)
 }
