@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
-	"github.com/inact25/PickMyFood-BackEnd/utils/queryConstant"
+	utils "github.com/inact25/PickMyFood-BackEnd/utils/queryConstant"
 )
 
 type RatingRepoImpl struct {
@@ -16,7 +16,7 @@ type RatingRepoImpl struct {
 
 func (s *RatingRepoImpl) GetRatings() ([]*models.RatingModels, error) {
 	var ratings []*models.RatingModels
-	query := queryConstant.GET_ALL_RATING
+	query := utils.GET_ALL_RATING
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (s *RatingRepoImpl) GetRatings() ([]*models.RatingModels, error) {
 }
 
 func (s *RatingRepoImpl) GetRatingByID(ID string) (*models.RatingModels, error) {
-	results := s.db.QueryRow(queryConstant.GET_RATING_BY_ID, ID)
+	results := s.db.QueryRow(utils.GET_RATING_BY_ID, ID)
 
 	var d models.RatingModels
 	err := results.Scan(&d.RatingID, &d.StoreID, &d.UserID, &d.RatingValue, &d.RatingDescription, &d.RatingDescription)
@@ -56,7 +56,7 @@ func (s *RatingRepoImpl) PostRating(d models.RatingModels) (*models.RatingModels
 		return nil, err
 	}
 
-	stmnt, _ := tx.Prepare(queryConstant.POST_RATING)
+	stmnt, _ := tx.Prepare(utils.POST_RATING)
 	defer stmnt.Close()
 
 	result, err := stmnt.Exec(d.RatingID, d.StoreID, d.UserID, d.RatingValue, d.RatingDescription, d.RatingCreated)
@@ -78,7 +78,7 @@ func (s *RatingRepoImpl) UpdateRating(ID string, data models.RatingModels) (*mod
 		return nil, err
 	}
 
-	_, err = tx.Exec(queryConstant.UPDATE_RATING,
+	_, err = tx.Exec(utils.UPDATE_RATING,
 		data.StoreID, data.UserID, data.RatingValue, data.RatingDescription, data.RatingCreated, ID)
 
 	if err != nil {
@@ -99,7 +99,7 @@ func (s *RatingRepoImpl) DeleteRating(ID string) (*models.RatingModels, error) {
 		return nil, err
 	}
 
-	_, err = tx.Exec(queryConstant.DELETE_RATING, ID)
+	_, err = tx.Exec(utils.DELETE_RATING, ID)
 	if err != nil {
 		log.Println(err)
 		tx.Rollback()

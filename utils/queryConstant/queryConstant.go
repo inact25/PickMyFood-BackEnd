@@ -1,4 +1,4 @@
-package queryConstant
+package utils
 
 const (
 	INSERT_USER                 = "insert into tb_user (user_id,user_firstname,user_lastname,user_address,user_phone,user_image,user_status) values (?,?,?,?,?,?,?)"

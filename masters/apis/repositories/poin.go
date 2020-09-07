@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
-	"github.com/inact25/PickMyFood-BackEnd/utils/queryConstant"
+	utils "github.com/inact25/PickMyFood-BackEnd/utils/queryConstant"
 )
 
 type PoinRepoImpl struct {
@@ -16,7 +16,7 @@ type PoinRepoImpl struct {
 
 func (s *PoinRepoImpl) GetPoints() ([]*models.PoinModels, error) {
 	var points []*models.PoinModels
-	query := queryConstant.GET_ALL_POINT
+	query := utils.GET_ALL_POINT
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (s *PoinRepoImpl) GetPoints() ([]*models.PoinModels, error) {
 }
 
 func (s *PoinRepoImpl) GetPointByID(ID string) (*models.PoinModels, error) {
-	results := s.db.QueryRow(queryConstant.GET_POINT_BY_ID, ID)
+	results := s.db.QueryRow(utils.GET_POINT_BY_ID, ID)
 
 	var d models.PoinModels
 	err := results.Scan(&d.PoinID, &d.StoreID)
@@ -56,7 +56,7 @@ func (s *PoinRepoImpl) PostPoint(d models.PoinModels) (*models.PoinModels, error
 		return nil, err
 	}
 
-	stmnt, _ := tx.Prepare(queryConstant.POST_POINT)
+	stmnt, _ := tx.Prepare(utils.POST_POINT)
 	defer stmnt.Close()
 
 	result, err := stmnt.Exec(d.PoinID, d.StoreID)
@@ -78,7 +78,7 @@ func (s *PoinRepoImpl) UpdatePoint(ID string, data models.PoinModels) (*models.P
 		return nil, err
 	}
 
-	_, err = tx.Exec(queryConstant.UPDATE_POINT,
+	_, err = tx.Exec(utils.UPDATE_POINT,
 		data.StoreID, ID)
 
 	if err != nil {
@@ -99,7 +99,7 @@ func (s *PoinRepoImpl) DeletePoint(ID string) (*models.PoinModels, error) {
 		return nil, err
 	}
 
-	_, err = tx.Exec(queryConstant.DELETE_POINT, ID)
+	_, err = tx.Exec(utils.DELETE_POINT, ID)
 	if err != nil {
 		log.Println(err)
 		tx.Rollback()

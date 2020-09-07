@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
-	"github.com/inact25/PickMyFood-BackEnd/utils/queryConstant"
+	utils "github.com/inact25/PickMyFood-BackEnd/utils/queryConstant"
 )
 
 type FeedbackRepoImpl struct {
@@ -16,7 +16,7 @@ type FeedbackRepoImpl struct {
 
 func (s *FeedbackRepoImpl) GetFeedbacks() ([]*models.FeedbackModels, error) {
 	var feedbacks []*models.FeedbackModels
-	query := queryConstant.GET_ALL_FEEDBACK
+	query := utils.GET_ALL_FEEDBACK
 	rows, err := s.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (s *FeedbackRepoImpl) GetFeedbacks() ([]*models.FeedbackModels, error) {
 }
 
 func (s *FeedbackRepoImpl) GetFeedbackByID(ID string) (*models.FeedbackModels, error) {
-	results := s.db.QueryRow(queryConstant.GET_FEEDBACK_BY_ID, ID)
+	results := s.db.QueryRow(utils.GET_FEEDBACK_BY_ID, ID)
 
 	var d models.FeedbackModels
 	err := results.Scan(&d.FeedbackID, &d.StoreID, &d.FeedbackValue, &d.FeedbackCreated)
@@ -56,7 +56,7 @@ func (s *FeedbackRepoImpl) PostFeedback(d models.FeedbackModels) (*models.Feedba
 		return nil, err
 	}
 
-	stmnt, _ := tx.Prepare(queryConstant.POST_FEEDBACK)
+	stmnt, _ := tx.Prepare(utils.POST_FEEDBACK)
 	defer stmnt.Close()
 
 	result, err := stmnt.Exec(d.FeedbackID, d.StoreID, d.FeedbackValue, d.FeedbackCreated)
@@ -78,7 +78,7 @@ func (s *FeedbackRepoImpl) UpdateFeedback(ID string, data models.FeedbackModels)
 		return nil, err
 	}
 
-	_, err = tx.Exec(queryConstant.UPDATE_FEEDBACK,
+	_, err = tx.Exec(utils.UPDATE_FEEDBACK,
 		data.StoreID, data.FeedbackValue, data.FeedbackCreated, ID)
 
 	if err != nil {
@@ -99,7 +99,7 @@ func (s *FeedbackRepoImpl) DeleteFeedback(ID string) (*models.FeedbackModels, er
 		return nil, err
 	}
 
-	_, err = tx.Exec(queryConstant.DELETE_FEEDBACK, ID)
+	_, err = tx.Exec(utils.DELETE_FEEDBACK, ID)
 	if err != nil {
 		log.Println(err)
 		tx.Rollback()
