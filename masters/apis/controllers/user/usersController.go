@@ -1,4 +1,4 @@
-package controllers
+package userControllers
 
 import (
 	"fmt"
@@ -7,21 +7,21 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
+	userUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/user"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
 )
 
 type UsersHandler struct {
-	UserUsecases usecases.UserUseCase
+	UserUsecases userUsecases.UserUseCase
 }
 
-func UsersController(UserUsecases usecases.UserUseCase) *UsersHandler {
+func UsersController(UserUsecases userUsecases.UserUseCase) *UsersHandler {
 	return &UsersHandler{UserUsecases: UserUsecases}
 }
 
 func (u *UsersHandler) Authenticate(r *mux.Router) {
 	user := r.PathPrefix("/user").Subrouter()
-	user.HandleFunc("", u.ListAllUser).Methods(http.MethodGet)
+	user.HandleFunc("", u.ListAllUser).Queries("keyword", "{keyword}", "page", "{page}", "limit", "{limit}").Methods(http.MethodGet)
 	user.HandleFunc("/{id}", u.GetUserId).Methods(http.MethodGet)
 	user.HandleFunc("/register", u.Register).Methods(http.MethodPost)
 	user.HandleFunc("/login", u.Login).Methods(http.MethodPost)
@@ -93,7 +93,13 @@ func (u *UsersHandler) GetUserId(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UsersHandler) ListAllUser(w http.ResponseWriter, r *http.Request) {
-	users, err := u.UserUsecases.GetAllUser()
+	var page string = mux.Vars(r)["page"]
+	var limit string = mux.Vars(r)["limit"]
+	// var orderBy string = mux.Vars(r)["orderBy"]
+	// var sort string = mux.Vars(r)["sort"]
+	var keyword string = mux.Vars(r)["keyword"]
+
+	users, err := u.UserUsecases.GetAllUser(keyword, page, limit)
 	if err != nil {
 		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
 	} else {

@@ -40,11 +40,8 @@ const (
 	SELECT_PRODUCT_BY_ID        = "select pp.product_id, p.product_name, p.product_stock,p.product_status,pc.product_category_id,pc.product_category_name, pp.price, pp.date_modified from tb_product_price pp inner join tb_product p on p.product_id = pp.product_id inner join tb_product_category pc on p.product_category_id = pc.product_category_id inner join (select product_id, max(date_modified) as maxDate from tb_product_price group by product_id) pj on pp.product_id = pj.product_id and pp.date_modified = pj.maxDate where p.product_id= ? AND p.product_status = 'A'"
 	UPDATE_PRODUCT_WITH_PRICE   = "UPDATE tb_product SET product_name = ?,product_stock = ?,product_category_id = ? WHERE product_id = ?"
 	DELETE_PRODUCT              = "UPDATE tb_product SET product_status = 'NA' WHERE product_id = ?"
-	//ORDER
-	INSERT_ORDER        = "insert into tb_order value (?,?,?)"
-	INSERT_ORDER_DETAIl = "insert into tb_order_detail (qty, order_id, product_id, user_id, price) value (?,?,?,?,?)"
-	GET_NEW_PRICE       = "select pp.price from tb_product_price pp inner join tb_product p on p.product_id = pp.product_id inner join ( select product_id, max(date_modified) as maxDate from tb_product_price group by product_id ) pj on pp.product_id = pj.product_id and pp.date_modified = pj.maxDate where p.product_id = ?"
 
+	//Feedback
 	GET_ALL_FEEDBACK   = "SELECT * FROM tb_feedback"
 	GET_FEEDBACK_BY_ID = "SELECT * FROM tb_feedback WHERE feedback_id = ?"
 	POST_FEEDBACK      = "INSERT INTO tb_feedback(feedback_id, store_id, feedback_value, feedback_created) VALUES (?, ?, ?, ?)"
@@ -60,4 +57,20 @@ const (
 	POST_RATING        = "INSERT INTO tb_rating(rating_id, store_id, user_id, rating_value, rating_description, rating_created) VALUES (?, ?, ?, ?, ?, ?)"
 	UPDATE_RATING      = "UPDATE tb_rating SET store_id=?, user_id=?, rating_value=?, rating_description=?, rating_created=? WHERE rating_id=?"
 	DELETE_RATING      = "DELETE FROM tb_rating WHERE rating_id = ?"
+
+	//ORDER
+	INSERT_ORDER         = "insert into tb_order value (?,?,?)"
+	INSERT_ORDER_DETAIl  = "insert into tb_order_detail (qty, order_id, product_id, user_id, price) value (?,?,?,?,?)"
+	GET_NEW_PRICE        = "select pp.price from tb_product_price pp inner join tb_product p on p.product_id = pp.product_id inner join ( select product_id, max(date_modified) as maxDate from tb_product_price group by product_id ) pj on pp.product_id = pj.product_id and pp.date_modified = pj.maxDate where p.product_id = ?"
+	UPDATE_PRODUCT_STOCK = "UPDATE tb_product SET product_stock=product_stock - ? WHERE product_id = ? "
+	//GET ORDER BY ID
+	SELECT_ORDER_BY_ID               = "SELECT * FROM tb_order WHERE order_id = ?"
+	SELECT_SOLD_ITEM_ORDER_BY_ID     = "select p.product_name, od.price,od.qty, price * qty as subtotal, od.order_detail_status from tb_order_detail od inner join tb_product p on p.product_id = od.product_id where order_id = ?"
+	SELECT_ALL_ORDER_BY_STORE        = "SELECT * FROM tb_order WHERE store_id = ?"
+	SELECT_ALL_SOLD_ITEM_BY_ORDER_ID = "SELECT u.user_firstname,p.product_name,od.price,od.qty,price*qty as subtotal,od.order_detail_status FROM tb_order_detail od JOIN tb_product p ON od.product_id=p.product_id JOIN tb_user u ON od.user_id=u.user_id JOIN tb_order o ON o.order_id=od.order_id WHERE o.order_id = ?"
+	//GET ALL ORDER BY USER
+	SELECT_ALL_ORDER_BY_USER   = "SELECT distinct o.order_id,o.order_created,o.store_id FROM tb_order o JOIN tb_order_detail od ON o.order_id=od.order_id WHERE od.user_id = ?"
+	INSERT_TRANSACTION         = "INSERT INTO tb_transaction (transaction_id,order_id,user_id,amount,transaction_created) VALUES (?,?,?,?,?)"
+	UPDATE_WALLET_AMOUNT_USER  = "UPDATE tb_wallet SET amount = amount - ? WHERE user_id = ? "
+	UPDATE_ORDER_DETAIL_STATUS = "UPDATE tb_order_detail SET order_detail_status = 'Paid' WHERE order_id = ?"
 )

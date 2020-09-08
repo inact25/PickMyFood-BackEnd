@@ -1,4 +1,4 @@
-package repositories
+package userRepositories
 
 import (
 	"database/sql"
@@ -85,17 +85,15 @@ func (u *UserRepoImpl) GetUserByID(id string) (*models.User, error) {
 }
 
 //GetAllUser for admin
-func (u *UserRepoImpl) GetAllUser() ([]*models.User, error) {
-	stmt, err := u.db.Prepare(utils.SELECT_ALL_USER)
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
+func (u *UserRepoImpl) GetAllUser(keyword, page, limit string) ([]*models.User, error) {
+	queryInput := fmt.Sprintf(utils.SELECT_ALL_USER, page, limit)
 
-	rows, err := stmt.Query()
+	rows, err := u.db.Query(queryInput, "%"+keyword+"%")
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
+
 	listUser := []*models.User{}
 	for rows.Next() {
 		p := models.User{}

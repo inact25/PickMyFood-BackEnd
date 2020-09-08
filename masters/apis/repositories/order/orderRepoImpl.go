@@ -2,6 +2,7 @@ package orderRepositories
 
 import (
 	"database/sql"
+	"log"
 
 	guuid "github.com/google/uuid"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
@@ -62,81 +63,147 @@ func (o *OrderRepoImpl) AddOrder(order *models.Order) error {
 			tx.Rollback()
 			return err
 		}
+		_, err = tx.Exec(utils.UPDATE_PRODUCT_STOCK, val.Qty, val.ProductID)
 	}
 	println("MASUK TB ORDER DETAIL")
 	return tx.Commit()
 }
 
-// func (o *OrderRepoImpl) GetOrderByID(orderID string) (*models.Order, error) {
-// 	stmt, err := o.db.Prepare(utils.SELECT_ORDER_BY_ID)
-// 	order := models.Order{}
-// 	if err != nil {
-// 		return &order, err
-// 	}
-// 	errQuery := stmt.QueryRow(orderID).Scan(&order.OrderID, sad)
+func (o *OrderRepoImpl) GetOrderByID(orderID string) (*models.Order, error) {
+	stmt, err := o.db.Prepare(utils.SELECT_ORDER_BY_ID)
+	order := models.Order{}
+	if err != nil {
+		return &order, err
+	}
+	errQuery := stmt.QueryRow(orderID).Scan(&order.OrderID, &order.OrderCreated, &order.StoreID)
+	if errQuery != nil {
+		return &order, err
+	}
+	defer stmt.Close()
 
-// 	if errQuery != nil {
-// 		return &order, err
-// 	}
+	stmt, err = o.db.Prepare(utils.SELECT_SOLD_ITEM_ORDER_BY_ID)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
 
-// 	defer stmt.Close()
-// 	return &order, nil
-// }
+	rows, err := stmt.Query(orderID)
+	if err != nil {
+		return nil, err
+	}
 
-// func (o *OrderRepoImpl) GetAllOrderByStore(storeID string) ([]*models.Order, error) {
-// 	stmt, err := o.db.Prepare(utils.SELECT_ALL_ORDER_BY_STORE)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer stmt.Close()
+	var soldItem models.SoldItems
+	for rows.Next() {
+		err := rows.Scan(&soldItem.ProductName, &soldItem.Price, &soldItem.Qty, &soldItem.Subtotal, &soldItem.OrderDetailStatus)
+		if err != nil {
+			return nil, err
+		}
+		order.SoldItems = append(order.SoldItems, soldItem)
+	}
 
-// 	rows, err := stmt.Query()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	listOrder := []*models.Order{}
-// 	for rows.Next() {
-// 		order := models.Order{}
-// 		err := rows.Scan(&order.OrderCreated, &product.ProductName)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		listOrder = append(listOrder, &order)
-// 	}
-// 	return listOrder, nil
-// }
+	return &order, nil
+}
 
-// func (o *OrderRepoImpl) UpdateOrderPaid(orderID string, order *models.Order) error {
-// 	tx, err := o.db.Begin()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	stmt, err := tx.Prepare(utils.UPDATE_ORDER_DETAIL_STATUS_PAID)
-// 	defer stmt.Close()
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-// 	_, err = stmt.Exec(order.asdasd, orderID)
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
+// get all order by store
+func (o *OrderRepoImpl) GetAllOrderByStore(storeID string) ([]*models.Order, error) {
+	println("MASUK REPo")
+	stmt, err := o.db.Prepare(utils.SELECT_ALL_ORDER_BY_STORE)
+	if err != nil {
+		return nil, err
+	}
 
-// 	transactionID := guuid.New()
-// 	stmt, err = tx.Prepare(utils.INSERT_TRANSACTION)
-// 	defer stmt.Close()
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
+	rows, err := stmt.Query(storeID)
+	if err != nil {
+		return nil, err
+	}
+	listOrder := []*models.Order{}
+	for rows.Next() {
+		order := models.Order{}
+		err := rows.Scan(&order.OrderID, &order.OrderCreated, &order.StoreID)
+		if err != nil {
+			return nil, err
+		}
+		listOrder = append(listOrder, &order)
+		println("MASUK ORDER")
 
-// 	if _, err := stmt.Exec(transactionID, storeID, product.ProductName, productCategory.ProductID); err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-// 	return tx.Commit()
-// }
+		//solditems
+		stmt, err = o.db.Prepare(utils.SELECT_ALL_SOLD_ITEM_BY_ORDER_ID)
+		if err != nil {
+			log.Print(err)
+			return nil, err
+		}
+
+		rows, err := stmt.Query(order.OrderID)
+		if err != nil {
+			log.Print(err)
+			return nil, err
+		}
+		println("MASUK SINI 1")
+
+		soldItem := models.SoldItems{}
+		for rows.Next() {
+			println("MASUK SINI")
+			err := rows.Scan(&soldItem.UserFirstName, &soldItem.ProductName, &soldItem.Price, &soldItem.Qty, &soldItem.Subtotal, &soldItem.OrderDetailStatus)
+			if err != nil {
+				log.Print(err)
+				return nil, err
+			}
+			order.SoldItems = append(order.SoldItems, soldItem)
+		}
+	}
+	return listOrder, nil
+}
+
+// get all order by user
+func (o *OrderRepoImpl) GetAllOrderByUser(userID string) ([]*models.Order, error) {
+	println("MASUK REPO")
+	stmt, err := o.db.Prepare(utils.SELECT_ALL_ORDER_BY_USER)
+	if err != nil {
+		log.Print(err)
+		return nil, err
+	}
+
+	rows, err := stmt.Query(userID)
+	if err != nil {
+		return nil, err
+	}
+	listOrder := []*models.Order{}
+	for rows.Next() {
+		order := models.Order{}
+		err := rows.Scan(&order.OrderID, &order.OrderCreated, &order.StoreID)
+		if err != nil {
+			return nil, err
+		}
+		listOrder = append(listOrder, &order)
+		println("MASUK ORDER")
+
+		//solditems
+		stmt, err = o.db.Prepare(utils.SELECT_ALL_SOLD_ITEM_BY_ORDER_ID)
+		if err != nil {
+			log.Print(err)
+			return nil, err
+		}
+
+		rows, err := stmt.Query(order.OrderID)
+		if err != nil {
+			log.Print(err)
+			return nil, err
+		}
+		println("MASUK SINI 1")
+
+		soldItem := models.SoldItems{}
+		for rows.Next() {
+			println("MASUK SINI")
+			err := rows.Scan(&soldItem.UserFirstName, &soldItem.ProductName, &soldItem.Price, &soldItem.Qty, &soldItem.Subtotal, &soldItem.OrderDetailStatus)
+			if err != nil {
+				log.Print(err)
+				return nil, err
+			}
+			order.SoldItems = append(order.SoldItems, soldItem)
+		}
+	}
+	return listOrder, nil
+}
 
 // func (o *OrderRepoImpl) UpdateOrderCancel(orderID string, payment *models.Payment) error {
 // 	tx, err := o.db.Begin()
