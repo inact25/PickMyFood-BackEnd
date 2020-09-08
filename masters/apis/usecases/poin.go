@@ -29,50 +29,48 @@ func (s PoinUsecaseImpl) GetPointByID(ID string) (*models.PoinModels, error) {
 	return points, nil
 }
 
-func (s PoinUsecaseImpl) PostPoint(d models.PoinModels) (*models.PoinModels, error) {
-	if err := validator.Validate(d); err != nil {
-		return nil, err
-	}
-
-	result, err := s.poinRepo.PostPoint(d)
+func (s PoinUsecaseImpl) PostPoint(d *models.PoinModels, ID string) error {
+	err := validation.CheckEmpty(d)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	return result, nil
+	error := s.poinRepo.PostPoint(d, ID)
+	if error != nil {
+		return error
+	}
+	return nil
 }
 
-func (s PoinUsecaseImpl) UpdatePoint(ID string, data models.PoinModels) (*models.PoinModels, error) {
+func (s PoinUsecaseImpl) UpdatePoint(data *models.PoinModels, ID string) error {
 	if err := validator.Validate(data); err != nil {
-		return nil, err
+		return err
 	}
 
-	if err := validation.ValidateInputNumber(ID); err != nil {
-		return nil, err
-	}
-
-	result, err := s.poinRepo.UpdatePoint(ID, data)
+	err := s.poinRepo.UpdatePoint(ID, data)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return result, nil
+	return nil
 }
 
-func (s PoinUsecaseImpl) DeletePoint(ID string) (*models.PoinModels, error) {
-	if err := validation.ValidateInputNumber(ID); err != nil {
-		return nil, err
+func (s PoinUsecaseImpl) DeletePoint(ID string) error {
+	err := s.poinRepo.DeletePoint(ID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s PoinUsecaseImpl) UpdateUserPoint(ID string, data *models.User) error {
+	if err := validator.Validate(data); err != nil {
+		return err
 	}
 
-	_, err := s.poinRepo.GetPointByID(ID)
+	err := s.poinRepo.UpdateUserPoint(ID, data)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	result, err := s.poinRepo.DeletePoint(ID)
-	if err != nil {
-		return result, err
-	}
-	return result, nil
+	return nil
 }
 
 func InitPoinUsecase(poinRepo repositories.PoinRepo) PoinUseCases {
