@@ -31,21 +31,29 @@ func (o *OrderUsecaseImpl) AddOrder(order *models.Order) error {
 }
 
 // GetOrderById
-// func (o *OrderUsecaseImpl) GetOrderByID(id string) (*models.Order, error) {
-// 	order, err := o.orderRepo.GetOrderByID(id)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return order, nil
-// }
+func (o *OrderUsecaseImpl) GetOrderByID(id string) (*models.Order, error) {
+	order, err := o.orderRepo.GetOrderByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return order, nil
+}
 
-// func (o *OrderUsecaseImpl) GetAllOrderByStore(storeID string) ([]*models.Order, error) {
-// 	listOrder, err := o.orderRepo.GetAllOrderByStore(storeID)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return listOrder, nil
-// }
+func (o *OrderUsecaseImpl) GetAllOrderByStore(storeID string) ([]*models.Order, error) {
+	listOrder, err := o.orderRepo.GetAllOrderByStore(storeID)
+	if err != nil {
+		return nil, err
+	}
+	return listOrder, nil
+}
+
+func (o *OrderUsecaseImpl) GetAllOrderByUser(userID string) ([]*models.Order, error) {
+	listOrder, err := o.orderRepo.GetAllOrderByUser(userID)
+	if err != nil {
+		return nil, err
+	}
+	return listOrder, nil
+}
 
 // func (o *OrderUsecaseImpl) UpdateOrderPaid(id string, order *models.Order) error {
 // 	err := validation.CheckEmpty(order)
