@@ -3,9 +3,8 @@ package repositories
 import (
 	"database/sql"
 	"errors"
-	"log"
-	"strconv"
 
+	guuid "github.com/google/uuid"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	utils "github.com/inact25/PickMyFood-BackEnd/utils/queryConstant"
 )
@@ -49,66 +48,73 @@ func (s *FeedbackRepoImpl) GetFeedbackByID(ID string) (*models.FeedbackModels, e
 	return &d, nil
 }
 
-func (s *FeedbackRepoImpl) PostFeedback(d models.FeedbackModels) (*models.FeedbackModels, error) {
+func (s *FeedbackRepoImpl) PostFeedback(d *models.FeedbackModels, ID string) error {
+	feedbackID := guuid.New()
 	tx, err := s.db.Begin()
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return err
 	}
 
-	stmnt, _ := tx.Prepare(utils.POST_FEEDBACK)
-	defer stmnt.Close()
-
-	result, err := stmnt.Exec(d.FeedbackID, d.StoreID, d.FeedbackValue, d.FeedbackCreated)
+	stmt, err := tx.Prepare(utils.POST_FEEDBACK)
+	defer stmt.Close()
 	if err != nil {
-		log.Println(err)
 		tx.Rollback()
-		return nil, err
+		return err
 	}
 
-	lastInsertID, _ := result.LastInsertId()
-	tx.Commit()
-	return s.GetFeedbackByID(strconv.Itoa(int(lastInsertID)))
+	if _, err := stmt.Exec(feedbackID, d.StoreID, d.FeedbackValue, d.FeedbackCreated); err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }
 
-func (s *FeedbackRepoImpl) UpdateFeedback(ID string, data models.FeedbackModels) (*models.FeedbackModels, error) {
+func (s *FeedbackRepoImpl) UpdateFeedback(ID string, data *models.FeedbackModels) error {
 	tx, err := s.db.Begin()
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return err
 	}
-
-	_, err = tx.Exec(utils.UPDATE_FEEDBACK,
-		data.StoreID, data.FeedbackValue, data.FeedbackCreated, ID)
-
+	stmt, err := tx.Prepare(utils.UPDATE_FEEDBACK)
+	defer stmt.Close()
 	if err != nil {
-		log.Println(err)
 		tx.Rollback()
-		return nil, err
+		return err
 	}
+	_, err = stmt.Exec(data.StoreID, data.FeedbackValue, data.FeedbackCreated, ID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	println("UPDATE FEEDBACK")
 
-	tx.Commit()
-
-	return s.GetFeedbackByID(ID)
+	return tx.Commit()
 }
 
-func (s *FeedbackRepoImpl) DeleteFeedback(ID string) (*models.FeedbackModels, error) {
+func (s *FeedbackRepoImpl) DeleteFeedback(ID string) error {
 	tx, err := s.db.Begin()
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return err
 	}
 
-	_, err = tx.Exec(utils.DELETE_FEEDBACK, ID)
+	stmt, err := tx.Prepare(utils.DELETE_FEEDBACK)
+	defer stmt.Close()
 	if err != nil {
-		log.Println(err)
 		tx.Rollback()
-		return nil, err
+		return err
 	}
-	tx.Commit()
 
-	return s.GetFeedbackByID(ID)
+	res, err := stmt.Exec(ID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
 
+	count, err := res.RowsAffected()
+	if count == 0 {
+		return errors.New("gagal delete, id tidak di temukan")
+	}
+
+	return tx.Commit()
 }
 
 func InitFeedbackImpl(db *sql.DB) FeedbackRepo {

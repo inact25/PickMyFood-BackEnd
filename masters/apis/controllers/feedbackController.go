@@ -1,15 +1,13 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
-	"github.com/inact25/PickMyFood-BackEnd/utils/message"
-	"github.com/inact25/PickMyFood-BackEnd/utils/tools"
+	"github.com/inact25/PickMyFood-BackEnd/utils"
 )
 
 type FeedbacksHandler struct {
@@ -20,9 +18,9 @@ func FeedbacksController(r *mux.Router, service usecases.FeedbackUseCases) {
 	FeedbacksHandler := FeedbacksHandler{service}
 	r.HandleFunc("/feedbacks", FeedbacksHandler.GetFeedbacks).Methods(http.MethodGet)
 	r.HandleFunc("/feedback/{sid}", FeedbacksHandler.GetFeedbackByID).Methods(http.MethodGet)
-	r.HandleFunc("/feedback", FeedbacksHandler.PostFeedback()).Methods(http.MethodPost)
-	r.HandleFunc("/feedback/{sid}", FeedbacksHandler.UpdateFeedback()).Methods(http.MethodPut)
-	r.HandleFunc("/feedback/{sid}", FeedbacksHandler.DeleteFeedback()).Methods(http.MethodDelete)
+	r.HandleFunc("/feedback/post", FeedbacksHandler.PostFeedback).Methods(http.MethodPost)
+	r.HandleFunc("/feedback/update/{sid}", FeedbacksHandler.UpdateFeedback).Methods(http.MethodPut)
+	r.HandleFunc("/feedback/delete/{sid}", FeedbacksHandler.DeleteFeedback).Methods(http.MethodDelete)
 
 }
 
@@ -30,86 +28,67 @@ func (s *FeedbacksHandler) GetFeedbacks(w http.ResponseWriter, r *http.Request) 
 	feedbacks, err := s.feedbackUsecases.GetFeedbacks()
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
-		w.Write([]byte("Data not found!"))
+		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
+	} else {
+		utils.HandleResponse(w, http.StatusOK, feedbacks)
 	}
-
-	byteOfFeedbacks, err := json.Marshal(feedbacks)
-
-	if err != nil {
-		w.Write([]byte("Data not found!"))
-	}
-
-	w.Write([]byte(byteOfFeedbacks))
-	w.Write([]byte("Data successfully found"))
 }
 
 func (s *FeedbacksHandler) GetFeedbackByID(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	strID := vars["sid"]
-
-	feedbacks, err := s.feedbackUsecases.GetFeedbackByID(strID)
+	feedbackID := utils.DecodePathVariabel("sid", r)
+	feedback, err := s.feedbackUsecases.GetFeedbackByID(feedbackID)
 	if err != nil {
-		w.Write([]byte("Data Not Found!"))
+		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
+	} else {
+		utils.HandleResponse(w, http.StatusOK, feedback)
 	}
+}
 
-	byteOfFeedbacks, err := json.Marshal(feedbacks)
-
+func (s *FeedbacksHandler) PostFeedback(w http.ResponseWriter, r *http.Request) {
+	var feedback models.FeedbackModels
+	id := utils.DecodePathVariabel("sid", r)
+	err := utils.JsonDecoder(&feedback, r)
 	if err != nil {
-		w.Write([]byte("Data not found!"))
-	}
-
-	w.Write([]byte(byteOfFeedbacks))
-}
-
-func (s *FeedbacksHandler) PostFeedback() func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-
-		var data models.FeedbackModels
-		tools.Parser(r, &data)
-
-		fmt.Println(data)
-
-		result, err := s.feedbackUsecases.PostFeedback(data)
+		utils.HandleRequest(w, http.StatusBadRequest)
+	} else {
+		err = s.feedbackUsecases.PostFeedback(&feedback, id)
 		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(message.Response("Posting Failed", http.StatusBadRequest, err.Error()))
-			return
+			log.Print(err)
+			utils.HandleRequest(w, http.StatusBadGateway)
+		} else {
+			utils.HandleResponse(w, http.StatusOK, feedback)
 		}
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(message.Response("Posting Success", http.StatusOK, result))
 	}
 }
 
-func (s *FeedbacksHandler) UpdateFeedback() func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		var data models.FeedbackModels
-		tools.Parser(r, &data)
-
-		result, err := s.feedbackUsecases.UpdateFeedback(tools.GetPathVar("sid", r), data)
+func (s *FeedbacksHandler) UpdateFeedback(w http.ResponseWriter, r *http.Request) {
+	var feedback models.FeedbackModels
+	id := utils.DecodePathVariabel("sid", r)
+	err := utils.JsonDecoder(&feedback, r)
+	if err != nil {
+		utils.HandleRequest(w, http.StatusBadRequest)
+	} else {
+		err = s.feedbackUsecases.UpdateFeedback(&feedback, id)
 		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(message.Response("Update Failed", http.StatusBadRequest, err.Error()))
-			return
+			log.Print(err)
+			utils.HandleRequest(w, http.StatusBadGateway)
+		} else {
+			utils.HandleResponse(w, http.StatusOK, feedback)
 		}
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(message.Response("Update Success", http.StatusOK, result))
 	}
+
 }
 
-func (s *FeedbacksHandler) DeleteFeedback() func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-
-		result, err := s.feedbackUsecases.DeleteFeedback(tools.GetPathVar("sid", r))
+func (s *FeedbacksHandler) DeleteFeedback(w http.ResponseWriter, r *http.Request) {
+	id := utils.DecodePathVariabel("sid", r)
+	if len(id) > 0 {
+		err := s.feedbackUsecases.DeleteFeedback(id)
 		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(message.Response("Delete By ID Failed", http.StatusBadRequest, err.Error()))
-			return
+			utils.HandleRequest(w, http.StatusNotFound)
+		} else {
+			utils.HandleRequest(w, http.StatusOK)
 		}
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(message.Response("Delete By ID Success", http.StatusOK, result))
+	} else {
+		utils.HandleRequest(w, http.StatusBadRequest)
 	}
-
 }
