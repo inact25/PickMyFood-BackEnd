@@ -10,12 +10,14 @@ import (
 	storeCategoryControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/storeCategory"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/middlewares"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	orderRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/order"
 	productRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/product"
 	productCategoryRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/productCategory"
 	storerepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/store"
 	storeCategoryRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/storeCategory"
 	walletrepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/wallet"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
+	orderUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/order"
 	productUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/product"
 	productCategoryUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/productCategory"
 	storeusecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/store"
@@ -54,6 +56,11 @@ func Init(r *mux.Router, db *sql.DB) {
 	productUseCase := productUsecases.InitProductUseCaseImpl(productRepo)
 	productController := productControllers.InitProductController(productUseCase)
 	productController.ProductAPI(r)
+	// order
+	orderRepo := orderRepositories.InitOrderRepoImpl(db)
+	orderUseCase := orderUsecases.InitOrderUseCaseImpl(orderRepo)
+	orderController := orderControllers.InitOrderController(orderUseCase)
+	orderController.OrderAPI(r)
 	// Feedback
 	feedbackRepo := repositories.InitFeedbackImpl(db)
 	feedbackUsecase := usecases.InitFeedbackUsecase(feedbackRepo)

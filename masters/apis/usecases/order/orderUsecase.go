@@ -1,8 +1,8 @@
-package orderRepositories
+package orderUsecases
 
 import "github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 
-type OrderRepo interface {
+type OrderUsecase interface {
 	AddOrder(order *models.Order) error
 	// GetOrderByID(orderID string) (*models.Order, error)
 	// GetAllOrderByStore(storeID string) ([]*models.Order, error)

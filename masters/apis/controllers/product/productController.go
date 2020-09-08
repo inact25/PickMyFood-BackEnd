@@ -20,7 +20,7 @@ func InitProductController(productUsecase productUsecases.ProductUsecase) *Produ
 
 func (p *ProductHandler) ProductAPI(r *mux.Router) {
 	products := r.PathPrefix("/products").Subrouter()
-	products.HandleFunc("", p.ListAllProduct).Methods(http.MethodGet)
+	products.HandleFunc("/{id}", p.ListAllProduct).Methods(http.MethodGet)
 
 	product := r.PathPrefix("/product").Subrouter()
 	product.HandleFunc("/{id}", p.GetProductByID).Methods(http.MethodGet)
