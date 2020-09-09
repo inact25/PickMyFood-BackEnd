@@ -29,3 +29,15 @@ func (p *PaymentUsecaseImpl) PaymentWallet(payment *models.Payment) error {
 	}
 	return nil
 }
+
+func (p *PaymentUsecaseImpl) UpdateTransaction(storeID, amount, orderID, userID string) error {
+	err := validation.CheckEmpty(storeID, amount, orderID, amount)
+	if err != nil {
+		return err
+	}
+	error := p.PaymentRepo.UpdateTransaction(storeID, amount, orderID, userID)
+	if error != nil {
+		return error
+	}
+	return nil
+}

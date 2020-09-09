@@ -62,19 +62,19 @@ func (u *UsersHandler) Login(w http.ResponseWriter, r *http.Request) {
 		}
 		fmt.Println(auth.UserID)
 		fmt.Println(auth.Username)
-		fmt.Println(authTemp.Password)
+		fmt.Println(authTemp.Auth.Password)
 		fmt.Println(auth.Password)
 
-		isValid := utils.CompareEncrypt(authTemp.Password, []byte(auth.Password))
+		isValid := utils.CompareEncrypt(authTemp.Auth.Password, []byte(auth.Password))
 		fmt.Println(isValid)
 		if isValid {
-			token, err := utils.JwtEncoder(authTemp.Username, "Rahasia")
+			token, err := utils.JwtEncoder(authTemp.Auth.Username, "Rahasia")
 			// fmt.Println("Berhasil Login")
 			// w.Write([]byte("Berhasil Login"))
 			if err != nil {
 				utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
 			}
-			authTemp.Token = models.Token{Key: token}
+			authTemp.Auth.Token = models.Token{Key: token}
 			utils.HandleResponse(w, http.StatusOK, authTemp)
 		} else {
 			utils.HandleResponseError(w, http.StatusUnauthorized, "Wrong password or username")
@@ -95,8 +95,6 @@ func (u *UsersHandler) GetUserId(w http.ResponseWriter, r *http.Request) {
 func (u *UsersHandler) ListAllUser(w http.ResponseWriter, r *http.Request) {
 	var page string = mux.Vars(r)["page"]
 	var limit string = mux.Vars(r)["limit"]
-	// var orderBy string = mux.Vars(r)["orderBy"]
-	// var sort string = mux.Vars(r)["sort"]
 	var keyword string = mux.Vars(r)["keyword"]
 
 	users, err := u.UserUsecases.GetAllUser(keyword, page, limit)

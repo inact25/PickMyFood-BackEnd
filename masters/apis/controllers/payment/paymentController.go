@@ -25,6 +25,8 @@ func (p *PaymentHandler) PaymentAPI(r *mux.Router) {
 	payment := r.PathPrefix("/payment").Subrouter()
 	// payment.HandleFunc("/{id}", p.GetPaymentByID).Methods(http.MethodGet)
 	payment.HandleFunc("", p.PaymentWallet).Methods(http.MethodPost)
+	transaction := r.PathPrefix("/transaction").Subrouter()
+	transaction.HandleFunc("", p.UpdateTransaction).Queries("storeID", "{storeID}", "amount", "{amount}", "orderID", "{orderID}", "userID", "{userID}").Methods(http.MethodPost)
 }
 
 func (p *PaymentHandler) PaymentWallet(w http.ResponseWriter, r *http.Request) {
@@ -45,5 +47,19 @@ func (p *PaymentHandler) PaymentWallet(w http.ResponseWriter, r *http.Request) {
 			utils.HandleResponse(w, http.StatusOK, payment)
 			// }
 		}
+	}
+}
+
+func (p *PaymentHandler) UpdateTransaction(w http.ResponseWriter, r *http.Request) {
+	var storeID string = mux.Vars(r)["storeID"]
+	var amount string = mux.Vars(r)["amount"]
+	var orderID string = mux.Vars(r)["orderID"]
+	var userID string = mux.Vars(r)["userID"]
+
+	err := p.paymentUsecase.UpdateTransaction(storeID, amount, orderID, userID)
+	if err != nil {
+		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
+	} else {
+		utils.HandleResponse(w, http.StatusOK, "Transaction Update Succesfully")
 	}
 }

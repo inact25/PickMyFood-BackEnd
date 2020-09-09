@@ -75,7 +75,7 @@ func (u *UserUseCaseImpl) Auth(username, password string) (*models.Auth, error) 
 	}
 	return auth, nil
 }
-func (u *UserUseCaseImpl) ReadUserByUsername(username string) (*models.Auth, error) {
+func (u *UserUseCaseImpl) ReadUserByUsername(username string) (*models.User, error) {
 	user, err := u.userRepo.ReadUserByUsername(username)
 	if err != nil {
 		return nil, err
