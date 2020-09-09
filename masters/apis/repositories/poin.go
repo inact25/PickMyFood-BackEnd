@@ -3,9 +3,8 @@ package repositories
 import (
 	"database/sql"
 	"errors"
-	"log"
-	"strconv"
 
+	guuid "github.com/google/uuid"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	utils "github.com/inact25/PickMyFood-BackEnd/utils/queryConstant"
 )
@@ -49,69 +48,97 @@ func (s *PoinRepoImpl) GetPointByID(ID string) (*models.PoinModels, error) {
 	return &d, nil
 }
 
-func (s *PoinRepoImpl) PostPoint(d models.PoinModels) (*models.PoinModels, error) {
+func (s *PoinRepoImpl) PostPoint(d *models.PoinModels, ID string) error {
+	pointID := guuid.New()
 	tx, err := s.db.Begin()
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return err
 	}
 
-	stmnt, _ := tx.Prepare(utils.POST_POINT)
-	defer stmnt.Close()
-
-	result, err := stmnt.Exec(d.PoinID, d.StoreID)
+	stmt, err := tx.Prepare(utils.POST_POINT)
+	defer stmt.Close()
 	if err != nil {
-		log.Println(err)
 		tx.Rollback()
-		return nil, err
+		return err
 	}
 
-	lastInsertID, _ := result.LastInsertId()
-	tx.Commit()
-	return s.GetPointByID(strconv.Itoa(int(lastInsertID)))
+	if _, err := stmt.Exec(pointID, d.StoreID); err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }
 
-func (s *PoinRepoImpl) UpdatePoint(ID string, data models.PoinModels) (*models.PoinModels, error) {
+func (s *PoinRepoImpl) UpdatePoint(ID string, data *models.PoinModels) error {
 	tx, err := s.db.Begin()
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return err
 	}
-
-	_, err = tx.Exec(utils.UPDATE_POINT,
-		data.StoreID, ID)
-
+	stmt, err := tx.Prepare(utils.UPDATE_POINT)
+	defer stmt.Close()
 	if err != nil {
-		log.Println(err)
 		tx.Rollback()
-		return nil, err
+		return err
 	}
+	_, err = stmt.Exec(data.StoreID, ID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	println("UPDATE POINT")
 
-	tx.Commit()
-
-	return s.GetPointByID(ID)
+	return tx.Commit()
 }
 
-func (s *PoinRepoImpl) DeletePoint(ID string) (*models.PoinModels, error) {
+func (s *PoinRepoImpl) DeletePoint(ID string) error {
 	tx, err := s.db.Begin()
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return err
 	}
 
-	_, err = tx.Exec(utils.DELETE_POINT, ID)
+	stmt, err := tx.Prepare(utils.DELETE_FEEDBACK)
+	defer stmt.Close()
 	if err != nil {
-		log.Println(err)
 		tx.Rollback()
-		return nil, err
+		return err
 	}
-	tx.Commit()
 
-	return s.GetPointByID(ID)
+	res, err := stmt.Exec(ID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
 
+	count, err := res.RowsAffected()
+	if count == 0 {
+		return errors.New("gagal delete, id tidak di temukan")
+	}
+
+	return tx.Commit()
+
+}
+
+func (s *PoinRepoImpl) UpdateUserPoint(ID string, data *models.User) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	stmt, err := tx.Prepare(utils.UPDATE_USER_POINT)
+	defer stmt.Close()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	_, err = stmt.Exec(ID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	println("UPDATE USER POINT")
+
+	return tx.Commit()
 }
 
 func InitPoinRepoImpl(db *sql.DB) PoinRepo {
 	return &PoinRepoImpl{db}
-
 }

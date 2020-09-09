@@ -1,15 +1,13 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
-	"github.com/inact25/PickMyFood-BackEnd/utils/message"
-	"github.com/inact25/PickMyFood-BackEnd/utils/tools"
+	"github.com/inact25/PickMyFood-BackEnd/utils"
 )
 
 type PointsHandler struct {
@@ -20,95 +18,94 @@ func PointsController(r *mux.Router, service usecases.PoinUseCases) {
 	PointsHandler := PointsHandler{service}
 	r.HandleFunc("/points", PointsHandler.GetPoints).Methods(http.MethodGet)
 	r.HandleFunc("/point/{sid}", PointsHandler.GetPointByID).Methods(http.MethodGet)
-	r.HandleFunc("/point", PointsHandler.PostPoint()).Methods(http.MethodPost)
-	r.HandleFunc("/point/{sid}", PointsHandler.UpdatePoint()).Methods(http.MethodPut)
-	r.HandleFunc("/point/{sid}", PointsHandler.DeletePoint()).Methods(http.MethodDelete)
+	r.HandleFunc("/point/post", PointsHandler.PostPoint).Methods(http.MethodPost)
+	r.HandleFunc("/point/update/{sid}", PointsHandler.UpdatePoint).Methods(http.MethodPut)
+	r.HandleFunc("/point/delete/{sid}", PointsHandler.DeletePoint).Methods(http.MethodDelete)
 
+	r.HandleFunc("/point/update_user_point/{sid}", PointsHandler.UpdateUserPoint).Methods(http.MethodPut)
 }
 
 func (s *PointsHandler) GetPoints(w http.ResponseWriter, r *http.Request) {
 	points, err := s.poinUsecases.GetPoints()
 	if err != nil {
-		w.Write([]byte("Data not found!"))
+		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
+	} else {
+		utils.HandleResponse(w, http.StatusOK, points)
 	}
-
-	byteOfPoints, err := json.Marshal(points)
-
-	if err != nil {
-		w.Write([]byte("Data not found!"))
-	}
-
-	w.Write([]byte(byteOfPoints))
-	w.Write([]byte("Data successfully found"))
 }
 
 func (s *PointsHandler) GetPointByID(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	strID := vars["sid"]
-
-	points, err := s.poinUsecases.GetPointByID(strID)
+	pointID := utils.DecodePathVariabel("sid", r)
+	point, err := s.poinUsecases.GetPointByID(pointID)
 	if err != nil {
-		w.Write([]byte("Data Not Found!"))
+		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
+	} else {
+		utils.HandleResponse(w, http.StatusOK, point)
 	}
+}
 
-	byteOfPoints, err := json.Marshal(points)
-
+func (s *PointsHandler) PostPoint(w http.ResponseWriter, r *http.Request) {
+	var point models.PoinModels
+	id := utils.DecodePathVariabel("sid", r)
+	err := utils.JsonDecoder(&point, r)
 	if err != nil {
-		w.Write([]byte("Data not found!"))
-	}
-
-	w.Write([]byte(byteOfPoints))
-}
-
-func (s *PointsHandler) PostPoint() func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-
-		var data models.PoinModels
-		tools.Parser(r, &data)
-
-		fmt.Println(data)
-
-		result, err := s.poinUsecases.PostPoint(data)
+		utils.HandleRequest(w, http.StatusBadRequest)
+	} else {
+		err = s.poinUsecases.PostPoint(&point, id)
 		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(message.Response("Posting Failed", http.StatusBadRequest, err.Error()))
-			return
+			log.Print(err)
+			utils.HandleRequest(w, http.StatusBadGateway)
+		} else {
+			utils.HandleResponse(w, http.StatusOK, point)
 		}
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(message.Response("Posting Success", http.StatusOK, result))
 	}
 }
 
-func (s *PointsHandler) UpdatePoint() func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		var data models.PoinModels
-		tools.Parser(r, &data)
-
-		result, err := s.poinUsecases.UpdatePoint(tools.GetPathVar("sid", r), data)
+func (s *PointsHandler) UpdatePoint(w http.ResponseWriter, r *http.Request) {
+	var point models.PoinModels
+	id := utils.DecodePathVariabel("sid", r)
+	err := utils.JsonDecoder(&point, r)
+	if err != nil {
+		utils.HandleRequest(w, http.StatusBadRequest)
+	} else {
+		err = s.poinUsecases.UpdatePoint(&point, id)
 		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(message.Response("Update Failed", http.StatusBadRequest, err.Error()))
-			return
+			log.Print(err)
+			utils.HandleRequest(w, http.StatusBadGateway)
+		} else {
+			utils.HandleResponse(w, http.StatusOK, point)
 		}
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(message.Response("Update Success", http.StatusOK, result))
 	}
 }
 
-func (s *PointsHandler) DeletePoint() func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-
-		result, err := s.poinUsecases.DeletePoint(tools.GetPathVar("sid", r))
+func (s *PointsHandler) DeletePoint(w http.ResponseWriter, r *http.Request) {
+	id := utils.DecodePathVariabel("sid", r)
+	if len(id) > 0 {
+		err := s.poinUsecases.DeletePoint(id)
 		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(message.Response("Delete By ID Failed", http.StatusBadRequest, err.Error()))
-			return
+			utils.HandleRequest(w, http.StatusNotFound)
+		} else {
+			utils.HandleRequest(w, http.StatusOK)
 		}
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(message.Response("Delete By ID Success", http.StatusOK, result))
+	} else {
+		utils.HandleRequest(w, http.StatusBadRequest)
 	}
 
+}
+
+func (s *PointsHandler) UpdateUserPoint(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+	id := utils.DecodePathVariabel("sid", r)
+	err := utils.JsonDecoder(&user, r)
+	if err != nil {
+		utils.HandleRequest(w, http.StatusBadRequest)
+	} else {
+		err = s.poinUsecases.UpdateUserPoint(id, &user)
+		if err != nil {
+			log.Print(err)
+			utils.HandleRequest(w, http.StatusBadGateway)
+		} else {
+			utils.HandleResponse(w, http.StatusOK, user)
+		}
+	}
 }
