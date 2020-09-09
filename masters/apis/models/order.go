@@ -10,7 +10,7 @@ type Order struct {
 type SoldItems struct {
 	Qty               string `json;"qty"`
 	ProductID         string `json:"productID"`
-	ProductName       string `json:productName`
+	ProductName       string `json:"productName"`
 	UserID            string `json:"userID"`
 	UserFirstName     string `json:"userFirstName"`
 	Price             string `json:"price"`

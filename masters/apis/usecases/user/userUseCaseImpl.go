@@ -36,8 +36,8 @@ func (u *UserUseCaseImpl) GetUserByID(userID string) (*models.User, error) {
 	return user, nil
 }
 
-func (u *UserUseCaseImpl) GetAllUser() ([]*models.User, error) {
-	listUser, err := u.userRepo.GetAllUser()
+func (u *UserUseCaseImpl) GetAllUser(keyword, page, limit string) ([]*models.User, error) {
+	listUser, err := u.userRepo.GetAllUser(keyword, page, limit)
 	if err != nil {
 		return nil, err
 	}

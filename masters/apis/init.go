@@ -31,6 +31,7 @@ import (
 	walletusecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/wallet"
 )
 
+//Init for DI
 func Init(r *mux.Router, db *sql.DB) {
 	// user
 	userRepo := userRepositories.InitUserRepoImpl(db)
