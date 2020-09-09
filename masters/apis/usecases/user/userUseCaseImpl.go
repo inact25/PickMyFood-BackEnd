@@ -1,16 +1,16 @@
-package usecases
+package userUsecases
 
 import (
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	userRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/user"
 	"github.com/inact25/PickMyFood-BackEnd/utils/validation"
 )
 
 type UserUseCaseImpl struct {
-	userRepo repositories.UserRepo
+	userRepo userRepositories.UserRepo
 }
 
-func InitUsersUseCase(users repositories.UserRepo) UserUseCase {
+func InitUsersUseCase(users userRepositories.UserRepo) UserUseCase {
 	return &UserUseCaseImpl{users}
 }
 

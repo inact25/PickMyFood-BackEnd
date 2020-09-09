@@ -1,4 +1,4 @@
-package controllers
+package userControllers
 
 import (
 	"fmt"
@@ -7,15 +7,15 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
+	userUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/user"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
 )
 
 type UsersHandler struct {
-	UserUsecases usecases.UserUseCase
+	UserUsecases userUsecases.UserUseCase
 }
 
-func UsersController(UserUsecases usecases.UserUseCase) *UsersHandler {
+func UsersController(UserUsecases userUsecases.UserUseCase) *UsersHandler {
 	return &UsersHandler{UserUsecases: UserUsecases}
 }
 

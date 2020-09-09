@@ -1,4 +1,4 @@
-package controllers
+package walletControllers
 
 import (
 	"log"
