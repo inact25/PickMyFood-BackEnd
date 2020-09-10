@@ -10,8 +10,3 @@ type StoreModels struct {
 	StorePassword   string `json:"store_password"`
 	StoreImages     string `json:"store_images"`
 }
-
-type StoreCategory struct {
-	StoreCategoryID   string `json:"store_category_id"`
-	StoreCategoryName string `json:"store_category_name"`
-}
