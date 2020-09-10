@@ -69,7 +69,7 @@ func (s *PoinRepoImpl) PostPoint(d *models.PoinModels, ID string) error {
 	return tx.Commit()
 }
 
-func (s *PoinRepoImpl) UpdatePoint(ID string, data *models.PoinModels) error {
+func (s *PoinRepoImpl) UpdatePoint(data *models.PoinModels, ID string) error {
 	tx, err := s.db.Begin()
 	if err != nil {
 		return err
@@ -96,7 +96,7 @@ func (s *PoinRepoImpl) DeletePoint(ID string) error {
 		return err
 	}
 
-	stmt, err := tx.Prepare(utils.DELETE_FEEDBACK)
+	stmt, err := tx.Prepare(utils.DELETE_POINT)
 	defer stmt.Close()
 	if err != nil {
 		tx.Rollback()

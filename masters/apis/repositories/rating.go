@@ -3,9 +3,8 @@ package repositories
 import (
 	"database/sql"
 	"errors"
-	"log"
-	"strconv"
 
+	guuid "github.com/google/uuid"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	utils "github.com/inact25/PickMyFood-BackEnd/utils/queryConstant"
 )
@@ -41,7 +40,7 @@ func (s *RatingRepoImpl) GetRatingByID(ID string) (*models.RatingModels, error) 
 	results := s.db.QueryRow(utils.GET_RATING_BY_ID, ID)
 
 	var d models.RatingModels
-	err := results.Scan(&d.RatingID, &d.StoreID, &d.UserID, &d.RatingValue, &d.RatingDescription, &d.RatingDescription)
+	err := results.Scan(&d.RatingID, &d.StoreID, &d.UserID, &d.RatingValue, &d.RatingDescription, &d.RatingCreated)
 	if err != nil {
 		return nil, errors.New("ID Not Found")
 	}
@@ -49,65 +48,73 @@ func (s *RatingRepoImpl) GetRatingByID(ID string) (*models.RatingModels, error) 
 	return &d, nil
 }
 
-func (s *RatingRepoImpl) PostRating(d models.RatingModels) (*models.RatingModels, error) {
+func (s *RatingRepoImpl) PostRating(d *models.RatingModels, ID string) error {
+	ratingID := guuid.New()
 	tx, err := s.db.Begin()
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return err
 	}
 
-	stmnt, _ := tx.Prepare(utils.POST_RATING)
-	defer stmnt.Close()
-
-	result, err := stmnt.Exec(d.RatingID, d.StoreID, d.UserID, d.RatingValue, d.RatingDescription, d.RatingCreated)
+	stmt, err := tx.Prepare(utils.POST_RATING)
+	defer stmt.Close()
 	if err != nil {
-		log.Println(err)
 		tx.Rollback()
-		return nil, err
+		return err
 	}
 
-	lastInsertID, _ := result.LastInsertId()
-	tx.Commit()
-	return s.GetRatingByID(strconv.Itoa(int(lastInsertID)))
+	if _, err := stmt.Exec(ratingID, d.StoreID, d.UserID, d.RatingValue, d.RatingDescription, d.RatingCreated); err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }
 
-func (s *RatingRepoImpl) UpdateRating(ID string, data models.RatingModels) (*models.RatingModels, error) {
+func (s *RatingRepoImpl) UpdateRating(data *models.RatingModels, ID string) error {
 	tx, err := s.db.Begin()
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return err
 	}
-
-	_, err = tx.Exec(utils.UPDATE_RATING,
-		data.StoreID, data.UserID, data.RatingValue, data.RatingDescription, data.RatingCreated, ID)
-
+	stmt, err := tx.Prepare(utils.UPDATE_RATING)
+	defer stmt.Close()
 	if err != nil {
-		log.Println(err)
 		tx.Rollback()
-		return nil, err
+		return err
 	}
+	_, err = stmt.Exec(data.StoreID, data.UserID, data.RatingValue, data.RatingDescription, data.RatingCreated, ID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	println("UPDATE RATING")
 
-	tx.Commit()
-
-	return s.GetRatingByID(ID)
+	return tx.Commit()
 }
 
-func (s *RatingRepoImpl) DeleteRating(ID string) (*models.RatingModels, error) {
+func (s *RatingRepoImpl) DeleteRating(ID string) error {
 	tx, err := s.db.Begin()
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return err
 	}
 
-	_, err = tx.Exec(utils.DELETE_RATING, ID)
+	stmt, err := tx.Prepare(utils.DELETE_RATING)
+	defer stmt.Close()
 	if err != nil {
-		log.Println(err)
 		tx.Rollback()
-		return nil, err
+		return err
 	}
-	tx.Commit()
 
-	return s.GetRatingByID(ID)
+	res, err := stmt.Exec(ID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if count == 0 {
+		return errors.New("gagal delete, id tidak di temukan")
+	}
+
+	return tx.Commit()
 
 }
 

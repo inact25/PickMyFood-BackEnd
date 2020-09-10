@@ -29,50 +29,36 @@ func (s RatingUsecaseImpl) GetRatingByID(ID string) (*models.RatingModels, error
 	return ratings, nil
 }
 
-func (s RatingUsecaseImpl) PostRating(d models.RatingModels) (*models.RatingModels, error) {
-	if err := validator.Validate(d); err != nil {
-		return nil, err
-	}
-
-	result, err := s.ratingRepo.PostRating(d)
+func (s RatingUsecaseImpl) PostRating(d *models.RatingModels, ID string) error {
+	err := validation.CheckEmpty(d)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	return result, nil
+	error := s.ratingRepo.PostRating(d, ID)
+	if error != nil {
+		return error
+	}
+	return nil
 }
 
-func (s RatingUsecaseImpl) UpdateRating(ID string, data models.RatingModels) (*models.RatingModels, error) {
+func (s RatingUsecaseImpl) UpdateRating(data *models.RatingModels, ID string) error {
 	if err := validator.Validate(data); err != nil {
-		return nil, err
+		return err
 	}
 
-	if err := validation.ValidateInputNumber(ID); err != nil {
-		return nil, err
-	}
-
-	result, err := s.ratingRepo.UpdateRating(ID, data)
+	err := s.ratingRepo.UpdateRating(data, ID)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return result, nil
+	return nil
 }
 
-func (s RatingUsecaseImpl) DeleteRating(ID string) (*models.RatingModels, error) {
-	if err := validation.ValidateInputNumber(ID); err != nil {
-		return nil, err
-	}
-
-	_, err := s.ratingRepo.GetRatingByID(ID)
+func (s RatingUsecaseImpl) DeleteRating(ID string) error {
+	err := s.ratingRepo.DeleteRating(ID)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	result, err := s.ratingRepo.DeleteRating(ID)
-	if err != nil {
-		return result, err
-	}
-	return result, nil
+	return nil
 }
 
 func InitRatingUsecase(ratingRepo repositories.RatingRepo) RatingUseCases {
