@@ -14,13 +14,17 @@ type FeedbacksHandler struct {
 	feedbackUsecases usecases.FeedbackUseCases
 }
 
-func FeedbacksController(r *mux.Router, service usecases.FeedbackUseCases) {
-	FeedbacksHandler := FeedbacksHandler{service}
-	r.HandleFunc("/feedbacks", FeedbacksHandler.GetFeedbacks).Methods(http.MethodGet)
-	r.HandleFunc("/feedback/{sid}", FeedbacksHandler.GetFeedbackByID).Methods(http.MethodGet)
-	r.HandleFunc("/feedback/post", FeedbacksHandler.PostFeedback).Methods(http.MethodPost)
-	r.HandleFunc("/feedback/update/{sid}", FeedbacksHandler.UpdateFeedback).Methods(http.MethodPut)
-	r.HandleFunc("/feedback/delete/{sid}", FeedbacksHandler.DeleteFeedback).Methods(http.MethodDelete)
+func FeedbacksController(feedbackUsecases usecases.FeedbackUseCases) *FeedbacksHandler {
+	return &FeedbacksHandler{feedbackUsecases: feedbackUsecases}
+}
+
+func (s *FeedbacksHandler) FeedbackAPI(r *mux.Router) {
+	// FeedbacksHandler := FeedbacksHandler{service}
+	r.HandleFunc("/feedbacks", s.GetFeedbacks).Methods(http.MethodGet)
+	r.HandleFunc("/feedback/{sid}", s.GetFeedbackByID).Methods(http.MethodGet)
+	r.HandleFunc("/feedback/post", s.PostFeedback).Methods(http.MethodPost)
+	r.HandleFunc("/feedback/update/{sid}", s.UpdateFeedback).Methods(http.MethodPut)
+	r.HandleFunc("/feedback/delete/{sid}", s.DeleteFeedback).Methods(http.MethodDelete)
 
 }
 

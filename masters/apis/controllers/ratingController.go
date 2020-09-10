@@ -16,13 +16,17 @@ type RatingsHandler struct {
 	ratingUsecases usecases.RatingUseCases
 }
 
-func RatingController(r *mux.Router, service usecases.RatingUseCases) {
-	RatingsHandler := RatingsHandler{service}
-	r.HandleFunc("/ratings", RatingsHandler.GetRatings).Methods(http.MethodGet)
-	r.HandleFunc("/rating/{sid}", RatingsHandler.GetRatingByID).Methods(http.MethodGet)
-	r.HandleFunc("/rating", RatingsHandler.PostRating()).Methods(http.MethodPost)
-	r.HandleFunc("/rating/{sid}", RatingsHandler.UpdateRating()).Methods(http.MethodPut)
-	r.HandleFunc("/rating/{sid}", RatingsHandler.DeleteRating()).Methods(http.MethodDelete)
+func RatingController(ratingUsecases usecases.RatingUseCases) *RatingsHandler {
+	return &RatingsHandler{ratingUsecases: ratingUsecases}
+}
+
+func (s *RatingsHandler) RatingAPI(r *mux.Router) {
+	//	RatingsHandler := RatingsHandler{service}
+	r.HandleFunc("/ratings", s.GetRatings).Methods(http.MethodGet)
+	r.HandleFunc("/rating/{sid}", s.GetRatingByID).Methods(http.MethodGet)
+	r.HandleFunc("/rating", s.PostRating()).Methods(http.MethodPost)
+	r.HandleFunc("/rating/{sid}", s.UpdateRating()).Methods(http.MethodPut)
+	r.HandleFunc("/rating/{sid}", s.DeleteRating()).Methods(http.MethodDelete)
 
 }
 
