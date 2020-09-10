@@ -30,8 +30,8 @@ const (
 
 	GET_ALL_FEEDBACK   = "SELECT * FROM tb_feedback"
 	GET_FEEDBACK_BY_ID = "SELECT * FROM tb_feedback WHERE feedback_id = ?"
-	POST_FEEDBACK      = "INSERT INTO tb_feedback(feedback_id, store_id, feedback_value, feedback_created) VALUES (?, ?, ?, ?)"
-	UPDATE_FEEDBACK    = "UPDATE tb_feedback SET store_id=?, feedback_value=?, feedback_created=? WHERE feedback_id=?"
+	POST_FEEDBACK      = "INSERT INTO tb_feedback(feedback_id, store_id, user_id, feedback_value, feedback_created) VALUES (?, ?, ?, ?, ?)"
+	UPDATE_FEEDBACK    = "UPDATE tb_feedback SET store_id=?, user_id=?, feedback_value=?, feedback_created=? WHERE feedback_id=?"
 	DELETE_FEEDBACK    = "DELETE FROM tb_feedback WHERE feedback_id = ?"
 	GET_ALL_POINT      = "SELECT * FROM tb_poin"
 	GET_POINT_BY_ID    = "SELECT * FROM tb_poin WHERE poin_id = ?"

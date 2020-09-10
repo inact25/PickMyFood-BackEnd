@@ -5,8 +5,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
 
 	// productCategoryControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/productCategory"
 	// productControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/productController"
@@ -37,26 +35,26 @@ func Init(r *mux.Router, db *sql.DB) {
 	//transactionUseCase := usecases.InitTransactionUseCase(transactionRepo)
 	//controllers.TransactionControll(r, transactionUseCase)
 
-	// user
-	userRepo := repositories.InitUserRepoImpl(db)
-	userUseCases := usecases.InitUsersUseCase(userRepo)
-	usersController := controllers.UsersController(userUseCases)
-	usersController.Authenticate(r)
-	// wallet
-	walletRepo := walletrepositories.InitWalletRepoImpl(db)
-	walletUseCases := walletusecases.InitWalletUseCase(walletRepo)
-	walletController := controllers.WalletController(walletUseCases)
-	walletController.WalletApi(r)
-	// store
-	storeRepo := storerepositories.InitStoreRepoImpl(db)
-	storeUseCase := storeusecases.InitStoreUseCase(storeRepo)
-	storeController := controllers.StoreController(storeUseCase)
-	storeController.StoreAPI(r)
-	// storeCategory
-	storeCategoryRepo := storeCategoryRepositories.InitStoreCategoryRepoImpl(db)
-	storeCategoryUseCase := storeCategoryUsecases.InitStoreCategoryUseCase(storeCategoryRepo)
-	storeCategoryController := storeCategoryControllers.StoreCategoryController(storeCategoryUseCase)
-	storeCategoryController.StoreCategoryAPI(r)
+	// // user
+	// userRepo := repositories.InitUserRepoImpl(db)
+	// userUseCases := usecases.InitUsersUseCase(userRepo)
+	// usersController := controllers.UsersController(userUseCases)
+	// usersController.Authenticate(r)
+	// // wallet
+	// walletRepo := walletrepositories.InitWalletRepoImpl(db)
+	// walletUseCases := walletusecases.InitWalletUseCase(walletRepo)
+	// walletController := controllers.WalletController(walletUseCases)
+	// walletController.WalletApi(r)
+	// // store
+	// storeRepo := storerepositories.InitStoreRepoImpl(db)
+	// storeUseCase := storeusecases.InitStoreUseCase(storeRepo)
+	// storeController := controllers.StoreController(storeUseCase)
+	// storeController.StoreAPI(r)
+	// // storeCategory
+	// storeCategoryRepo := storeCategoryRepositories.InitStoreCategoryRepoImpl(db)
+	// storeCategoryUseCase := storeCategoryUsecases.InitStoreCategoryUseCase(storeCategoryRepo)
+	// storeCategoryController := storeCategoryControllers.StoreCategoryController(storeCategoryUseCase)
+	// storeCategoryController.StoreCategoryAPI(r)
 
 	//feedback
 	feedbackRepo := feedbackRepositories.InitFeedbackImpl(db)
