@@ -48,7 +48,7 @@ func (s *PoinRepoImpl) GetPointByID(ID string) (*models.PoinModels, error) {
 	return &d, nil
 }
 
-func (s *PoinRepoImpl) PostPoint(d *models.PoinModels, ID string) error {
+func (s *PoinRepoImpl) PostPoint(d *models.PoinModels) error {
 	pointID := guuid.New()
 	tx, err := s.db.Begin()
 	if err != nil {

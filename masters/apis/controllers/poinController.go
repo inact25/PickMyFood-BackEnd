@@ -50,12 +50,12 @@ func (s *PointsHandler) GetPointByID(w http.ResponseWriter, r *http.Request) {
 
 func (s *PointsHandler) PostPoint(w http.ResponseWriter, r *http.Request) {
 	var point models.PoinModels
-	id := utils.DecodePathVariabel("sid", r)
+	//id := utils.DecodePathVariabel("sid", r)
 	err := utils.JsonDecoder(&point, r)
 	if err != nil {
 		utils.HandleRequest(w, http.StatusBadRequest)
 	} else {
-		err = s.poinUsecases.PostPoint(&point, id)
+		err = s.poinUsecases.PostPoint(&point)
 		if err != nil {
 			log.Print(err)
 			utils.HandleRequest(w, http.StatusBadGateway)
