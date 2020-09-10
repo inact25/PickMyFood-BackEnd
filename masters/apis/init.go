@@ -2,8 +2,9 @@ package apis
 
 import (
 	"database/sql"
+	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
 
-	"github.com/gorilla/mux"
 	orderControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/order"
 	paymentControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/payment"
 	productControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/product"
