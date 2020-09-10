@@ -69,8 +69,6 @@ func (u *UsersHandler) Login(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(isValid)
 		if isValid {
 			token, err := utils.JwtEncoder(authTemp.Auth.Username, "Rahasia")
-			// fmt.Println("Berhasil Login")
-			// w.Write([]byte("Berhasil Login"))
 			if err != nil {
 				utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
 			}
