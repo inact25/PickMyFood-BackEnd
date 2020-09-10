@@ -10,5 +10,5 @@ type UserUseCase interface {
 	UpdateUser(id string, user *models.User) error
 	DeleteUser(userID string) error
 	Auth(username, password string) (*models.Auth, error)
-	ReadUserByUsername(username string) (*models.Auth, error)
+	ReadUserByUsername(username string) (*models.User, error)
 }

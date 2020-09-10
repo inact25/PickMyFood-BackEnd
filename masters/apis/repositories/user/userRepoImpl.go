@@ -34,7 +34,7 @@ func (u *UserRepoImpl) AddUser(user *models.User) error {
 		return err
 	}
 
-	if _, err := stmt.Exec(id, user.UserFirstName, user.UserLastName, user.UserAddress, user.UserPhone, user.UserImage, user.UserStatus); err != nil {
+	if _, err := stmt.Exec(id, user.UserFirstName, user.UserLastName, user.UserAddress, user.UserPhone, user.UserEmail, user.UserStatus); err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -97,7 +97,7 @@ func (u *UserRepoImpl) GetAllUser(keyword, page, limit string) ([]*models.User, 
 	listUser := []*models.User{}
 	for rows.Next() {
 		p := models.User{}
-		err := rows.Scan(&p.UserID, &p.UserFirstName, &p.UserLastName, &p.UserAddress, &p.UserPhone, &p.UserPoin, &p.UserImage, &p.UserStatus, &p.Auth.Username, &p.Auth.Password, &p.Auth.UserLevelID, &p.Auth.UserStatus)
+		err := rows.Scan(&p.UserID, &p.UserFirstName, &p.UserLastName, &p.UserAddress, &p.UserPhone, &p.UserPoin, &p.UserEmail, &p.UserImage, &p.UserStatus, &p.Auth.Username, &p.Auth.Password, &p.Auth.UserLevelID, &p.Auth.UserStatus)
 		if err != nil {
 			return nil, err
 		}
@@ -182,20 +182,20 @@ func (u *UserRepoImpl) Auth(username, password string) (*models.Auth, error) {
 }
 
 //login 2
-func (u *UserRepoImpl) ReadUserByUsername(username string) (*models.Auth, error) {
+func (u *UserRepoImpl) ReadUserByUsername(username string) (*models.User, error) {
 	fmt.Println("MASUK REPO", username)
 	stmt, err := u.db.Prepare(utils.SELECT_AUTH_BY_USERNAME)
-	user := models.Auth{}
+	user := models.User{}
 	if err != nil {
 		fmt.Println(err)
 		return &user, err
 	}
-	errQuery := stmt.QueryRow(username).Scan(&user.AuthID, &user.Username, &user.Password, &user.UserID, &user.UserLevelID, &user.UserStatus)
+	errQuery := stmt.QueryRow(username).Scan(&user.UserID, &user.UserFirstName, &user.UserLastName, &user.UserAddress, &user.UserPhone, &user.UserPoin, &user.UserEmail, &user.UserImage, &user.UserStatus, &user.Auth.Username, &user.Auth.Password, &user.Auth.UserStatus)
 	log.Println(errQuery)
 	if errQuery != nil {
 		return &user, err
 	}
-	fmt.Println(user.Password)
+	fmt.Println(user.Auth.Password)
 	defer stmt.Close()
 	return &user, nil
 }

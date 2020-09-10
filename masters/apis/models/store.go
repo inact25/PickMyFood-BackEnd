@@ -9,6 +9,7 @@ type Store struct {
 	StoreUsername string        `json:"storeUsername"`
 	StorePassword string        `json:"storePassword"`
 	StoreImage    string        `json:"storeImage"`
+	QrPath        string        `json:"storeQrPath"`
 	StoreCategory StoreCategory `json:"storeCategory"`
 	Token         Token         `json:"token"`
 }

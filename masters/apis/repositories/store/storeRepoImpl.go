@@ -60,7 +60,7 @@ func (s *StoreRepoImpl) GetStoreByID(id string) (*models.Store, error) {
 	if err != nil {
 		return &store, err
 	}
-	errQuery := stmt.QueryRow(id).Scan(&store.StoreID, &store.StoreName, &store.StoreAddress, &store.StoreOwner, &store.StoreUsername, &store.StoreStatus, &store.StoreImage, &store.StoreCategory.StoreCategoryID, &store.StoreCategory.StoreCategoryName)
+	errQuery := stmt.QueryRow(id).Scan(&store.StoreID, &store.StoreName, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StoreUsername, &store.StoreImage, &store.StoreCategory.StoreCategoryID, &store.StoreCategory.StoreCategoryName)
 
 	if errQuery != nil {
 		return &store, err
@@ -107,7 +107,7 @@ func (s *StoreRepoImpl) UpdateStore(id string, store *models.Store) error {
 		tx.Rollback()
 		return err
 	}
-	_, err = stmt.Exec(store.StoreName, store.StoreCategory.StoreCategoryID, store.StoreAddress, store.StoreOwner, store.StoreUsername, id)
+	_, err = stmt.Exec(store.StoreName, store.StoreCategory.StoreCategoryID, store.StoreAddress, store.StoreOwner, store.StoreUsername, store.StorePassword, store.StoreImage, store.QrPath, id)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -142,21 +142,6 @@ func (s *StoreRepoImpl) DeleteStore(storeID string) error {
 
 	return tx.Commit()
 }
-
-// // handle login / auth
-// func (u *UserRepoImpl) Auth(username, password string) (*models.Auth, error) {
-// 	stmt, err := u.db.Prepare(utils.LOGIN)
-// 	user := models.Auth{}
-// 	if err != nil {
-// 		return &user, err
-// 	}
-// 	errQuery := stmt.QueryRow(username, password).Scan(user.UserID, user.UserLevelID, user.UserStatus)
-// 	if errQuery != nil {
-// 		return nil, err
-// 	}
-// 	defer stmt.Close()
-// 	return &user, nil
-// }
 
 // //login 2
 func (s *StoreRepoImpl) Auth(username string) (*models.Store, error) {

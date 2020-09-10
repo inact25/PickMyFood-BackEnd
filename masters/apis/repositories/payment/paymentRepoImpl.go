@@ -59,3 +59,24 @@ func (p *PaymentRepoImpl) PaymentWallet(transaction *models.Payment) error {
 	}
 	return tx.Commit()
 }
+
+// transaction pick up
+func (p *PaymentRepoImpl) UpdateTransaction(storeID, amount, orderID, userID string) error {
+	tx, err := p.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	stmt, err := tx.Prepare(utils.UPDATE_TRANSACTION_PICK)
+	defer stmt.Close()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if _, err := stmt.Exec(orderID); err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
+}

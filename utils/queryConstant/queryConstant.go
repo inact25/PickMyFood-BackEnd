@@ -4,7 +4,7 @@ const (
 	INSERT_USER                 = "insert into tb_user (user_id,user_firstname,user_lastname,user_address,user_phone,user_image,user_status) values (?,?,?,?,?,?,?)"
 	INSERT_AUTH                 = "insert into tb_auth(username,password,user_id) values (?,?,?)"
 	SELECT_USER_BY_ID           = "select auth.username, auth.password,user.user_image,user.user_poin,user.user_status, user.user_firstname, user.user_lastname, user.user_phone, user.user_address from tb_user user inner join tb_auth auth on auth.user_id = user.user_id where user.user_id = ?"
-	SELECT_ALL_USER             = "SELECT tu.user_id,tu.user_firstname,tu.user_lastname,tu.user_address,tu.user_phone,tu.user_poin,tu.user_image,tu.user_status,ta.username,ta.password,ta.user_level_id,ta.user_status FROM tb_user tu JOIN tb_auth ta ON tu.user_id=ta.user_id"
+	SELECT_ALL_USER             = "SELECT tu.user_id,tu.user_firstname,tu.user_lastname,tu.user_address,tu.user_phone,tu.user_poin,tu.user_image,tu.user_status,ta.username,ta.password,ta.user_level_id,ta.user_status FROM tb_user tu JOIN tb_auth ta ON tu.user_id=ta.user_id WHERE tu.user_firstname LIKE ? LIMIT %s ,%s"
 	UPDATE_USER                 = "UPDATE tb_user SET user_firstname=?,user_lastname=?,user_address=?,user_phone=?,user_image=?,user_status=? WHERE user_id=?"
 	UPDATE_AUTH                 = "UPDATE tb_auth SET username=?,password=? WHERE user_id=?"
 	DELETE_AUTH                 = "UPDATE tb_auth SET user_status = NA WHERE user_id = ?"
@@ -16,10 +16,11 @@ const (
 	UPDATE_POIN_USER            = "UPDATE tb_user SET user_poin = ? WHERE user_id = ?"
 	INSERT_TOP_UP               = "INSERT INTO tb_top_up (top_up_id,top_up_amount,user_id,top_up_date) VALUES (?,?,?,?)"
 	UPDATE_STATUS_TOP_UP        = "UPDATE tb_top_up SET top_up_status = ? WHERE user_id = ?"
+	//STORE
 	INSERT_STORE                = "INSERT INTO tb_store (store_id,store_name,store_category_id,store_address,store_owner,store_username,store_password) VALUES (?,?,?,?,?,?,?)"
 	SELECT_STORE_BY_ID          = "SELECT ts.store_id,ts.store_name,ts.store_address,ts.store_owner,ts.store_status,ts.store_username,ts.store_images,tsc.store_category_id,tsc.store_category_name FROM tb_store ts JOIN tb_store_category tsc ON ts.store_category_id=tsc.store_category_id WHERE store_id = ?"
 	SELECT_ALL_STORE            = "SELECT ts.store_id,ts.store_name,ts.store_address,ts.store_owner,ts.store_status,ts.store_username,ts.store_password,ts.store_images,tsc.store_category_id,tsc.store_category_name FROM tb_store ts JOIN tb_store_category tsc ON ts.store_category_id=tsc.store_category_id WHERE ts.store_status = 'A'"
-	UPDATE_STORE                = "UPDATE tb_store SET store_name=?,store_category_id=?,store_address=?,store_owner=?,store_username=? WHERE store_id=?"
+	UPDATE_STORE                = "UPDATE tb_store SET store_name=?,store_category_id=?,store_address=?,store_owner=?,store_username=?,store_password=?,store_images=?,qr_path=? WHERE store_id=?"
 	DELETE_STORE                = "UPDATE tb_store SET store_status = NA WHERE store_id = ?"
 	STORE_AUTH                  = "SELECT * FROM tb_store WHERE store_username = ?"
 	INSERT_STORE_CATEGORY       = "INSERT INTO tb_store_category VALUES(?,?)"
@@ -74,4 +75,5 @@ const (
 	INSERT_TRANSACTION         = "INSERT INTO tb_transaction (transaction_id,order_id,user_id,amount,transaction_created) VALUES (?,?,?,?,?)"
 	UPDATE_WALLET_AMOUNT_USER  = "UPDATE tb_wallet SET amount = amount - ? WHERE user_id = ? "
 	UPDATE_ORDER_DETAIL_STATUS = "UPDATE tb_order_detail SET order_detail_status = 'Paid' WHERE order_id = ?"
+	UPDATE_TRANSACTION_PICK    = "UPDATE tb_transaction SET transaction_status = 'Picked' WHERE order_id = ?"
 )

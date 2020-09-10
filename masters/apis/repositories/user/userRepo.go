@@ -9,5 +9,5 @@ type UserRepo interface {
 	UpdateUser(id string, user *models.User) error
 	DeleteUser(id string) error
 	Auth(username, password string) (*models.Auth, error)
-	ReadUserByUsername(username string) (*models.Auth, error)
+	ReadUserByUsername(username string) (*models.User, error)
 }

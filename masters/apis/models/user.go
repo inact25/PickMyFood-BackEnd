@@ -7,6 +7,7 @@ type User struct {
 	UserAddress   string `json:"userAddress"`
 	UserPhone     string `json:"userPhone"`
 	UserPoin      int    `json:"userPoin"`
+	UserEmail     string `json:"userEmail"`
 	UserImage     string `json:"userImage"`
 	UserStatus    string `json:"userStatus"`
 	Auth          Auth   `json:"auth"`
