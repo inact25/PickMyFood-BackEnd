@@ -15,5 +15,6 @@ type SoldItems struct {
 	UserFirstName     string `json:"userFirstName"`
 	Price             string `json:"price"`
 	Subtotal          string `json:"subtotal"`
+	Note              string `json:"note"`
 	OrderDetailStatus string `json:"orderDetailStatus"`
 }

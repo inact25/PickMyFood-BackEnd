@@ -60,7 +60,7 @@ func (s *StoreRepoImpl) GetStoreByID(id string) (*models.Store, error) {
 	if err != nil {
 		return &store, err
 	}
-	errQuery := stmt.QueryRow(id).Scan(&store.StoreID, &store.StoreName, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StoreUsername, &store.StoreImage, &store.StoreCategory.StoreCategoryID, &store.StoreCategory.StoreCategoryName)
+	errQuery := stmt.QueryRow(id).Scan(&store.StoreID, &store.StoreName, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StoreUsername, &store.StoreImage, &store.QrPath, &store.StoreCategory.StoreCategoryID, &store.StoreCategory.StoreCategoryName)
 
 	if errQuery != nil {
 		return &store, err
@@ -70,7 +70,7 @@ func (s *StoreRepoImpl) GetStoreByID(id string) (*models.Store, error) {
 	return &store, nil
 }
 
-// //GetAllUser for admin
+//GetAllUser for admin
 func (s *StoreRepoImpl) GetAllStore() ([]*models.Store, error) {
 	stmt, err := s.db.Prepare(utils.SELECT_ALL_STORE)
 	if err != nil {
@@ -85,7 +85,7 @@ func (s *StoreRepoImpl) GetAllStore() ([]*models.Store, error) {
 	listStore := []*models.Store{}
 	for rows.Next() {
 		store := models.Store{}
-		err := rows.Scan(&store.StoreID, &store.StoreName, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StoreUsername, &store.StorePassword, &store.StoreImage, &store.StoreCategory.StoreCategoryID, &store.StoreCategory.StoreCategoryName)
+		err := rows.Scan(&store.StoreID, &store.StoreName, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StoreUsername, &store.StorePassword, &store.StoreImage, &store.QrPath, &store.StoreCategory.StoreCategoryID, &store.StoreCategory.StoreCategoryName)
 		if err != nil {
 			println(err)
 			return nil, err

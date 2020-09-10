@@ -37,19 +37,6 @@ func (o *OrderRepoImpl) AddOrder(order *models.Order) error {
 	}
 	println("MASUK TB ORDER")
 
-	// queryNewPrice := utils.GET_NEW_PRICE
-	// var newPrice string
-	// for _, val := range order.SoldItems {
-	// 	errPrice := stmt.QueryRow(queryNewPrice, val.ProductID).Scan(&val.Price)
-	// 	if errPrice != nil {
-	// 		return err
-	// 	}
-	// 	newPrice = val.Price
-	// 	println(val.ProductID, val.Price)
-
-	// }
-	// println("MASUK GET NEW PRICE", newPrice)
-
 	stmt, err = tx.Prepare(utils.INSERT_ORDER_DETAIl)
 	defer stmt.Close()
 	if err != nil {
@@ -58,7 +45,7 @@ func (o *OrderRepoImpl) AddOrder(order *models.Order) error {
 	}
 
 	for _, val := range order.SoldItems {
-		_, err = stmt.Exec(val.Qty, orderID, val.ProductID, val.UserID, val.Price)
+		_, err = stmt.Exec(val.Qty, orderID, val.ProductID, val.UserID, val.Price, val.Note)
 		if err != nil {
 			tx.Rollback()
 			return err
