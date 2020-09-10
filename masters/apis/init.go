@@ -2,8 +2,6 @@ package apis
 
 import (
 	"database/sql"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
 
 	orderControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/order"
 	paymentControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/payment"
@@ -34,9 +32,16 @@ import (
 	storeCategoryUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/storeCatergory"
 	userUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/user"
 	walletusecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/wallet"
+
+	feedbackRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	poinRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	ratingRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+
+	feedbackUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
+	poinUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
+	ratingUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
 )
 
-//Init for DI
 func Init(r *mux.Router, db *sql.DB) {
 	// user
 	userRepo := userRepositories.InitUserRepoImpl(db)
@@ -78,10 +83,24 @@ func Init(r *mux.Router, db *sql.DB) {
 	paymentUseCase := paymentUsecases.InitPaymentUseCaseImpl(paymentRepo)
 	paymentController := paymentControllers.InitPaymentController(paymentUseCase)
 	paymentController.PaymentAPI(r)
-	// Feedback
-	feedbackRepo := repositories.InitFeedbackImpl(db)
-	feedbackUsecase := usecases.InitFeedbackUsecase(feedbackRepo)
-	controllers.FeedbacksController(r, feedbackUsecase)
+
+	//feedback
+	feedbackRepo := feedbackRepositories.InitFeedbackImpl(db)
+	feedbackUseCase := feedbackUsecases.InitFeedbackUsecase(feedbackRepo)
+	feedbackController := controllers.FeedbacksController(feedbackUseCase)
+	feedbackController.FeedbackAPI(r)
+
+	//poin
+	poinRepo := poinRepositories.InitPoinRepoImpl(db)
+	poinUseCase := poinUsecases.InitPoinUsecase(poinRepo)
+	poinController := controllers.PointsController(poinUseCase)
+	poinController.PointAPI(r)
+
+	//rating
+	ratingRepo := ratingRepositories.InitRatingRepoImpl(db)
+	ratingUseCase := ratingUsecases.InitRatingUsecase(ratingRepo)
+	ratingController := controllers.RatingController(ratingUseCase)
+	ratingController.RatingAPI(r)
 
 	r.Use(middlewares.ActivityLogMiddleware)
 }

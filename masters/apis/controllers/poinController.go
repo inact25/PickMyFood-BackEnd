@@ -14,15 +14,19 @@ type PointsHandler struct {
 	poinUsecases usecases.PoinUseCases
 }
 
-func PointsController(r *mux.Router, service usecases.PoinUseCases) {
-	PointsHandler := PointsHandler{service}
-	r.HandleFunc("/points", PointsHandler.GetPoints).Methods(http.MethodGet)
-	r.HandleFunc("/point/{sid}", PointsHandler.GetPointByID).Methods(http.MethodGet)
-	r.HandleFunc("/point/post", PointsHandler.PostPoint).Methods(http.MethodPost)
-	r.HandleFunc("/point/update/{sid}", PointsHandler.UpdatePoint).Methods(http.MethodPut)
-	r.HandleFunc("/point/delete/{sid}", PointsHandler.DeletePoint).Methods(http.MethodDelete)
+func PointsController(poinUsecases usecases.PoinUseCases) *PointsHandler {
+	return &PointsHandler{poinUsecases: poinUsecases}
+}
 
-	r.HandleFunc("/point/update_user_point/{sid}", PointsHandler.UpdateUserPoint).Methods(http.MethodPut)
+func (s *PointsHandler) PointAPI(r *mux.Router) {
+	//PointsHandler := PointsHandler{service}
+	r.HandleFunc("/points", s.GetPoints).Methods(http.MethodGet)
+	r.HandleFunc("/point/{sid}", s.GetPointByID).Methods(http.MethodGet)
+	r.HandleFunc("/point/post", s.PostPoint).Methods(http.MethodPost)
+	r.HandleFunc("/point/update/{sid}", s.UpdatePoint).Methods(http.MethodPut)
+	r.HandleFunc("/point/delete/{sid}", s.DeletePoint).Methods(http.MethodDelete)
+
+	r.HandleFunc("/point/update_user_point/{sid}", s.UpdateUserPoint).Methods(http.MethodPut)
 }
 
 func (s *PointsHandler) GetPoints(w http.ResponseWriter, r *http.Request) {
@@ -46,12 +50,12 @@ func (s *PointsHandler) GetPointByID(w http.ResponseWriter, r *http.Request) {
 
 func (s *PointsHandler) PostPoint(w http.ResponseWriter, r *http.Request) {
 	var point models.PoinModels
-	id := utils.DecodePathVariabel("sid", r)
+	//id := utils.DecodePathVariabel("sid", r)
 	err := utils.JsonDecoder(&point, r)
 	if err != nil {
 		utils.HandleRequest(w, http.StatusBadRequest)
 	} else {
-		err = s.poinUsecases.PostPoint(&point, id)
+		err = s.poinUsecases.PostPoint(&point)
 		if err != nil {
 			log.Print(err)
 			utils.HandleRequest(w, http.StatusBadGateway)

@@ -29,12 +29,12 @@ func (s PoinUsecaseImpl) GetPointByID(ID string) (*models.PoinModels, error) {
 	return points, nil
 }
 
-func (s PoinUsecaseImpl) PostPoint(d *models.PoinModels, ID string) error {
+func (s PoinUsecaseImpl) PostPoint(d *models.PoinModels) error {
 	err := validation.CheckEmpty(d)
 	if err != nil {
 		return err
 	}
-	error := s.poinRepo.PostPoint(d, ID)
+	error := s.poinRepo.PostPoint(d)
 	if error != nil {
 		return error
 	}
@@ -46,7 +46,7 @@ func (s PoinUsecaseImpl) UpdatePoint(data *models.PoinModels, ID string) error {
 		return err
 	}
 
-	err := s.poinRepo.UpdatePoint(ID, data)
+	err := s.poinRepo.UpdatePoint(data, ID)
 	if err != nil {
 		return err
 	}
