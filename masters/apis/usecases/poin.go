@@ -46,7 +46,7 @@ func (s PoinUsecaseImpl) UpdatePoint(data *models.PoinModels, ID string) error {
 		return err
 	}
 
-	err := s.poinRepo.UpdatePoint(ID, data)
+	err := s.poinRepo.UpdatePoint(data, ID)
 	if err != nil {
 		return err
 	}
