@@ -18,8 +18,8 @@ const (
 	UPDATE_STATUS_TOP_UP    = "UPDATE tb_top_up SET top_up_status = ? WHERE user_id = ?"
 	//STORE
 	INSERT_STORE                = "INSERT INTO tb_store (store_id,store_name,store_category_id,store_address,store_owner,store_username,store_password) VALUES (?,?,?,?,?,?,?)"
-	SELECT_STORE_BY_ID          = "SELECT ts.store_id,ts.store_name,ts.store_address,ts.store_owner,ts.store_status,ts.store_username,ts.store_images,tsc.store_category_id,tsc.store_category_name FROM tb_store ts JOIN tb_store_category tsc ON ts.store_category_id=tsc.store_category_id WHERE store_id = ?"
-	SELECT_ALL_STORE            = "SELECT ts.store_id,ts.store_name,ts.store_address,ts.store_owner,ts.store_status,ts.store_username,ts.store_password,ts.store_images,tsc.store_category_id,tsc.store_category_name FROM tb_store ts JOIN tb_store_category tsc ON ts.store_category_id=tsc.store_category_id WHERE ts.store_status = 'A'"
+	SELECT_STORE_BY_ID          = "SELECT ts.store_id,ts.store_name,ts.store_address,ts.store_owner,ts.store_status,ts.store_username,ts.store_images,ts.qr_path,tsc.store_category_id,tsc.store_category_name FROM tb_store ts JOIN tb_store_category tsc ON ts.store_category_id=tsc.store_category_id WHERE store_id = ?"
+	SELECT_ALL_STORE            = "SELECT ts.store_id,ts.store_name,ts.store_address,ts.store_owner,ts.store_status,ts.store_username,ts.store_password,ts.store_images,ts.qr_path,tsc.store_category_id,tsc.store_category_name FROM tb_store ts JOIN tb_store_category tsc ON ts.store_category_id=tsc.store_category_id WHERE ts.store_status = 'A'"
 	UPDATE_STORE                = "UPDATE tb_store SET store_name=?,store_category_id=?,store_address=?,store_owner=?,store_username=?,store_password=?,store_images=?,qr_path=? WHERE store_id=?"
 	DELETE_STORE                = "UPDATE tb_store SET store_status = NA WHERE store_id = ?"
 	STORE_AUTH                  = "SELECT * FROM tb_store WHERE store_username = ?"
@@ -43,7 +43,7 @@ const (
 	DELETE_PRODUCT              = "UPDATE tb_product SET product_status = 'NA' WHERE product_id = ?"
 	//ORDER
 	INSERT_ORDER         = "insert into tb_order value (?,?,?)"
-	INSERT_ORDER_DETAIl  = "insert into tb_order_detail (qty, order_id, product_id, user_id, price) value (?,?,?,?,?)"
+	INSERT_ORDER_DETAIl  = "insert into tb_order_detail (qty, order_id, product_id, user_id ,price,description) value (?,?,?,?,?,?)"
 	GET_NEW_PRICE        = "select pp.price from tb_product_price pp inner join tb_product p on p.product_id = pp.product_id inner join ( select product_id, max(date_modified) as maxDate from tb_product_price group by product_id ) pj on pp.product_id = pj.product_id and pp.date_modified = pj.maxDate where p.product_id = ?"
 	UPDATE_PRODUCT_STOCK = "UPDATE tb_product SET product_stock=product_stock - ? WHERE product_id = ? "
 	//GET ORDER BY ID
