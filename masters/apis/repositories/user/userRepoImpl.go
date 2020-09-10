@@ -34,7 +34,7 @@ func (u *UserRepoImpl) AddUser(user *models.User) error {
 		return err
 	}
 
-	if _, err := stmt.Exec(id, user.UserFirstName, user.UserLastName, user.UserAddress, user.UserPhone, user.UserImage, user.UserStatus); err != nil {
+	if _, err := stmt.Exec(id, user.UserFirstName, user.UserLastName, user.UserAddress, user.UserPhone, user.UserEmail, user.UserStatus); err != nil {
 		tx.Rollback()
 		return err
 	}
