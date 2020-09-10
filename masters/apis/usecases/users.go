@@ -3,25 +3,82 @@ package usecases
 import (
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
-	//"github.com/inact25/PickMyFood-BackEnd/utils/validation"
+	"github.com/inact25/PickMyFood-BackEnd/utils/validation"
 )
 
-type UsersUseCaseImpl struct {
-	usersRepo repositories.UsersRepo
+type UserUseCaseImpl struct {
+	userRepo repositories.UserRepo
 }
 
-func (u UsersUseCaseImpl) Auth(userModels *models.UserModels) ([]*models.Auth, error) {
+func InitUsersUseCase(users repositories.UserRepo) UserUseCase {
+	return &UserUseCaseImpl{users}
+}
+
+// AddUser usecase
+func (u *UserUseCaseImpl) AddUser(user *models.User) error {
+	err := validation.CheckEmpty(user)
+	if err != nil {
+		return err
+	}
+	error := u.userRepo.AddUser(user)
+	if error != nil {
+		return error
+	}
+	return nil
+}
+
+// GetUserById
+func (u *UserUseCaseImpl) GetUserByID(userID string) (*models.User, error) {
+	user, err := u.userRepo.GetUserByID(userID)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (u *UserUseCaseImpl) GetAllUser() ([]*models.User, error) {
+	listUser, err := u.userRepo.GetAllUser()
+	if err != nil {
+		return nil, err
+	}
+	return listUser, nil
+}
+
+func (u *UserUseCaseImpl) UpdateUser(id string, user *models.User) error {
+	err := validation.CheckEmpty(user.UserAddress, user.UserLastName, user.UserAddress, user.UserPhone, user.UserImage, user.UserStatus, user.Auth.Username, user.Auth.Password)
+	if err != nil {
+		return err
+	}
+	error := u.userRepo.UpdateUser(id, user)
+	if error != nil {
+		return error
+	}
+	return nil
+}
+
+func (u *UserUseCaseImpl) DeleteUser(userID string) error {
+	err := u.userRepo.DeleteUser(userID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *UserUseCaseImpl) Auth(username, password string) (*models.Auth, error) {
 	//err := validation.CheckEmpty(userModels.UserName, userModels.UserPassword)
 	//if err != nil {
 	//	return nil, err
 	//}
-	auth, err := u.usersRepo.Auth(userModels)
+	auth, err := u.userRepo.Auth(username, password)
 	if err != nil {
 		return nil, err
 	}
 	return auth, nil
 }
-
-func InitUsersUseCase(users repositories.UsersRepo) UsersUseCases {
-	return &UsersUseCaseImpl{users}
+func (u *UserUseCaseImpl) ReadUserByUsername(username string) (*models.Auth, error) {
+	user, err := u.userRepo.ReadUserByUsername(username)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
