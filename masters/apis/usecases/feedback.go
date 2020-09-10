@@ -30,13 +30,13 @@ func (s FeedbackUsecaseImpl) GetFeedbackByID(ID string) (*models.FeedbackModels,
 	return feedbacks, nil
 }
 
-func (s FeedbackUsecaseImpl) PostFeedback(d *models.FeedbackModels, ID string) error {
+func (s FeedbackUsecaseImpl) PostFeedback(d *models.FeedbackModels) error {
 	d.FeedbackCreated = utils.GetTimeNow()
 	err := validation.CheckEmpty(d)
 	if err != nil {
 		return err
 	}
-	error := s.feedbackRepo.PostFeedback(d, ID)
+	error := s.feedbackRepo.PostFeedback(d)
 	if error != nil {
 		return error
 	}

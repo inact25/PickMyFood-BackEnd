@@ -29,12 +29,12 @@ func (s RatingUsecaseImpl) GetRatingByID(ID string) (*models.RatingModels, error
 	return ratings, nil
 }
 
-func (s RatingUsecaseImpl) PostRating(d *models.RatingModels, ID string) error {
+func (s RatingUsecaseImpl) PostRating(d *models.RatingModels) error {
 	err := validation.CheckEmpty(d)
 	if err != nil {
 		return err
 	}
-	error := s.ratingRepo.PostRating(d, ID)
+	error := s.ratingRepo.PostRating(d)
 	if error != nil {
 		return error
 	}

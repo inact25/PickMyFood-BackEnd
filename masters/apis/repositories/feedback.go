@@ -48,7 +48,7 @@ func (s *FeedbackRepoImpl) GetFeedbackByID(ID string) (*models.FeedbackModels, e
 	return &d, nil
 }
 
-func (s *FeedbackRepoImpl) PostFeedback(d *models.FeedbackModels, ID string) error {
+func (s *FeedbackRepoImpl) PostFeedback(d *models.FeedbackModels) error {
 	feedbackID := guuid.New()
 	tx, err := s.db.Begin()
 	if err != nil {

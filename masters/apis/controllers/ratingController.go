@@ -49,12 +49,12 @@ func (s *RatingsHandler) GetRatingByID(w http.ResponseWriter, r *http.Request) {
 
 func (s *RatingsHandler) PostRating(w http.ResponseWriter, r *http.Request) {
 	var rating models.RatingModels
-	id := utils.DecodePathVariabel("sid", r)
+	// id := utils.DecodePathVariabel("sid", r)
 	err := utils.JsonDecoder(&rating, r)
 	if err != nil {
 		utils.HandleRequest(w, http.StatusBadRequest)
 	} else {
-		err = s.ratingUsecases.PostRating(&rating, id)
+		err = s.ratingUsecases.PostRating(&rating)
 		if err != nil {
 			log.Print(err)
 			utils.HandleRequest(w, http.StatusBadGateway)

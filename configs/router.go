@@ -1,10 +1,11 @@
 package configs
 
 import (
-	"github.com/gorilla/mux"
-	"github.com/inact25/PickMyFood-BackEnd/utils/environtment"
+	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func CreateRouter() *mux.Router {
@@ -13,12 +14,9 @@ func CreateRouter() *mux.Router {
 }
 
 func RunServer(router *mux.Router) {
-
-	routerHost := environtment.Get("RouterHost", "localhost")
-	routerPort := environtment.Get("RouterPort", "8080")
-
-	log.Printf("Server is now listening at %v.....\n", routerPort)
-	err := http.ListenAndServe(routerHost+": "+routerPort, router)
+	port := "8080"
+	fmt.Println("Starting Web Server at port: " + port)
+	err := http.ListenAndServe(": "+port, router)
 	if err != nil {
 		log.Fatal(err)
 	}

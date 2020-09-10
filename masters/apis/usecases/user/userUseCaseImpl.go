@@ -1,16 +1,16 @@
-package usecases
+package userUsecases
 
 import (
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	userRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/user"
 	"github.com/inact25/PickMyFood-BackEnd/utils/validation"
 )
 
 type UserUseCaseImpl struct {
-	userRepo repositories.UserRepo
+	userRepo userRepositories.UserRepo
 }
 
-func InitUsersUseCase(users repositories.UserRepo) UserUseCase {
+func InitUsersUseCase(users userRepositories.UserRepo) UserUseCase {
 	return &UserUseCaseImpl{users}
 }
 
@@ -36,8 +36,8 @@ func (u *UserUseCaseImpl) GetUserByID(userID string) (*models.User, error) {
 	return user, nil
 }
 
-func (u *UserUseCaseImpl) GetAllUser() ([]*models.User, error) {
-	listUser, err := u.userRepo.GetAllUser()
+func (u *UserUseCaseImpl) GetAllUser(keyword, page, limit string) ([]*models.User, error) {
+	listUser, err := u.userRepo.GetAllUser(keyword, page, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (u *UserUseCaseImpl) Auth(username, password string) (*models.Auth, error) 
 	}
 	return auth, nil
 }
-func (u *UserUseCaseImpl) ReadUserByUsername(username string) (*models.Auth, error) {
+func (u *UserUseCaseImpl) ReadUserByUsername(username string) (*models.User, error) {
 	user, err := u.userRepo.ReadUserByUsername(username)
 	if err != nil {
 		return nil, err

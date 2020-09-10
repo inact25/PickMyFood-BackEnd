@@ -48,7 +48,7 @@ func (s *RatingRepoImpl) GetRatingByID(ID string) (*models.RatingModels, error) 
 	return &d, nil
 }
 
-func (s *RatingRepoImpl) PostRating(d *models.RatingModels, ID string) error {
+func (s *RatingRepoImpl) PostRating(d *models.RatingModels) error {
 	ratingID := guuid.New()
 	tx, err := s.db.Begin()
 	if err != nil {
