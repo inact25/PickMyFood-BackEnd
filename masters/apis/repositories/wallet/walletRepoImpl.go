@@ -23,7 +23,7 @@ func (w *WalletRepoImpl) GetWalletByID(id string) (*models.Wallet, error) {
 	if err != nil {
 		return &wallet, err
 	}
-	errQuery := stmt.QueryRow(id).Scan(&wallet.WalletID, &wallet.Amount, &wallet.UserID, &wallet.User.UserFirstName, &wallet.User.UserLastName, &wallet.User.UserAddress, &wallet.User.UserPhone, &wallet.User.UserPoin)
+	errQuery := stmt.QueryRow(id).Scan(&wallet.WalletID, &wallet.Amount, &wallet.UserID)
 
 	if errQuery != nil {
 		return &wallet, err

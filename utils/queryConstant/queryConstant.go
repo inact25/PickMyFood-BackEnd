@@ -11,7 +11,7 @@ const (
 	LOGIN                   = "select user_id, user_level_id, user_status from tb_auth where username = ? and password= ?;"
 	SELECT_AUTH_BY_USERNAME = "SELECT tu.user_id,tu.user_firstname,tu.user_lastname,tu.user_address,tu.user_phone,tu.user_poin,tu.user_email,tu.user_image,tu.user_status,ta.username,ta.password,ta.user_status FROM tb_user tu JOIN tb_auth ta ON tu.user_id=ta.user_id WHERE ta.username = ?"
 	INSERT_WALLET           = "INSERT INTO tb_wallet (wallet_id,user_id) values (?,?)"
-	SELECT_WALLET_USER_ID   = "SELECT tw.wallet_id,tw.amount,tu.user_id,tu.user_firstname,tu.user_lastname,tu.user_address,tu.user_phone,tu.user_poin FROM tb_wallet tw JOIN tb_user tu ON tw.user_id=tu.user_id WHERE tu.user_id = ?"
+	SELECT_WALLET_USER_ID   = "SELECT wallet_id,amount,user_id FROM tb_wallet WHERE user_id = ?"
 	UPDATE_AMOUNT_WALLET    = "UPDATE tb_wallet SET amount = ? WHERE user_id = ?"
 	UPDATE_POIN_USER        = "UPDATE tb_user SET user_poin = ? WHERE user_id = ?"
 	INSERT_TOP_UP           = "INSERT INTO tb_top_up (top_up_id,top_up_amount,user_id,top_up_date) VALUES (?,?,?,?)"

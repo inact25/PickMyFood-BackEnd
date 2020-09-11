@@ -4,7 +4,6 @@ type Wallet struct {
 	WalletID string `json:"walletID"`
 	UserID   string `json:"userID"`
 	Amount   string `json:"amount"`
-	User     User   `json:"user"`
 }
 
 type TopUp struct {
