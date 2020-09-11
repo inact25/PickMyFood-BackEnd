@@ -93,16 +93,26 @@ func (u *UserRepoImpl) GetAllUser(keyword, page, limit string) ([]*models.User, 
 		log.Println(err)
 		return nil, err
 	}
-
+	println("MASUK SINI")
 	listUser := []*models.User{}
 	for rows.Next() {
 		p := models.User{}
 		err := rows.Scan(&p.UserID, &p.UserFirstName, &p.UserLastName, &p.UserAddress, &p.UserPhone, &p.UserPoin, &p.UserEmail, &p.UserImage, &p.UserStatus, &p.Auth.Username, &p.Auth.Password, &p.Auth.UserLevelID, &p.Auth.UserStatus)
+		println(p.UserID)
+		// println(p.UserFirstName)
+		// println(p.UserLastName)
+		// println(p.UserAddress)
+		// println(p.UserPhone)
+		// println(p.UserPoin)
+		// println(p.UserEmail)
+		// println(p.UserImage)
 		if err != nil {
+			println(err)
 			return nil, err
 		}
 		listUser = append(listUser, &p)
 	}
+	println("MASUK GET ALL")
 	return listUser, nil
 }
 
