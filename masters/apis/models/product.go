@@ -5,6 +5,7 @@ type Product struct {
 	ProductName     string          `json:"productName"`
 	ProductStock    string          `json:"productStock"`
 	ProductStatus   string          `json:"productStatus"`
+	ProductImage    string          `json:"productImage"`
 	ProductPrice    ProductPrice    `json:"productPrice"`
 	ProductCategory ProductCategory `json:"productCategory"`
 	Store           Store           `json:"store"`

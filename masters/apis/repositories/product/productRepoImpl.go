@@ -31,7 +31,7 @@ func (p *ProductRepoImpl) AddProduct(storeID string, product *models.Product) er
 		return err
 	}
 
-	if _, err := stmt.Exec(productID, storeID, product.ProductName, product.ProductCategory.ProductCategoryID, product.ProductStock); err != nil {
+	if _, err := stmt.Exec(productID, storeID, product.ProductName, product.ProductCategory.ProductCategoryID, product.ProductStock, product.ProductImage); err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -56,7 +56,7 @@ func (p *ProductRepoImpl) GetProductByID(id string) (*models.Product, error) {
 	if err != nil {
 		return &product, err
 	}
-	errQuery := stmt.QueryRow(id).Scan(&product.ProductID, &product.ProductName, &product.ProductStock, &product.ProductStatus, &product.ProductCategory.ProductCategoryID, &product.ProductCategory.ProductCategoryName, &product.ProductPrice.Price, &product.ProductPrice.DateModified)
+	errQuery := stmt.QueryRow(id).Scan(&product.ProductID, &product.ProductName, &product.ProductStock, &product.ProductImage, &product.ProductStatus, &product.ProductCategory.ProductCategoryID, &product.ProductCategory.ProductCategoryName, &product.ProductPrice.Price, &product.ProductPrice.DateModified)
 
 	if errQuery != nil {
 		return &product, err
@@ -83,7 +83,7 @@ func (p *ProductRepoImpl) GetAllProductByStore(storeID string) ([]*models.Produc
 	listProduct := []*models.Product{}
 	for rows.Next() {
 		product := models.Product{}
-		err := rows.Scan(&product.ProductID, &product.ProductName, &product.ProductStock, &product.ProductStatus, &product.ProductCategory.ProductCategoryName, &product.ProductPrice.Price, &product.ProductPrice.DateModified)
+		err := rows.Scan(&product.ProductID, &product.ProductName, &product.ProductStock, &product.ProductImage, &product.ProductStatus, &product.ProductCategory.ProductCategoryName, &product.ProductPrice.Price, &product.ProductPrice.DateModified)
 		if err != nil {
 			return nil, err
 		}
@@ -103,7 +103,7 @@ func (p *ProductRepoImpl) UpdateProductWithPrice(id string, product *models.Prod
 		return err
 	}
 	println("MASUK QUERY UPDATE")
-	_, err = stmt.Exec(product.ProductName, product.ProductStock, product.ProductCategory.ProductCategoryID, id)
+	_, err = stmt.Exec(product.ProductName, product.ProductStock, product.ProductImage, product.ProductCategory.ProductCategoryID, id)
 	if err != nil {
 		tx.Rollback()
 		return err

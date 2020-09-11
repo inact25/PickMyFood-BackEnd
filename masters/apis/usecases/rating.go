@@ -3,6 +3,7 @@ package usecases
 import (
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	"github.com/inact25/PickMyFood-BackEnd/utils"
 	"github.com/inact25/PickMyFood-BackEnd/utils/validation"
 
 	"gopkg.in/validator.v2"
@@ -30,6 +31,7 @@ func (s RatingUsecaseImpl) GetRatingByID(ID string) (*models.RatingModels, error
 }
 
 func (s RatingUsecaseImpl) PostRating(d *models.RatingModels) error {
+	d.RatingCreated = utils.GetTimeNow()
 	err := validation.CheckEmpty(d)
 	if err != nil {
 		return err

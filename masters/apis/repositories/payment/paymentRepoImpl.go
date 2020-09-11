@@ -78,5 +78,16 @@ func (p *PaymentRepoImpl) UpdateTransaction(storeID, amount, orderID, userID str
 		tx.Rollback()
 		return err
 	}
+	stmt, err = tx.Prepare(utils.UPDATE_POIN_USER_AFTER_PAYMENT)
+	defer stmt.Close()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if _, err := stmt.Exec(userID); err != nil {
+		tx.Rollback()
+		return err
+	}
 	return tx.Commit()
 }

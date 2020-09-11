@@ -35,11 +35,11 @@ const (
 	UPDATE_PRODUCT_CATEGORY       = "UPDATE tb_product_category SET product_category_name=? WHERE product_category_id=?"
 	DELETE_PRODUCT_CATEGORY       = "UPDATE tb_product_category SET product_category_status = 'NA' WHERE product_category_id=? "
 	//QUERY PRODUCT
-	SELECT_ALL_PRODUCT_BY_STORE = "select pp.product_id, p.product_name, p.product_stock, p.product_status,pc.product_category_name, pp.price, pp.date_modified from tb_product_price pp inner join tb_product p on p.product_id = pp.product_id inner join tb_product_category pc on p.product_category_id = pc.product_category_id inner join (select product_id, max(date_modified) as maxDate from tb_product_price group by product_id) pj on pp.product_id = pj.product_id and pp.date_modified = pj.maxDate where p.store_id= ? AND p.product_status = 'A'"
-	INSERT_PRODUCT              = "INSERT INTO tb_product(product_id,store_id,product_name,product_category_id,product_stock) VALUES (?,?,?,?,?)"
+	SELECT_ALL_PRODUCT_BY_STORE = "select pp.product_id, p.product_name, p.product_stock,p.product_images,p.product_status,pc.product_category_name, pp.price, pp.date_modified from tb_product_price pp inner join tb_product p on p.product_id = pp.product_id inner join tb_product_category pc on p.product_category_id = pc.product_category_id inner join (select product_id, max(date_modified) as maxDate from tb_product_price group by product_id) pj on pp.product_id = pj.product_id and pp.date_modified = pj.maxDate where p.store_id= ? AND p.product_status = 'A'"
+	INSERT_PRODUCT              = "INSERT INTO tb_product(product_id,store_id,product_name,product_category_id,product_stock,product_images) VALUES (?,?,?,?,?,?)"
 	INSERT_PRODUCT_PRICE        = "INSERT INTO tb_product_price VALUES(?,?,?,?)"
-	SELECT_PRODUCT_BY_ID        = "select pp.product_id, p.product_name, p.product_stock,p.product_status,pc.product_category_id,pc.product_category_name, pp.price, pp.date_modified from tb_product_price pp inner join tb_product p on p.product_id = pp.product_id inner join tb_product_category pc on p.product_category_id = pc.product_category_id inner join (select product_id, max(date_modified) as maxDate from tb_product_price group by product_id) pj on pp.product_id = pj.product_id and pp.date_modified = pj.maxDate where p.product_id= ? AND p.product_status = 'A'"
-	UPDATE_PRODUCT_WITH_PRICE   = "UPDATE tb_product SET product_name = ?,product_stock = ?,product_category_id = ? WHERE product_id = ?"
+	SELECT_PRODUCT_BY_ID        = "select pp.product_id, p.product_name, p.product_stock,p.product_images,p.product_status,pc.product_category_id,pc.product_category_name, pp.price, pp.date_modified from tb_product_price pp inner join tb_product p on p.product_id = pp.product_id inner join tb_product_category pc on p.product_category_id = pc.product_category_id inner join (select product_id, max(date_modified) as maxDate from tb_product_price group by product_id) pj on pp.product_id = pj.product_id and pp.date_modified = pj.maxDate where p.product_id= ? AND p.product_status = 'A'"
+	UPDATE_PRODUCT_WITH_PRICE   = "UPDATE tb_product SET product_name = ?,product_stock = ?,product_images = ?,product_category_id = ? WHERE product_id = ?"
 	DELETE_PRODUCT              = "UPDATE tb_product SET product_status = 'NA' WHERE product_id = ?"
 
 	//Feedback
@@ -71,9 +71,10 @@ const (
 	SELECT_ALL_ORDER_BY_STORE        = "SELECT * FROM tb_order WHERE store_id = ?"
 	SELECT_ALL_SOLD_ITEM_BY_ORDER_ID = "SELECT u.user_firstname,p.product_name,od.price,od.qty,price*qty as subtotal,od.order_detail_status FROM tb_order_detail od JOIN tb_product p ON od.product_id=p.product_id JOIN tb_user u ON od.user_id=u.user_id JOIN tb_order o ON o.order_id=od.order_id WHERE o.order_id = ?"
 	//GET ALL ORDER BY USER
-	SELECT_ALL_ORDER_BY_USER   = "SELECT distinct o.order_id,o.order_created,o.store_id FROM tb_order o JOIN tb_order_detail od ON o.order_id=od.order_id WHERE od.user_id = ?"
-	INSERT_TRANSACTION         = "INSERT INTO tb_transaction (transaction_id,order_id,user_id,amount,transaction_created) VALUES (?,?,?,?,?)"
-	UPDATE_WALLET_AMOUNT_USER  = "UPDATE tb_wallet SET amount = amount - ? WHERE user_id = ? "
-	UPDATE_ORDER_DETAIL_STATUS = "UPDATE tb_order_detail SET order_detail_status = 'Paid' WHERE order_id = ?"
-	UPDATE_TRANSACTION_PICK    = "UPDATE tb_transaction SET transaction_status = 'Picked' WHERE order_id = ?"
+	SELECT_ALL_ORDER_BY_USER       = "SELECT distinct o.order_id,o.order_created,o.store_id FROM tb_order o JOIN tb_order_detail od ON o.order_id=od.order_id WHERE od.user_id = ?"
+	INSERT_TRANSACTION             = "INSERT INTO tb_transaction (transaction_id,order_id,user_id,amount,transaction_created) VALUES (?,?,?,?,?)"
+	UPDATE_WALLET_AMOUNT_USER      = "UPDATE tb_wallet SET amount = amount - ? WHERE user_id = ? "
+	UPDATE_ORDER_DETAIL_STATUS     = "UPDATE tb_order_detail SET order_detail_status = 'Paid' WHERE order_id = ?"
+	UPDATE_TRANSACTION_PICK        = "UPDATE tb_transaction SET transaction_status = 'Picked' WHERE order_id = ?"
+	UPDATE_POIN_USER_AFTER_PAYMENT = "UPDATE tb_user SET user_poin = user_poin + '1' WHERE user_id = ?"
 )
