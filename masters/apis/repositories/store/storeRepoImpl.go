@@ -60,7 +60,7 @@ func (s *StoreRepoImpl) GetStoreByID(id string) (*models.Store, error) {
 	if err != nil {
 		return &store, err
 	}
-	errQuery := stmt.QueryRow(id).Scan(&store.StoreID, &store.StoreName, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StoreUsername, &store.StoreImage, &store.QrPath, &store.StoreCategory.StoreCategoryID, &store.StoreCategory.StoreCategoryName)
+	errQuery := stmt.QueryRow(id).Scan(&store.StoreID, &store.StoreName, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StoreUsername, &store.StorePassword, &store.StoreImage, &store.QrPath, &store.StoreCategory.StoreCategoryID, &store.StoreCategory.StoreCategoryName)
 
 	if errQuery != nil {
 		return &store, err
