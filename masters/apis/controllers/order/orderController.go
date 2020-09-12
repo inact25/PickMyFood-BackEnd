@@ -26,8 +26,7 @@ func (o *OrderHandler) OrderAPI(r *mux.Router) {
 	order := r.PathPrefix("/order").Subrouter()
 	order.HandleFunc("/{id}", o.GetOrderByID).Methods(http.MethodGet)
 	order.HandleFunc("/add", o.AddOrder).Methods(http.MethodPost)
-	// order.HandleFunc("/update/{id}", o.UpdateOrderPaid).Methods(http.MethodPut)
-	// order.HandleFunc("/delete/{id}", o.UpdateOrderCancel).Methods(http.MethodDelete)
+
 }
 
 func (o *OrderHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
@@ -80,47 +79,3 @@ func (o *OrderHandler) ListAllOrderUser(w http.ResponseWriter, r *http.Request) 
 		utils.HandleResponse(w, http.StatusOK, orders)
 	}
 }
-
-// func (o *OrderHandler) UpdateOrderPaid(w http.ResponseWriter, r *http.Request) {
-// 	var order models.Order
-// 	orderID := utils.DecodePathVariabel("id", r)
-// 	err := utils.JsonDecoder(&order, r)
-// 	if err != nil {
-// 		utils.HandleRequest(w, http.StatusBadRequest)
-// 	} else {
-// 		err = o.orderUsecase.UpdateOrderPaid(orderID, &order)
-// 		if err != nil {
-// 			log.Print(err)
-// 			utils.HandleRequest(w, http.StatusBadGateway)
-// 		} else {
-// 			order, err := o.orderUsecase.GetOrderByID(orderID)
-// 			if err != nil {
-// 				log.Print(err)
-// 			} else {
-// 				utils.HandleResponse(w, http.StatusOK, order)
-// 			}
-// 		}
-// 	}
-// }
-
-// func (o *OrderHandler) UpdateOrderCancel(w http.ResponseWriter, r *http.Request) {
-// 	var payment models.Payment
-// 	orderID := utils.DecodePathVariabel("id", r)
-// 	err := utils.JsonDecoder(&payment, r)
-// 	if err != nil {
-// 		utils.HandleRequest(w, http.StatusBadRequest)
-// 	} else {
-// 		err = o.orderUsecase.UpdateOrderCancel(orderID, &payment)
-// 		if err != nil {
-// 			log.Print(err)
-// 			utils.HandleRequest(w, http.StatusBadGateway)
-// 		} else {
-// 			order, err := o.orderUsecase.GetOrderByID(orderID)
-// 			if err != nil {
-// 				log.Print(err)
-// 			} else {
-// 				utils.HandleResponse(w, http.StatusOK, order)
-// 			}
-// 		}
-// 	}
-// }

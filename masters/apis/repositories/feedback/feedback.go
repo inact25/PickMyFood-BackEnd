@@ -1,4 +1,4 @@
-package repositories
+package feedbackRepositories
 
 import (
 	"database/sql"
