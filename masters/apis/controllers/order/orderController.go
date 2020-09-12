@@ -35,17 +35,12 @@ func (o *OrderHandler) AddOrder(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		utils.HandleRequest(w, http.StatusBadRequest)
 	} else {
-		err = o.orderUsecase.AddOrder(&order)
+		result, err := o.orderUsecase.AddOrder(&order)
 		if err != nil {
 			log.Print(err)
 			utils.HandleRequest(w, http.StatusBadGateway)
-		} else {
-			// order, err := o.orderUsecase.GetOrderByID(order.OrderID)
-			// if err != nil {
-			// 	log.Print(err)
-			// } else {
-			utils.HandleResponse(w, http.StatusOK, order)
-			// }
+		} else if result != nil {
+			utils.HandleResponse(w, http.StatusOK, *result)
 		}
 	}
 }

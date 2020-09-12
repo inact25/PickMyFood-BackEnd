@@ -17,47 +17,52 @@ func InitOrderRepoImpl(db *sql.DB) OrderRepo {
 	return &OrderRepoImpl{db: db}
 }
 
-func (o *OrderRepoImpl) AddOrder(order *models.Order) error {
+func (o OrderRepoImpl) AddOrder(order *models.Order) (*models.Order, error) {
 	println("MASUK REPO")
 	orderID := guuid.New()
 	tx, err := o.db.Begin()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	stmt, err := tx.Prepare(utils.INSERT_ORDER)
 	defer stmt.Close()
 	if err != nil {
 		tx.Rollback()
-		return err
+		return nil, err
 	}
 	if _, err := stmt.Exec(orderID, order.OrderCreated, order.StoreID); err != nil {
 		tx.Rollback()
-		return err
-	}
+		return nil, err
 
+	}
 	println("MASUK TB ORDER")
 
 	stmt, err = tx.Prepare(utils.INSERT_ORDER_DETAIl)
 	defer stmt.Close()
 	if err != nil {
 		tx.Rollback()
-		return err
+		return nil, err
+
 	}
 
 	for _, val := range order.SoldItems {
 		_, err = stmt.Exec(val.Qty, orderID, val.ProductID, val.UserID, val.Price, val.Note)
 		if err != nil {
 			tx.Rollback()
-			return err
+			return nil, err
+
 		}
 		_, err = tx.Exec(utils.UPDATE_PRODUCT_STOCK, val.Qty, val.ProductID)
 	}
+
+	newOrderID := orderID.String()
+	tx.Commit()
 	println("MASUK TB ORDER DETAIL")
-	return tx.Commit()
+	return o.GetOrderByID(newOrderID)
 }
 
-func (o *OrderRepoImpl) GetOrderByID(orderID string) (*models.Order, error) {
+func (o OrderRepoImpl) GetOrderByID(orderID string) (*models.Order, error) {
 	stmt, err := o.db.Prepare(utils.SELECT_ORDER_BY_ID)
 	order := models.Order{}
 	if err != nil {
@@ -82,8 +87,9 @@ func (o *OrderRepoImpl) GetOrderByID(orderID string) (*models.Order, error) {
 
 	var soldItem models.SoldItems
 	for rows.Next() {
-		err := rows.Scan(&soldItem.ProductName, &soldItem.Price, &soldItem.Qty, &soldItem.Subtotal, &soldItem.OrderDetailStatus)
+		err := rows.Scan(&soldItem.Qty, &soldItem.ProductID, &soldItem.ProductName, &soldItem.UserID, &soldItem.UserFirstName, &soldItem.Price, &soldItem.Subtotal, &soldItem.Note, &soldItem.OrderDetailStatus)
 		if err != nil {
+			log.Print(err)
 			return nil, err
 		}
 		order.SoldItems = append(order.SoldItems, soldItem)

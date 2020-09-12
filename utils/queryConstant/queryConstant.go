@@ -67,7 +67,7 @@ const (
 	UPDATE_PRODUCT_STOCK = "UPDATE tb_product SET product_stock=product_stock - ? WHERE product_id = ? "
 	//GET ORDER BY ID
 	SELECT_ORDER_BY_ID               = "SELECT * FROM tb_order WHERE order_id = ?"
-	SELECT_SOLD_ITEM_ORDER_BY_ID     = "select p.product_name, od.price,od.qty, price * qty as subtotal, od.order_detail_status from tb_order_detail od inner join tb_product p on p.product_id = od.product_id where order_id = ?"
+	SELECT_SOLD_ITEM_ORDER_BY_ID     = "select od.qty,od.product_id,p.product_name,od.user_id ,tu.user_firstname,od.price, price * qty as subtotal,od.description ,od.order_detail_status from tb_order_detail od inner join tb_product p on p.product_id = od.product_id JOIN tb_user tu ON tu.user_id=od.user_id where order_id = ?"
 	SELECT_ALL_ORDER_BY_STORE        = "SELECT * FROM tb_order WHERE store_id = ?"
 	SELECT_ALL_SOLD_ITEM_BY_ORDER_ID = "SELECT u.user_firstname,p.product_name,od.price,od.qty,price*qty as subtotal,od.order_detail_status FROM tb_order_detail od JOIN tb_product p ON od.product_id=p.product_id JOIN tb_user u ON od.user_id=u.user_id JOIN tb_order o ON o.order_id=od.order_id WHERE o.order_id = ?"
 	//GET ALL ORDER BY USER

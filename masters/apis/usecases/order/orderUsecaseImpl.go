@@ -16,18 +16,18 @@ func InitOrderUseCaseImpl(order orderRepositories.OrderRepo) OrderUsecase {
 }
 
 // AddOrder usecase
-func (o *OrderUsecaseImpl) AddOrder(order *models.Order) error {
+func (o *OrderUsecaseImpl) AddOrder(order *models.Order) (*models.Order, error) {
 	println("MASUK USECASE")
 	order.OrderCreated = utils.GetTimeNow()
 	err := validation.CheckEmpty(order)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	error := o.orderRepo.AddOrder(order)
+	error, _ := o.orderRepo.AddOrder(order)
 	if error != nil {
-		return error
+		return error, nil
 	}
-	return nil
+	return error, err
 }
 
 // GetOrderById
