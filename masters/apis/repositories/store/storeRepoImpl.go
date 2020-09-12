@@ -152,7 +152,7 @@ func (s *StoreRepoImpl) Auth(username string) (*models.Store, error) {
 		fmt.Println(err)
 		return &store, err
 	}
-	errQuery := stmt.QueryRow(username).Scan(&store.StoreID, &store.StoreUsername, &store.StoreCategory.StoreCategoryID, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StoreUsername, &store.StorePassword, &store.StoreImage, &store.QrPath)
+	errQuery := stmt.QueryRow(username).Scan(&store.StoreID, &store.StoreName, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StoreUsername, &store.StorePassword, &store.StoreImage, &store.QrPath, &store.StoreCategory.StoreCategoryID)
 	log.Println(errQuery)
 	if errQuery != nil {
 		return &store, err

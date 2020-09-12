@@ -1,8 +1,8 @@
-package usecases
+package feedbackUsecases
 
 import (
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	feedbackRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/feedback"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
 	"github.com/inact25/PickMyFood-BackEnd/utils/validation"
 
@@ -10,7 +10,7 @@ import (
 )
 
 type FeedbackUsecaseImpl struct {
-	feedbackRepo repositories.FeedbackRepo
+	feedbackRepo feedbackRepositories.FeedbackRepo
 }
 
 func (s FeedbackUsecaseImpl) GetFeedbacks() ([]*models.FeedbackModels, error) {
@@ -63,6 +63,6 @@ func (s FeedbackUsecaseImpl) DeleteFeedback(ID string) error {
 	return nil
 }
 
-func InitFeedbackUsecase(feedbackRepo repositories.FeedbackRepo) FeedbackUseCases {
+func InitFeedbackUsecase(feedbackRepo feedbackRepositories.FeedbackRepo) FeedbackUseCases {
 	return &FeedbackUsecaseImpl{feedbackRepo}
 }

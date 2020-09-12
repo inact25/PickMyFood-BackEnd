@@ -1,4 +1,4 @@
-package controllers
+package feedbackControllers
 
 import (
 	"log"
@@ -6,15 +6,15 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
+	feedbackUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/feedback"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
 )
 
 type FeedbacksHandler struct {
-	feedbackUsecases usecases.FeedbackUseCases
+	feedbackUsecases feedbackUsecases.FeedbackUseCases
 }
 
-func FeedbacksController(feedbackUsecases usecases.FeedbackUseCases) *FeedbacksHandler {
+func FeedbacksController(feedbackUsecases feedbackUsecases.FeedbackUseCases) *FeedbacksHandler {
 	return &FeedbacksHandler{feedbackUsecases: feedbackUsecases}
 }
 
