@@ -1,6 +1,6 @@
 package models
 
 type PoinModels struct {
-	PoinID  string `json:"poin_id"`
-	StoreID string `json:"store_id"`
+	PoinID  string `json:"poinID"`
+	StoreID string `json:"storeID"`
 }

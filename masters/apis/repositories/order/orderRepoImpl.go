@@ -35,6 +35,7 @@ func (o *OrderRepoImpl) AddOrder(order *models.Order) error {
 		tx.Rollback()
 		return err
 	}
+
 	println("MASUK TB ORDER")
 
 	stmt, err = tx.Prepare(utils.INSERT_ORDER_DETAIl)
