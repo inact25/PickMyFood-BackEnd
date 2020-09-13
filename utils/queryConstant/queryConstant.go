@@ -67,9 +67,9 @@ const (
 	UPDATE_PRODUCT_STOCK = "UPDATE tb_product SET product_stock=product_stock - ? WHERE product_id = ? "
 	//GET ORDER BY ID
 	SELECT_ORDER_BY_ID               = "SELECT * FROM tb_order WHERE order_id = ?"
-	SELECT_SOLD_ITEM_ORDER_BY_ID     = "select od.qty,od.product_id,p.product_name,od.user_id ,tu.user_firstname,od.price, price * qty as subtotal,od.description ,od.order_detail_status from tb_order_detail od inner join tb_product p on p.product_id = od.product_id JOIN tb_user tu ON tu.user_id=od.user_id where order_id = ?"
+	SELECT_SOLD_ITEM_ORDER_BY_ID     = "select od.qty,od.product_id,p.product_name,od.user_id ,tu.user_firstname,od.price,od.description ,od.order_detail_status from tb_order_detail od inner join tb_product p on p.product_id = od.product_id JOIN tb_user tu ON tu.user_id=od.user_id where order_id = ?"
 	SELECT_ALL_ORDER_BY_STORE        = "SELECT * FROM tb_order WHERE store_id = ? ORDER BY order_created ASC"
-	SELECT_ALL_SOLD_ITEM_BY_ORDER_ID = "SELECT u.user_firstname,p.product_name,od.price,od.qty,price*qty as subtotal,od.order_detail_status FROM tb_order_detail od JOIN tb_product p ON od.product_id=p.product_id JOIN tb_user u ON od.user_id=u.user_id JOIN tb_order o ON o.order_id=od.order_id WHERE o.order_id = ?"
+	SELECT_ALL_SOLD_ITEM_BY_ORDER_ID = "SELECT u.user_firstname,p.product_name,od.price,od.qty,od.order_detail_status FROM tb_order_detail od JOIN tb_product p ON od.product_id=p.product_id JOIN tb_user u ON od.user_id=u.user_id JOIN tb_order o ON o.order_id=od.order_id WHERE o.order_id = ?"
 	//GET ALL ORDER BY USER
 	SELECT_ALL_ORDER_BY_USER       = "SELECT distinct o.order_id,o.order_created,o.store_id FROM tb_order o JOIN tb_order_detail od ON o.order_id=od.order_id WHERE od.user_id = ? ORDER BY o.order_created ASC"
 	INSERT_TRANSACTION             = "INSERT INTO tb_transaction (transaction_id,order_id,user_id,amount,transaction_created) VALUES (?,?,?,?,?)"
@@ -81,4 +81,6 @@ const (
 	SELECT_ALL_TRANSACTION_BY_STORE = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE o.store_id = ? ORDER BY tr.transaction_created"
 	SELECT_ALL_TRANSACTION_BY_USER  = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE tr.user_id = ? ORDER BY tr.transaction_created"
 	SELECT_TRANSACTION_BY_ID        = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE tr.transaction_id = ?"
+	// TOP UP
+	SELECT_ALL_TOP_UP = "SELECT tp.top_up_id,tp.top_up_amount,tp.user_id,u.user_firstname,tp.top_up_date,tp.top_up_status FROM tb_top_up tp JOIN tb_user u ON tp.user_id=u.user_id ORDER BY tp.top_up_date"
 )

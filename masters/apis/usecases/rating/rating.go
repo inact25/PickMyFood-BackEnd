@@ -1,8 +1,8 @@
-package usecases
+package ratingUsecases
 
 import (
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	ratingRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/rating"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
 	"github.com/inact25/PickMyFood-BackEnd/utils/validation"
 
@@ -10,7 +10,7 @@ import (
 )
 
 type RatingUsecaseImpl struct {
-	ratingRepo repositories.RatingRepo
+	ratingRepo ratingRepositories.RatingRepo
 }
 
 func (s RatingUsecaseImpl) GetRatings() ([]*models.RatingModels, error) {
@@ -63,6 +63,6 @@ func (s RatingUsecaseImpl) DeleteRating(ID string) error {
 	return nil
 }
 
-func InitRatingUsecase(ratingRepo repositories.RatingRepo) RatingUseCases {
+func InitRatingUsecase(ratingRepo ratingRepositories.RatingRepo) RatingUseCases {
 	return &RatingUsecaseImpl{ratingRepo}
 }

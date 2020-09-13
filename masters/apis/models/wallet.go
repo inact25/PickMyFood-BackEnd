@@ -7,10 +7,10 @@ type Wallet struct {
 }
 
 type TopUp struct {
-	TopUpID     string `json:"topUpID"`
-	TopUpAmount string `json:"topUpAmount"`
-	userID      string `json:"userID"`
-	TopUpDate   string `json:"topUpDate"`
-	Status      string `json:"status"`
-	User        User   `json:"user"`
+	TopUpID       string `json:"topUpID"`
+	TopUpAmount   string `json:"topUpAmount"`
+	UserID        string `json:"userID"`
+	UserFirstName string `json:"userFirstName"`
+	TopUpDate     string `json:"topUpDate"`
+	TopUpStatus   string `json:"topUpStatus"`
 }

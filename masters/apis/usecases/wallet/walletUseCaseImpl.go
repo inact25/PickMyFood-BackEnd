@@ -69,14 +69,10 @@ func (w *WalletUseCaseImpl) UpdateAmountWallet(wallet *models.Wallet, userID str
 	return nil
 }
 
-// func (w *WalletUseCaseImpl) UpdatePoin(id string, user *models.User) error {
-// 	err := validation.CheckEmpty(user.UserPoin)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	error := w.walletRepo.UpdatePoin(id, user)
-// 	if error != nil {
-// 		return error
-// 	}
-// 	return nil
-// }
+func (w *WalletUseCaseImpl) GetAllTopUp() ([]*models.TopUp, error) {
+	listTopUp, err := w.walletRepo.GetAllTopUp()
+	if err != nil {
+		return nil, err
+	}
+	return listTopUp, nil
+}

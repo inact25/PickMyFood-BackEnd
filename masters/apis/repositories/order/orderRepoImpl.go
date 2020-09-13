@@ -87,7 +87,7 @@ func (o OrderRepoImpl) GetOrderByID(orderID string) (*models.Order, error) {
 
 	var soldItem models.SoldItems
 	for rows.Next() {
-		err := rows.Scan(&soldItem.Qty, &soldItem.ProductID, &soldItem.ProductName, &soldItem.UserID, &soldItem.UserFirstName, &soldItem.Price, &soldItem.Subtotal, &soldItem.Note, &soldItem.OrderDetailStatus)
+		err := rows.Scan(&soldItem.Qty, &soldItem.ProductID, &soldItem.ProductName, &soldItem.UserID, &soldItem.UserFirstName, &soldItem.Subtotal, &soldItem.Note, &soldItem.OrderDetailStatus)
 		if err != nil {
 			log.Print(err)
 			return nil, err
@@ -137,7 +137,7 @@ func (o *OrderRepoImpl) GetAllOrderByStore(storeID string) ([]*models.Order, err
 		soldItem := models.SoldItems{}
 		for rows.Next() {
 			println("MASUK SINI")
-			err := rows.Scan(&soldItem.UserFirstName, &soldItem.ProductName, &soldItem.Price, &soldItem.Qty, &soldItem.Subtotal, &soldItem.OrderDetailStatus)
+			err := rows.Scan(&soldItem.UserFirstName, &soldItem.ProductName, &soldItem.Subtotal, &soldItem.Qty, &soldItem.OrderDetailStatus)
 			if err != nil {
 				log.Print(err)
 				return nil, err
@@ -188,7 +188,7 @@ func (o *OrderRepoImpl) GetAllOrderByUser(userID string) ([]*models.Order, error
 		soldItem := models.SoldItems{}
 		for rows.Next() {
 			println("MASUK SINI")
-			err := rows.Scan(&soldItem.UserFirstName, &soldItem.ProductName, &soldItem.Price, &soldItem.Qty, &soldItem.Subtotal, &soldItem.OrderDetailStatus)
+			err := rows.Scan(&soldItem.UserFirstName, &soldItem.ProductName, &soldItem.Subtotal, &soldItem.Qty, &soldItem.OrderDetailStatus)
 			if err != nil {
 				log.Print(err)
 				return nil, err

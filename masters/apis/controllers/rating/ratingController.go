@@ -1,4 +1,4 @@
-package controllers
+package ratingControllers
 
 import (
 	"log"
@@ -6,15 +6,15 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
+	ratingUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/rating"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
 )
 
 type RatingsHandler struct {
-	ratingUsecases usecases.RatingUseCases
+	ratingUsecases ratingUsecases.RatingUseCases
 }
 
-func RatingController(ratingUsecases usecases.RatingUseCases) *RatingsHandler {
+func RatingController(ratingUsecases ratingUsecases.RatingUseCases) *RatingsHandler {
 	return &RatingsHandler{ratingUsecases: ratingUsecases}
 }
 

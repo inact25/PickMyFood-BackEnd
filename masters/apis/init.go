@@ -8,9 +8,10 @@ import (
 	paymentControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/payment"
 	poinControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/poin"
 	productControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/product"
+	ratingControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/rating"
 
 	"github.com/gorilla/mux"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers"
+
 	productCategoryControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/productCategory"
 	storeControllers "github.com/inact25/PickMyFood-BackEnd/masters/apis/controllers/store"
 
@@ -24,6 +25,7 @@ import (
 	poinRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/poin"
 	productRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/product"
 	productCategoryRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/productCategory"
+	ratingRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/rating"
 	storerepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/store"
 	storeCategoryRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/storeCategory"
 	userRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/user"
@@ -34,14 +36,11 @@ import (
 	poinUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/poin"
 	productUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/product"
 	productCategoryUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/productCategory"
+	ratingUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/rating"
 	storeusecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/store"
 	storeCategoryUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/storeCatergory"
 	userUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/user"
 	walletusecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/wallet"
-
-	ratingRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
-
-	ratingUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
 )
 
 func Init(r *mux.Router, db *sql.DB) {
@@ -101,7 +100,7 @@ func Init(r *mux.Router, db *sql.DB) {
 	//rating
 	ratingRepo := ratingRepositories.InitRatingRepoImpl(db)
 	ratingUseCase := ratingUsecases.InitRatingUsecase(ratingRepo)
-	ratingController := controllers.RatingController(ratingUseCase)
+	ratingController := ratingControllers.RatingController(ratingUseCase)
 	ratingController.RatingAPI(r)
 
 	r.Use(middlewares.ActivityLogMiddleware)

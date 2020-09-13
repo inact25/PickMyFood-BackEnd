@@ -1,4 +1,4 @@
-package repositories
+package ratingRepositories
 
 import "github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 

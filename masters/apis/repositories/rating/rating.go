@@ -1,4 +1,4 @@
-package repositories
+package ratingRepositories
 
 import (
 	"database/sql"

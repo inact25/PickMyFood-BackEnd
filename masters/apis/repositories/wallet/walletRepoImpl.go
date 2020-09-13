@@ -91,22 +91,25 @@ func (w *WalletRepoImpl) UpdateAmountWallet(wallet *models.Wallet, userID string
 	return tx.Commit()
 }
 
-// // update poin
-// func (w *WalletRepoImpl) UpdatePoin(id string, user *models.User) error {
-// 	tx, err := w.db.Begin()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	stmt, err := tx.Prepare(utils.UPDATE_POIN_USER)
-// 	defer stmt.Close()
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-// 	_, err = stmt.Exec(user.UserPoin, id)
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-// 	return tx.Commit()
-// }
+func (w *WalletRepoImpl) GetAllTopUp() ([]*models.TopUp, error) {
+	stmt, err := w.db.Prepare(utils.SELECT_ALL_TOP_UP)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		return nil, err
+	}
+	listTopUp := []*models.TopUp{}
+	for rows.Next() {
+		topUP := models.TopUp{}
+		err := rows.Scan(&topUP.TopUpID, &topUP.TopUpAmount, &topUP.UserID, &topUP.UserFirstName, &topUP.TopUpDate, &topUP.TopUpStatus)
+		if err != nil {
+			return nil, err
+		}
+		listTopUp = append(listTopUp, &topUP)
+	}
+	return listTopUp, nil
+}

@@ -1,4 +1,4 @@
-package usecases
+package ratingUsecases
 
 import "github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 
