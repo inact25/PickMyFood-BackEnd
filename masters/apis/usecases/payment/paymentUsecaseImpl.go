@@ -40,3 +40,24 @@ func (p *PaymentUsecaseImpl) UpdateTransaction(storeID, amount, orderID, userID 
 	}
 	return nil
 }
+func (p *PaymentUsecaseImpl) GetAllTransactionByStore(storeID string) ([]*models.Payment, error) {
+	listPayment, err := p.PaymentRepo.GetAllTransactionByStore(storeID)
+	if err != nil {
+		return nil, err
+	}
+	return listPayment, nil
+}
+func (p *PaymentUsecaseImpl) GetAllTransactionByUser(userID string) ([]*models.Payment, error) {
+	listPayment, err := p.PaymentRepo.GetAllTransactionByUser(userID)
+	if err != nil {
+		return nil, err
+	}
+	return listPayment, nil
+}
+func (p *PaymentUsecaseImpl) GetTransactionByID(id string) (*models.Payment, error) {
+	Payment, err := p.PaymentRepo.GetTransactionByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return Payment, nil
+}

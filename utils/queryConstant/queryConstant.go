@@ -3,7 +3,7 @@ package utils
 const (
 	INSERT_USER             = "insert into tb_user (user_id,user_firstname,user_lastname,user_address,user_phone,user_email,user_status) values (?,?,?,?,?,?,?)"
 	INSERT_AUTH             = "insert into tb_auth(username,password,user_id) values (?,?,?)"
-	SELECT_USER_BY_ID       = "select auth.username, auth.password,user.user_image,user.user_poin,user.user_status, user.user_firstname, user.user_lastname, user.user_phone, user.user_address from tb_user user inner join tb_auth auth on auth.user_id = user.user_id where user.user_id = ?"
+	SELECT_USER_BY_ID       = "select user.user_id,auth.username, auth.password,user.user_email,user.user_image,user.user_poin,user.user_status, user.user_firstname, user.user_lastname, user.user_phone, user.user_address from tb_user user inner join tb_auth auth on auth.user_id = user.user_id where user.user_id = ?"
 	SELECT_ALL_USER         = "SELECT tu.user_id,tu.user_firstname,tu.user_lastname,tu.user_address,tu.user_phone,tu.user_poin,tu.user_email,tu.user_image,tu.user_status,ta.username,ta.password,ta.user_level_id,ta.user_status FROM tb_user tu JOIN tb_auth ta ON tu.user_id=ta.user_id WHERE tu.user_firstname OR tu.user_lastname LIKE ? LIMIT %s ,%s"
 	UPDATE_USER             = "UPDATE tb_user SET user_firstname=?,user_lastname=?,user_address=?,user_phone=?,user_image=?,user_status=? WHERE user_id=?"
 	UPDATE_AUTH             = "UPDATE tb_auth SET username=?,password=? WHERE user_id=?"
@@ -68,13 +68,17 @@ const (
 	//GET ORDER BY ID
 	SELECT_ORDER_BY_ID               = "SELECT * FROM tb_order WHERE order_id = ?"
 	SELECT_SOLD_ITEM_ORDER_BY_ID     = "select od.qty,od.product_id,p.product_name,od.user_id ,tu.user_firstname,od.price, price * qty as subtotal,od.description ,od.order_detail_status from tb_order_detail od inner join tb_product p on p.product_id = od.product_id JOIN tb_user tu ON tu.user_id=od.user_id where order_id = ?"
-	SELECT_ALL_ORDER_BY_STORE        = "SELECT * FROM tb_order WHERE store_id = ?"
+	SELECT_ALL_ORDER_BY_STORE        = "SELECT * FROM tb_order WHERE store_id = ? ORDER BY order_created ASC"
 	SELECT_ALL_SOLD_ITEM_BY_ORDER_ID = "SELECT u.user_firstname,p.product_name,od.price,od.qty,price*qty as subtotal,od.order_detail_status FROM tb_order_detail od JOIN tb_product p ON od.product_id=p.product_id JOIN tb_user u ON od.user_id=u.user_id JOIN tb_order o ON o.order_id=od.order_id WHERE o.order_id = ?"
 	//GET ALL ORDER BY USER
-	SELECT_ALL_ORDER_BY_USER       = "SELECT distinct o.order_id,o.order_created,o.store_id FROM tb_order o JOIN tb_order_detail od ON o.order_id=od.order_id WHERE od.user_id = ?"
+	SELECT_ALL_ORDER_BY_USER       = "SELECT distinct o.order_id,o.order_created,o.store_id FROM tb_order o JOIN tb_order_detail od ON o.order_id=od.order_id WHERE od.user_id = ? ORDER BY o.order_created ASC"
 	INSERT_TRANSACTION             = "INSERT INTO tb_transaction (transaction_id,order_id,user_id,amount,transaction_created) VALUES (?,?,?,?,?)"
 	UPDATE_WALLET_AMOUNT_USER      = "UPDATE tb_wallet SET amount = amount - ? WHERE user_id = ? "
 	UPDATE_ORDER_DETAIL_STATUS     = "UPDATE tb_order_detail SET order_detail_status = 'Paid' WHERE order_id = ?"
 	UPDATE_TRANSACTION_PICK        = "UPDATE tb_transaction SET transaction_status = 'Picked' WHERE order_id = ?"
 	UPDATE_POIN_USER_AFTER_PAYMENT = "UPDATE tb_user SET user_poin = user_poin + '1' WHERE user_id = ?"
+	// TRANSACTIOn
+	SELECT_ALL_TRANSACTION_BY_STORE = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE o.store_id = ? ORDER BY tr.transaction_created"
+	SELECT_ALL_TRANSACTION_BY_USER  = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE tr.user_id = ? ORDER BY tr.transaction_created"
+	SELECT_TRANSACTION_BY_ID        = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE tr.transaction_id = ?"
 )

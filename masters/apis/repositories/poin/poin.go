@@ -1,4 +1,4 @@
-package repositories
+package poinRepositories
 
 import (
 	"database/sql"

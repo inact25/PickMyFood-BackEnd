@@ -74,7 +74,7 @@ func (u *UserRepoImpl) GetUserByID(id string) (*models.User, error) {
 	if err != nil {
 		return &user, err
 	}
-	errQuery := stmt.QueryRow(id).Scan(&user.Auth.Username, &user.Auth.Password, &user.UserImage, &user.UserPoin, &user.UserStatus, &user.UserFirstName, &user.UserLastName, &user.UserPhone, &user.UserAddress)
+	errQuery := stmt.QueryRow(id).Scan(&user.UserID, &user.Auth.Username, &user.Auth.Password, &user.UserEmail, &user.UserImage, &user.UserPoin, &user.UserStatus, &user.UserFirstName, &user.UserLastName, &user.UserPhone, &user.UserAddress)
 
 	if errQuery != nil {
 		return &user, err

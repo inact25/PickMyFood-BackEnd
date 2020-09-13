@@ -91,3 +91,67 @@ func (p *PaymentRepoImpl) UpdateTransaction(storeID, amount, orderID, userID str
 	}
 	return tx.Commit()
 }
+func (p *PaymentRepoImpl) GetAllTransactionByStore(storeID string) ([]*models.Payment, error) {
+	println(storeID)
+	stmt, err := p.db.Prepare(utils.SELECT_ALL_TRANSACTION_BY_STORE)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(storeID)
+	if err != nil {
+		return nil, err
+	}
+	println("MASUK SINI")
+	listTransaction := []*models.Payment{}
+	for rows.Next() {
+		transaction := models.Payment{}
+		err := rows.Scan(&transaction.TransactionID, &transaction.OrderID, &transaction.UserID, &transaction.UserFirstName, &transaction.Amount, &transaction.TransactionCreated, &transaction.TransactionStatus)
+		if err != nil {
+			return nil, err
+		}
+		listTransaction = append(listTransaction, &transaction)
+	}
+	return listTransaction, nil
+}
+
+func (p *PaymentRepoImpl) GetAllTransactionByUser(userID string) ([]*models.Payment, error) {
+	println(userID)
+	stmt, err := p.db.Prepare(utils.SELECT_ALL_TRANSACTION_BY_USER)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(userID)
+	if err != nil {
+		return nil, err
+	}
+	println("MASUK SINI")
+	listTransaction := []*models.Payment{}
+	for rows.Next() {
+		transaction := models.Payment{}
+		err := rows.Scan(&transaction.TransactionID, &transaction.OrderID, &transaction.UserID, &transaction.UserFirstName, &transaction.Amount, &transaction.TransactionCreated, &transaction.TransactionStatus)
+		if err != nil {
+			return nil, err
+		}
+		listTransaction = append(listTransaction, &transaction)
+	}
+	return listTransaction, nil
+}
+func (p *PaymentRepoImpl) GetTransactionByID(id string) (*models.Payment, error) {
+	stmt, err := p.db.Prepare(utils.SELECT_TRANSACTION_BY_ID)
+	transaction := models.Payment{}
+	if err != nil {
+		return &transaction, err
+	}
+	errQuery := stmt.QueryRow(id).Scan(&transaction.TransactionID, &transaction.OrderID, &transaction.UserID, &transaction.UserFirstName, &transaction.Amount, &transaction.TransactionCreated, &transaction.TransactionStatus)
+
+	if errQuery != nil {
+		return &transaction, err
+	}
+
+	defer stmt.Close()
+	return &transaction, nil
+}

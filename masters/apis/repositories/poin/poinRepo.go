@@ -1,8 +1,8 @@
-package usecases
+package poinRepositories
 
 import "github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 
-type PoinUseCases interface {
+type PoinRepo interface {
 	GetPoints() ([]*models.PoinModels, error)
 	GetPointByID(ID string) (*models.PoinModels, error)
 	PostPoint(d *models.PoinModels) error

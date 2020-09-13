@@ -19,14 +19,17 @@ func InitPaymentController(paymentUsecase paymentUsecases.PaymentUsecase) *Payme
 }
 
 func (p *PaymentHandler) PaymentAPI(r *mux.Router) {
-	// payments := r.PathPrefix("/payments").Subrouter()
-	// payments.HandleFunc("", p.ListAllPayment).Methods(http.MethodGet)
 
 	payment := r.PathPrefix("/payment").Subrouter()
-	// payment.HandleFunc("/{id}", p.GetPaymentByID).Methods(http.MethodGet)
 	payment.HandleFunc("", p.PaymentWallet).Methods(http.MethodPost)
+
 	transaction := r.PathPrefix("/transaction").Subrouter()
 	transaction.HandleFunc("", p.UpdateTransaction).Queries("storeID", "{storeID}", "amount", "{amount}", "orderID", "{orderID}", "userID", "{userID}").Methods(http.MethodPost)
+	transaction.HandleFunc("/{id}", p.GetTransactionByID).Methods(http.MethodGet)
+
+	transactions := r.PathPrefix("/transactions").Subrouter()
+	transactions.HandleFunc("/store/{id}", p.GetTransactionStore).Methods(http.MethodGet)
+	transactions.HandleFunc("/user/{id}", p.GetTransactionUser).Methods(http.MethodGet)
 }
 
 func (p *PaymentHandler) PaymentWallet(w http.ResponseWriter, r *http.Request) {
@@ -61,5 +64,33 @@ func (p *PaymentHandler) UpdateTransaction(w http.ResponseWriter, r *http.Reques
 		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
 	} else {
 		utils.HandleResponse(w, http.StatusOK, "Transaction Update Succesfully")
+	}
+}
+
+func (p *PaymentHandler) GetTransactionStore(w http.ResponseWriter, r *http.Request) {
+	storeID := utils.DecodePathVariabel("id", r)
+	transactions, err := p.paymentUsecase.GetAllTransactionByStore(storeID)
+	if err != nil {
+		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
+	} else {
+		utils.HandleResponse(w, http.StatusOK, transactions)
+	}
+}
+func (p *PaymentHandler) GetTransactionUser(w http.ResponseWriter, r *http.Request) {
+	userID := utils.DecodePathVariabel("id", r)
+	transactions, err := p.paymentUsecase.GetAllTransactionByUser(userID)
+	if err != nil {
+		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
+	} else {
+		utils.HandleResponse(w, http.StatusOK, transactions)
+	}
+}
+func (p *PaymentHandler) GetTransactionByID(w http.ResponseWriter, r *http.Request) {
+	transactionID := utils.DecodePathVariabel("id", r)
+	transaction, err := p.paymentUsecase.GetTransactionByID(transactionID)
+	if err != nil {
+		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
+	} else {
+		utils.HandleResponse(w, http.StatusOK, transaction)
 	}
 }

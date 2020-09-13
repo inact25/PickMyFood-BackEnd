@@ -1,15 +1,15 @@
-package usecases
+package poinUsecases
 
 import (
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories"
+	poinRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/poin"
 	"github.com/inact25/PickMyFood-BackEnd/utils/validation"
 
 	"gopkg.in/validator.v2"
 )
 
 type PoinUsecaseImpl struct {
-	poinRepo repositories.PoinRepo
+	poinRepo poinRepositories.PoinRepo
 }
 
 func (s PoinUsecaseImpl) GetPoints() ([]*models.PoinModels, error) {
@@ -73,6 +73,6 @@ func (s PoinUsecaseImpl) UpdateUserPoint(ID string, data *models.User) error {
 	return nil
 }
 
-func InitPoinUsecase(poinRepo repositories.PoinRepo) PoinUseCases {
+func InitPoinUsecase(poinRepo poinRepositories.PoinRepo) PoinUseCases {
 	return &PoinUsecaseImpl{poinRepo}
 }

@@ -1,4 +1,4 @@
-package controllers
+package poinControllers
 
 import (
 	"log"
@@ -6,15 +6,15 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
-	"github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases"
+	poinUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/poin"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
 )
 
 type PointsHandler struct {
-	poinUsecases usecases.PoinUseCases
+	poinUsecases poinUsecases.PoinUseCases
 }
 
-func PointsController(poinUsecases usecases.PoinUseCases) *PointsHandler {
+func PointsController(poinUsecases poinUsecases.PoinUseCases) *PointsHandler {
 	return &PointsHandler{poinUsecases: poinUsecases}
 }
 
@@ -25,7 +25,6 @@ func (s *PointsHandler) PointAPI(r *mux.Router) {
 	r.HandleFunc("/point/post", s.PostPoint).Methods(http.MethodPost)
 	r.HandleFunc("/point/update/{sid}", s.UpdatePoint).Methods(http.MethodPut)
 	r.HandleFunc("/point/delete/{sid}", s.DeletePoint).Methods(http.MethodDelete)
-
 	r.HandleFunc("/point/update_user_point/{sid}", s.UpdateUserPoint).Methods(http.MethodPut)
 }
 
