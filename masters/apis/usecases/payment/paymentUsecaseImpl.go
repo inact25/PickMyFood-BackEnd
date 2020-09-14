@@ -1,6 +1,8 @@
 package paymentUsecases
 
 import (
+	"errors"
+
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	paymentRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/payment"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
@@ -30,6 +32,10 @@ func (p *PaymentUsecaseImpl) PaymentWallet(payment *models.Payment) error {
 }
 
 func (p *PaymentUsecaseImpl) UpdateTransaction(storeID, amount, orderID, userID string) error {
+	if !p.PaymentRepo.GetValidation(orderID, storeID) {
+		println("MASUK SINI", p.PaymentRepo.GetValidation(orderID, storeID))
+		return errors.New("Not Valid")
+	}
 	err := validation.CheckEmpty(storeID, amount, orderID, amount)
 	if err != nil {
 		return err

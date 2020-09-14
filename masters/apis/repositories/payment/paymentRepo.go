@@ -8,4 +8,5 @@ type PaymentRepo interface {
 	GetAllTransactionByStore(storeID string) ([]*models.Payment, error)
 	GetAllTransactionByUser(userID string) ([]*models.Payment, error)
 	GetTransactionByID(id string) (*models.Payment, error)
+	GetValidation(orderID, storeID string) bool
 }

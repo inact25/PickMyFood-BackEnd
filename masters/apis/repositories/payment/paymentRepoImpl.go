@@ -155,3 +155,20 @@ func (p *PaymentRepoImpl) GetTransactionByID(id string) (*models.Payment, error)
 	defer stmt.Close()
 	return &transaction, nil
 }
+
+func (p *PaymentRepoImpl) GetValidation(orderID, storeID string) bool {
+	stmt, err := p.db.Prepare(utils.SELECT_VALIDATION_ORDER)
+	order := models.Order{}
+	if err != nil {
+		println(err)
+		return false
+	}
+	errQuery := stmt.QueryRow(orderID, storeID).Scan(&order.OrderID, &order.OrderCreated, &order.StoreID)
+
+	if errQuery != nil {
+		println(errQuery)
+		return false
+	}
+	defer stmt.Close()
+	return true
+}

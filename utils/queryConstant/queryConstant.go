@@ -82,5 +82,6 @@ const (
 	SELECT_ALL_TRANSACTION_BY_USER  = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE tr.user_id = ? ORDER BY tr.transaction_created"
 	SELECT_TRANSACTION_BY_ID        = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE tr.transaction_id = ?"
 	// TOP UP
-	SELECT_ALL_TOP_UP = "SELECT tp.top_up_id,tp.top_up_amount,tp.user_id,u.user_firstname,tp.top_up_date,tp.top_up_status FROM tb_top_up tp JOIN tb_user u ON tp.user_id=u.user_id ORDER BY tp.top_up_date"
+	SELECT_ALL_TOP_UP       = "SELECT tp.top_up_id,tp.top_up_amount,tp.user_id,u.user_firstname,tp.top_up_date,tp.top_up_status FROM tb_top_up tp JOIN tb_user u ON tp.user_id=u.user_id ORDER BY tp.top_up_date"
+	SELECT_VALIDATION_ORDER = "select * from tb_order where order_id = ? and store_id = ?"
 )
