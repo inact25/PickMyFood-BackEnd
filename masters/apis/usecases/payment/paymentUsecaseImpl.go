@@ -33,7 +33,6 @@ func (p *PaymentUsecaseImpl) PaymentWallet(payment *models.Payment) error {
 
 func (p *PaymentUsecaseImpl) UpdateTransaction(storeID, amount, orderID, userID string) error {
 	if !p.PaymentRepo.GetValidation(orderID, storeID) {
-		println("MASUK SINI", p.PaymentRepo.GetValidation(orderID, storeID))
 		return errors.New("Not Valid")
 	}
 	err := validation.CheckEmpty(storeID, amount, orderID, amount)

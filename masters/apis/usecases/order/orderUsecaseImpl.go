@@ -17,7 +17,6 @@ func InitOrderUseCaseImpl(order orderRepositories.OrderRepo) OrderUsecase {
 
 // AddOrder usecase
 func (o *OrderUsecaseImpl) AddOrder(order *models.Order) (*models.Order, error) {
-	println("MASUK USECASE")
 	order.OrderCreated = utils.GetTimeNow()
 	err := validation.CheckEmpty(order)
 	if err != nil {
@@ -54,27 +53,3 @@ func (o *OrderUsecaseImpl) GetAllOrderByUser(userID string) ([]*models.Order, er
 	}
 	return listOrder, nil
 }
-
-// func (o *OrderUsecaseImpl) UpdateOrderPaid(id string, order *models.Order) error {
-// 	err := validation.CheckEmpty(order)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	error := o.orderRepo.UpdateOrderPaid(id, order)
-// 	if error != nil {
-// 		return error
-// 	}
-// 	return nil
-// }
-
-// func (o *OrderUsecaseImpl) UpdateOrderCancel(orderID string, payment *models.Payment) error {
-// 	err := validation.CheckEmpty(payment)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	error := o.orderRepo.UpdateOrderCancel(orderID, payment)
-// 	if error != nil {
-// 		return error
-// 	}
-// 	return nil
-// }

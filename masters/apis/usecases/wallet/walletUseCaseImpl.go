@@ -44,18 +44,14 @@ func (w *WalletUseCaseImpl) UpdateAmountWallet(wallet *models.Wallet, userID str
 	if err != nil {
 		return err
 	}
-	println(currentCash.Amount)
 
 	amount, _ := strconv.Atoi(currentCash.Amount)
-	println(amount)
 
 	walletAmount, _ := strconv.Atoi(wallet.Amount)
 
 	totalAmount := amount + walletAmount
-	println(totalAmount)
 
 	newTotalAmount := strconv.Itoa(totalAmount)
-	println(newTotalAmount)
 
 	wallet.Amount = newTotalAmount
 	err = validation.CheckEmpty(wallet)

@@ -7,8 +7,4 @@ type OrderUsecase interface {
 	GetOrderByID(orderID string) (*models.Order, error)
 	GetAllOrderByStore(storeID string) ([]*models.Order, error)
 	GetAllOrderByUser(userID string) ([]*models.Order, error)
-	// //jika order sudah di bayar
-	// UpdateOrderPaid(orderID string, order *models.Order) error
-	// //jika terjadi cancel order
-	// UpdateOrderCancel(orderID string, payment *models.Payment) error
 }

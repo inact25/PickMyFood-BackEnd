@@ -65,10 +65,6 @@ func (s *StoreUsecaseImpl) DeleteStore(storeID string) error {
 }
 
 func (s *StoreUsecaseImpl) Auth(username string) (*models.Store, error) {
-	//err := validation.CheckEmpty(userModels.UserName, userModels.UserPassword)
-	//if err != nil {
-	//	return nil, err
-	//}
 	auth, err := s.storeRepo.Auth(username)
 	if err != nil {
 		return nil, err

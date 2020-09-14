@@ -85,7 +85,6 @@ func (s *FeedbackRepoImpl) UpdateFeedback(ID string, data *models.FeedbackModels
 		tx.Rollback()
 		return err
 	}
-	println("UPDATE FEEDBACK")
 
 	return tx.Commit()
 }

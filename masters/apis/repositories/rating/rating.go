@@ -85,7 +85,6 @@ func (s *RatingRepoImpl) UpdateRating(data *models.RatingModels, ID string) erro
 		tx.Rollback()
 		return err
 	}
-	println("UPDATE RATING")
 
 	return tx.Commit()
 }

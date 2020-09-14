@@ -18,7 +18,6 @@ func InitOrderRepoImpl(db *sql.DB) OrderRepo {
 }
 
 func (o OrderRepoImpl) AddOrder(order *models.Order) (*models.Order, error) {
-	println("MASUK REPO")
 	orderID := guuid.New()
 	tx, err := o.db.Begin()
 	if err != nil {
@@ -36,7 +35,6 @@ func (o OrderRepoImpl) AddOrder(order *models.Order) (*models.Order, error) {
 		return nil, err
 
 	}
-	println("MASUK TB ORDER")
 
 	stmt, err = tx.Prepare(utils.INSERT_ORDER_DETAIl)
 	defer stmt.Close()
@@ -58,7 +56,6 @@ func (o OrderRepoImpl) AddOrder(order *models.Order) (*models.Order, error) {
 
 	newOrderID := orderID.String()
 	tx.Commit()
-	println("MASUK TB ORDER DETAIL")
 	return o.GetOrderByID(newOrderID)
 }
 
@@ -100,7 +97,6 @@ func (o OrderRepoImpl) GetOrderByID(orderID string) (*models.Order, error) {
 
 // get all order by store
 func (o *OrderRepoImpl) GetAllOrderByStore(storeID string) ([]*models.Order, error) {
-	println("MASUK REPo")
 	stmt, err := o.db.Prepare(utils.SELECT_ALL_ORDER_BY_STORE)
 	if err != nil {
 		return nil, err
@@ -118,7 +114,6 @@ func (o *OrderRepoImpl) GetAllOrderByStore(storeID string) ([]*models.Order, err
 			return nil, err
 		}
 		listOrder = append(listOrder, &order)
-		println("MASUK ORDER")
 
 		//solditems
 		stmt, err = o.db.Prepare(utils.SELECT_ALL_SOLD_ITEM_BY_ORDER_ID)
@@ -132,11 +127,9 @@ func (o *OrderRepoImpl) GetAllOrderByStore(storeID string) ([]*models.Order, err
 			log.Print(err)
 			return nil, err
 		}
-		println("MASUK SINI 1")
 
 		soldItem := models.SoldItems{}
 		for rows.Next() {
-			println("MASUK SINI")
 			err := rows.Scan(&soldItem.UserFirstName, &soldItem.ProductName, &soldItem.Subtotal, &soldItem.Qty, &soldItem.OrderDetailStatus)
 			if err != nil {
 				log.Print(err)
@@ -150,7 +143,6 @@ func (o *OrderRepoImpl) GetAllOrderByStore(storeID string) ([]*models.Order, err
 
 // get all order by user
 func (o *OrderRepoImpl) GetAllOrderByUser(userID string) ([]*models.Order, error) {
-	println("MASUK REPO")
 	stmt, err := o.db.Prepare(utils.SELECT_ALL_ORDER_BY_USER)
 	if err != nil {
 		log.Print(err)
@@ -169,7 +161,6 @@ func (o *OrderRepoImpl) GetAllOrderByUser(userID string) ([]*models.Order, error
 			return nil, err
 		}
 		listOrder = append(listOrder, &order)
-		println("MASUK ORDER")
 
 		//solditems
 		stmt, err = o.db.Prepare(utils.SELECT_ALL_SOLD_ITEM_BY_ORDER_ID)
@@ -183,11 +174,9 @@ func (o *OrderRepoImpl) GetAllOrderByUser(userID string) ([]*models.Order, error
 			log.Print(err)
 			return nil, err
 		}
-		println("MASUK SINI 1")
 
 		soldItem := models.SoldItems{}
 		for rows.Next() {
-			println("MASUK SINI")
 			err := rows.Scan(&soldItem.UserFirstName, &soldItem.ProductName, &soldItem.Subtotal, &soldItem.Qty, &soldItem.OrderDetailStatus)
 			if err != nil {
 				log.Print(err)
@@ -198,35 +187,3 @@ func (o *OrderRepoImpl) GetAllOrderByUser(userID string) ([]*models.Order, error
 	}
 	return listOrder, nil
 }
-
-// func (o *OrderRepoImpl) UpdateOrderCancel(orderID string, payment *models.Payment) error {
-// 	tx, err := o.db.Begin()
-// 	if err != nil {
-// 		return err
-// 	}
-// 	stmt, err := tx.Prepare(utils.UPDATE_ORDER_DETAIL_STATUS_CANCEL)
-// 	defer stmt.Close()
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-// 	_, err = stmt.Exec(order.asdasd, orderID)
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-
-// 	// transactionID := guuid.New()
-// 	stmt, err = tx.Prepare(utils.UPDATE_TRANSACTION_CANCEL)
-// 	defer stmt.Close()
-// 	if err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-
-// 	if _, err := stmt.Exec(payment.TransactionID, storeID, product.ProductName, productCategory.ProductID); err != nil {
-// 		tx.Rollback()
-// 		return err
-// 	}
-// 	return tx.Commit()
-// }

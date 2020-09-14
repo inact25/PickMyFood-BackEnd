@@ -47,7 +47,6 @@ func (p *ProductUsecaseImpl) GetAllProductByStore(storeID string) ([]*models.Pro
 }
 
 func (p *ProductUsecaseImpl) UpdateProductWithPrice(id string, product *models.Product) error {
-	println("MASUK USECASE")
 	product.ProductPrice.DateModified = utils.GetTimeNow()
 	err := validation.CheckEmpty(product)
 	if err != nil {

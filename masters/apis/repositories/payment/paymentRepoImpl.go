@@ -103,7 +103,7 @@ func (p *PaymentRepoImpl) GetAllTransactionByStore(storeID string) ([]*models.Pa
 	if err != nil {
 		return nil, err
 	}
-	println("MASUK SINI")
+
 	listTransaction := []*models.Payment{}
 	for rows.Next() {
 		transaction := models.Payment{}
@@ -128,7 +128,7 @@ func (p *PaymentRepoImpl) GetAllTransactionByUser(userID string) ([]*models.Paym
 	if err != nil {
 		return nil, err
 	}
-	println("MASUK SINI")
+
 	listTransaction := []*models.Payment{}
 	for rows.Next() {
 		transaction := models.Payment{}

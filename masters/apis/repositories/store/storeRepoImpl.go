@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"log"
 
 	guuid "github.com/google/uuid"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
@@ -38,18 +37,6 @@ func (s *StoreRepoImpl) AddStore(store *models.Store) error {
 		return err
 	}
 
-	// stmt, err = tx.Prepare(utils.INSERT_STORE_CATEGORY)
-	// defer stmt.Close()
-	// if err != nil {
-	// 	tx.Rollback()
-	// 	return err
-	// }
-
-	// storeCategoryID := guuid.New()
-	// if _, err := stmt.Exec(storeID); err != nil {
-	// 	tx.Rollback()
-	// 	return err
-	// }
 	return tx.Commit()
 }
 
@@ -87,7 +74,6 @@ func (s *StoreRepoImpl) GetAllStore() ([]*models.Store, error) {
 		store := models.Store{}
 		err := rows.Scan(&store.StoreID, &store.StoreName, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StoreUsername, &store.StorePassword, &store.StoreImage, &store.QrPath, &store.StoreCategory.StoreCategoryID, &store.StoreCategory.StoreCategoryName)
 		if err != nil {
-			println(err)
 			return nil, err
 		}
 		listStore = append(listStore, &store)
@@ -145,15 +131,13 @@ func (s *StoreRepoImpl) DeleteStore(storeID string) error {
 
 // //login 2
 func (s *StoreRepoImpl) Auth(username string) (*models.Store, error) {
-	fmt.Println("MASUK REPO", username)
 	stmt, err := s.db.Prepare(utils.STORE_AUTH)
 	store := models.Store{}
 	if err != nil {
-		fmt.Println(err)
+
 		return &store, err
 	}
 	errQuery := stmt.QueryRow(username).Scan(&store.StoreID, &store.StoreName, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StoreUsername, &store.StorePassword, &store.StoreImage, &store.QrPath, &store.StoreCategory.StoreCategoryID)
-	log.Println(errQuery)
 	if errQuery != nil {
 		return &store, err
 	}

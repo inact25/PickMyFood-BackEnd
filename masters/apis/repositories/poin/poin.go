@@ -85,7 +85,6 @@ func (s *PoinRepoImpl) UpdatePoint(data *models.PoinModels, ID string) error {
 		tx.Rollback()
 		return err
 	}
-	println("UPDATE POINT")
 
 	return tx.Commit()
 }
@@ -134,7 +133,6 @@ func (s *PoinRepoImpl) UpdateUserPoint(ID string, data *models.User) error {
 		tx.Rollback()
 		return err
 	}
-	println("UPDATE USER POINT")
 
 	return tx.Commit()
 }

@@ -57,9 +57,6 @@ func (w *WalletRepoImpl) TopUpWallet(topUP *models.TopUp, userID string) error {
 
 // update wallet
 func (w *WalletRepoImpl) UpdateAmountWallet(wallet *models.Wallet, userID string) error {
-	println("MASUK REPO")
-	println(wallet.Amount)
-	println(userID)
 	tx, err := w.db.Begin()
 	if err != nil {
 		return err
@@ -75,7 +72,6 @@ func (w *WalletRepoImpl) UpdateAmountWallet(wallet *models.Wallet, userID string
 		tx.Rollback()
 		return err
 	}
-	println("UPDATE AMOUNT")
 	stmt, err = tx.Prepare(utils.UPDATE_STATUS_TOP_UP)
 
 	if err != nil {
@@ -87,7 +83,6 @@ func (w *WalletRepoImpl) UpdateAmountWallet(wallet *models.Wallet, userID string
 		tx.Rollback()
 		return err
 	}
-	println("UPDATE STATUS")
 	return tx.Commit()
 }
 

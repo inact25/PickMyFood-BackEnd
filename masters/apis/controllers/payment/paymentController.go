@@ -47,12 +47,7 @@ func (p *PaymentHandler) PaymentWallet(w http.ResponseWriter, r *http.Request) {
 			log.Print(err)
 			utils.HandleRequest(w, http.StatusBadGateway)
 		} else {
-			// payment, err := o.paymentUsecase.GetpaymentByID(payment.paymentID)
-			// if err != nil {
-			// 	log.Print(err)
-			// } else {
 			utils.HandleResponse(w, http.StatusOK, payment)
-			// }
 		}
 	}
 }
