@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/inact25/PickMyFood-BackEnd/masters/apis/middlewares"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	storeCategoryUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/storeCatergory"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
@@ -23,6 +24,7 @@ func (sc *StoreCategoryHandler) StoreCategoryAPI(r *mux.Router) {
 	storeCategories.HandleFunc("", sc.ListAllStoreCategory).Methods(http.MethodGet)
 
 	storeCategory := r.PathPrefix("/storeCategory").Subrouter()
+	storeCategory.Use(middlewares.TokenValidationMiddleware)
 	storeCategory.HandleFunc("/{id}", sc.GetStoreCategoryByID).Methods(http.MethodGet)
 	storeCategory.HandleFunc("/add", sc.AddStoreCategory).Methods(http.MethodPost)
 	storeCategory.HandleFunc("/update/{id}", sc.UpdateStoreCategory).Methods(http.MethodPut)

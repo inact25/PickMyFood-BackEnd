@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/inact25/PickMyFood-BackEnd/masters/apis/middlewares"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	walletusecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/wallet"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
@@ -20,12 +21,12 @@ func WalletController(WalletUsecases walletusecases.WalletUseCases) *WalletHandl
 
 func (wa *WalletHandler) WalletApi(r *mux.Router) {
 	wallet := r.PathPrefix("/wallet").Subrouter()
-	// wallet.Use(middlewares.TokenValidationMiddleware)
 	wallet.HandleFunc("/{id}", wa.WalletByID).Methods(http.MethodGet)
 	wallet.HandleFunc("/topUp/{id}", wa.WalletTopUp).Methods(http.MethodPost)
 	wallet.HandleFunc("/transfer/{id}", wa.WalletUpdateAmount).Methods(http.MethodPost)
 
 	topUp := r.PathPrefix("/topUp").Subrouter()
+	topUp.Use(middlewares.TokenValidationMiddleware)
 	topUp.HandleFunc("", wa.ListTopUp).Methods(http.MethodGet)
 }
 

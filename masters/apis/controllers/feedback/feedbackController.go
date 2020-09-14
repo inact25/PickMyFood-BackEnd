@@ -20,11 +20,11 @@ func FeedbacksController(feedbackUsecases feedbackUsecases.FeedbackUseCases) *Fe
 
 func (s *FeedbacksHandler) FeedbackAPI(r *mux.Router) {
 	// FeedbacksHandler := FeedbacksHandler{service}
-	r.HandleFunc("/feedbacks", s.GetFeedbacks).Methods(http.MethodGet)
 	r.HandleFunc("/feedback/{sid}", s.GetFeedbackByID).Methods(http.MethodGet)
 	r.HandleFunc("/feedback/post", s.PostFeedback).Methods(http.MethodPost)
 	r.HandleFunc("/feedback/update/{sid}", s.UpdateFeedback).Methods(http.MethodPut)
 	r.HandleFunc("/feedback/delete/{sid}", s.DeleteFeedback).Methods(http.MethodDelete)
+	r.HandleFunc("/feedbacks", s.GetFeedbacks).Methods(http.MethodGet)
 
 }
 

@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/inact25/PickMyFood-BackEnd/masters/apis/middlewares"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	userUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/user"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
@@ -21,12 +22,15 @@ func UsersController(UserUsecases userUsecases.UserUseCase) *UsersHandler {
 
 func (u *UsersHandler) Authenticate(r *mux.Router) {
 	user := r.PathPrefix("/user").Subrouter()
-	user.HandleFunc("", u.ListAllUser).Queries("keyword", "{keyword}", "page", "{page}", "limit", "{limit}").Methods(http.MethodGet)
 	user.HandleFunc("/{id}", u.GetUserId).Methods(http.MethodGet)
 	user.HandleFunc("/register", u.Register).Methods(http.MethodPost)
 	user.HandleFunc("/login", u.Login).Methods(http.MethodPost)
 	user.HandleFunc("/update/{id}", u.UpdateUser).Methods(http.MethodPut)
 	user.HandleFunc("/delete/{id}", u.DeleteUser).Methods(http.MethodDelete)
+
+	users := r.PathPrefix("/user").Subrouter()
+	users.Use(middlewares.TokenValidationMiddleware)
+	users.HandleFunc("", u.ListAllUser).Queries("keyword", "{keyword}", "page", "{page}", "limit", "{limit}").Methods(http.MethodGet)
 }
 
 func (u *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {

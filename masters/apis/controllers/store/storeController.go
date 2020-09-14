@@ -27,6 +27,8 @@ func (s *StoreHandler) StoreAPI(r *mux.Router) {
 	store.HandleFunc("/{id}", s.GetStoreByID).Methods(http.MethodGet)
 	store.HandleFunc("/register", s.RegisterStore).Methods(http.MethodPost)
 	store.HandleFunc("/login", s.LoginStore).Methods(http.MethodPost)
+
+	// store.Use(middlewares.TokenValidationMiddleware)
 	store.HandleFunc("/update/{id}", s.UpdateStore).Methods(http.MethodPut)
 	store.HandleFunc("/delete/{id}", s.DeleteStore).Methods(http.MethodDelete)
 }

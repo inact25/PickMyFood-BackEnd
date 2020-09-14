@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/inact25/PickMyFood-BackEnd/masters/apis/middlewares"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	productUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/product"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
@@ -24,9 +25,12 @@ func (p *ProductHandler) ProductAPI(r *mux.Router) {
 
 	product := r.PathPrefix("/product").Subrouter()
 	product.HandleFunc("/{id}", p.GetProductByID).Methods(http.MethodGet)
-	product.HandleFunc("/add/{id}", p.AddProduct).Methods(http.MethodPost)
-	product.HandleFunc("/update/{id}", p.UpdateProduct).Methods(http.MethodPut)
-	product.HandleFunc("/delete/{id}", p.DeleteProduct).Methods(http.MethodDelete)
+
+	productMid := r.PathPrefix("/product").Subrouter()
+	productMid.Use(middlewares.TokenValidationMiddleware)
+	productMid.HandleFunc("/add/{id}", p.AddProduct).Methods(http.MethodPost)
+	productMid.HandleFunc("/update/{id}", p.UpdateProduct).Methods(http.MethodPut)
+	productMid.HandleFunc("/delete/{id}", p.DeleteProduct).Methods(http.MethodDelete)
 }
 
 func (p *ProductHandler) AddProduct(w http.ResponseWriter, r *http.Request) {

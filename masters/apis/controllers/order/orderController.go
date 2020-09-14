@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/inact25/PickMyFood-BackEnd/masters/apis/middlewares"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	orderUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/order"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
@@ -20,8 +21,11 @@ func InitOrderController(orderUsecase orderUsecases.OrderUsecase) *OrderHandler 
 
 func (o *OrderHandler) OrderAPI(r *mux.Router) {
 	orders := r.PathPrefix("/orders").Subrouter()
-	orders.HandleFunc("/store/{id}", o.ListAllOrderStore).Methods(http.MethodGet)
 	orders.HandleFunc("/user/{id}", o.ListAllOrderUser).Methods(http.MethodGet)
+
+	ordersStore := r.PathPrefix("/orders").Subrouter()
+	ordersStore.Use(middlewares.TokenValidationMiddleware)
+	ordersStore.HandleFunc("/store/{id}", o.ListAllOrderStore).Methods(http.MethodGet)
 
 	order := r.PathPrefix("/order").Subrouter()
 	order.HandleFunc("/{id}", o.GetOrderByID).Methods(http.MethodGet)

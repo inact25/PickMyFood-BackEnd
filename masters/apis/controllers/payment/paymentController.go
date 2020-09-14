@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/inact25/PickMyFood-BackEnd/masters/apis/middlewares"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	paymentUsecases "github.com/inact25/PickMyFood-BackEnd/masters/apis/usecases/payment"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
@@ -28,8 +29,11 @@ func (p *PaymentHandler) PaymentAPI(r *mux.Router) {
 	transaction.HandleFunc("/{id}", p.GetTransactionByID).Methods(http.MethodGet)
 
 	transactions := r.PathPrefix("/transactions").Subrouter()
-	transactions.HandleFunc("/store/{id}", p.GetTransactionStore).Methods(http.MethodGet)
 	transactions.HandleFunc("/user/{id}", p.GetTransactionUser).Methods(http.MethodGet)
+
+	transactionsStore := r.PathPrefix("/transactions").Subrouter()
+	transactionsStore.Use(middlewares.TokenValidationMiddleware)
+	transactionsStore.HandleFunc("/store/{id}", p.GetTransactionStore).Methods(http.MethodGet)
 }
 
 func (p *PaymentHandler) PaymentWallet(w http.ResponseWriter, r *http.Request) {
