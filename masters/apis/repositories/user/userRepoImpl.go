@@ -188,12 +188,11 @@ func (u *UserRepoImpl) ReadUserByUsername(username string) (*models.User, error)
 	if err != nil {
 		return &user, err
 	}
-	errQuery := stmt.QueryRow(username).Scan(&user.UserID, &user.UserFirstName, &user.UserLastName, &user.UserAddress, &user.UserPhone, &user.UserPoin, &user.UserAmount, &user.UserEmail, &user.UserImage, &user.UserStatus, &user.Auth.Username, &user.Auth.Password, &user.Auth.UserStatus)
+	errQuery := stmt.QueryRow(username).Scan(&user.UserID, &user.UserFirstName, &user.UserLastName, &user.UserAddress, &user.UserPhone, &user.UserPoin, &user.UserAmount, &user.UserEmail, &user.UserImage, &user.UserStatus, &user.Auth.Username, &user.Auth.Password, &user.Auth.UserLevelID, &user.Auth.UserStatus)
 	log.Println(errQuery)
 	if errQuery != nil {
 		return &user, err
 	}
-	fmt.Println(user.Auth.Password)
 	defer stmt.Close()
 	return &user, nil
 }

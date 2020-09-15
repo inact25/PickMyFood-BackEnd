@@ -20,7 +20,6 @@ func InitDB(c *Conf) (*sql.DB, error) {
 		AllowNativePasswords: c.Db.AllowNativePasswords,
 	}
 	db, err := sql.Open("mysql", cfg.FormatDSN())
-	// db, err := sql.Open("mysql", "root:Theresearcher_132@tcp(localhost:3306)/pick_my_food")
 
 	if err != nil {
 		log.Panic(err)

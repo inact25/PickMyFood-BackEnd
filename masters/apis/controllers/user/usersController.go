@@ -1,7 +1,6 @@
 package userControllers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -64,13 +63,7 @@ func (u *UsersHandler) Login(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			utils.HandleResponseError(w, http.StatusBadGateway, utils.BAD_GATEWAY)
 		}
-		fmt.Println(auth.UserID)
-		fmt.Println(auth.Username)
-		fmt.Println(authTemp.Auth.Password)
-		fmt.Println(auth.Password)
-
 		isValid := utils.CompareEncrypt(authTemp.Auth.Password, []byte(auth.Password))
-		fmt.Println(isValid)
 		if isValid {
 			token, err := utils.JwtEncoder(authTemp.Auth.Username, "Rahasia")
 			if err != nil {

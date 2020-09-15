@@ -50,7 +50,6 @@ func (s *FeedbacksHandler) GetFeedbackByID(w http.ResponseWriter, r *http.Reques
 
 func (s *FeedbacksHandler) PostFeedback(w http.ResponseWriter, r *http.Request) {
 	var feedback models.FeedbackModels
-	// id := utils.DecodePathVariabel("sid", r)
 	err := utils.JsonDecoder(&feedback, r)
 	if err != nil {
 		utils.HandleRequest(w, http.StatusBadRequest)

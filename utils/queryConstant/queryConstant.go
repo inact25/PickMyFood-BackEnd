@@ -9,7 +9,7 @@ const (
 	UPDATE_AUTH             = "UPDATE tb_auth SET username=?,password=? WHERE user_id=?"
 	DELETE_AUTH             = "UPDATE tb_auth SET user_status = NA WHERE user_id = ?"
 	LOGIN                   = "select user_id, user_level_id, user_status from tb_auth where username = ? and password= ?;"
-	SELECT_AUTH_BY_USERNAME = "SELECT tu.user_id,tu.user_firstname,tu.user_lastname,tu.user_address,tu.user_phone,tu.user_poin,tw.amount,tu.user_email,tu.user_image,tu.user_status,ta.username,ta.password,ta.user_status FROM tb_user tu JOIN tb_auth ta ON tu.user_id=ta.user_id JOIN tb_wallet tw ON tu.user_id=tw.user_id WHERE ta.username = ?"
+	SELECT_AUTH_BY_USERNAME = "SELECT tu.user_id,tu.user_firstname,tu.user_lastname,tu.user_address,tu.user_phone,tu.user_poin,tw.amount,tu.user_email,tu.user_image,tu.user_status,ta.username,ta.password,ta.user_level_id,ta.user_status FROM tb_user tu JOIN tb_auth ta ON tu.user_id=ta.user_id JOIN tb_wallet tw ON tu.user_id=tw.user_id WHERE ta.username = ?"
 	INSERT_WALLET           = "INSERT INTO tb_wallet (wallet_id,user_id) values (?,?)"
 	SELECT_WALLET_USER_ID   = "SELECT wallet_id,amount,user_id FROM tb_wallet WHERE user_id = ?"
 	UPDATE_AMOUNT_WALLET    = "UPDATE tb_wallet SET amount = ? WHERE user_id = ?"
@@ -45,7 +45,7 @@ const (
 	//Feedback
 	GET_ALL_FEEDBACK   = "SELECT * FROM tb_feedback"
 	GET_FEEDBACK_BY_ID = "SELECT * FROM tb_feedback WHERE feedback_id = ?"
-	POST_FEEDBACK      = "INSERT INTO tb_feedback(feedback_id, store_id, feedback_value, feedback_created) VALUES (?, ?, ?, ?)"
+	POST_FEEDBACK      = "INSERT INTO tb_feedback(feedback_id,store_id,user_id,feedback_value,feedback_created) VALUES (?, ?, ?, ?, ?)"
 	UPDATE_FEEDBACK    = "UPDATE tb_feedback SET store_id=?, feedback_value=?, feedback_created=? WHERE feedback_id=?"
 	DELETE_FEEDBACK    = "DELETE FROM tb_feedback WHERE feedback_id = ?"
 	GET_ALL_POINT      = "SELECT * FROM tb_poin"
