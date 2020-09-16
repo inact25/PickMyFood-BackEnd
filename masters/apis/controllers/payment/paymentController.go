@@ -60,7 +60,7 @@ func (p *PaymentHandler) UpdateTransaction(w http.ResponseWriter, r *http.Reques
 
 	err := p.paymentUsecase.UpdateTransaction(storeID, amount, orderID, userID)
 	if err != nil {
-		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
+		utils.HandleResponse(w, http.StatusNotAcceptable, "Not Valid")
 	} else {
 		utils.HandleResponse(w, http.StatusOK, "Transaction Update Succesfully")
 	}

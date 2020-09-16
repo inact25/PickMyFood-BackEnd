@@ -89,7 +89,7 @@ func (o OrderRepoImpl) GetOrderByID(orderID string) (*models.Order, error) {
 			log.Print(err)
 			return nil, err
 		}
-		order.SoldItems = append(order.SoldItems, soldItem)
+		order.SoldItems = append(order.SoldItems, &soldItem)
 	}
 
 	return &order, nil
@@ -135,7 +135,7 @@ func (o *OrderRepoImpl) GetAllOrderByStore(storeID string) ([]*models.Order, err
 				log.Print(err)
 				return nil, err
 			}
-			order.SoldItems = append(order.SoldItems, soldItem)
+			order.SoldItems = append(order.SoldItems, &soldItem)
 		}
 	}
 	return listOrder, nil
@@ -182,7 +182,7 @@ func (o *OrderRepoImpl) GetAllOrderByUser(userID string) ([]*models.Order, error
 				log.Print(err)
 				return nil, err
 			}
-			order.SoldItems = append(order.SoldItems, soldItem)
+			order.SoldItems = append(order.SoldItems, &soldItem)
 		}
 	}
 	return listOrder, nil
