@@ -4,6 +4,7 @@ import (
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
 	orderRepositories "github.com/inact25/PickMyFood-BackEnd/masters/apis/repositories/order"
 	"github.com/inact25/PickMyFood-BackEnd/utils"
+	"github.com/inact25/PickMyFood-BackEnd/utils/validation"
 )
 
 type OrderUsecaseImpl struct {
@@ -15,24 +16,17 @@ func InitOrderUseCaseImpl(order orderRepositories.OrderRepo) OrderUsecase {
 }
 
 // AddOrder usecase
-func (o *OrderUsecaseImpl) AddOrder(order *models.Order) (*string, error) {
-	println("Masuk Usecase")
+func (o *OrderUsecaseImpl) AddOrder(order *models.Order) (*models.Order, error) {
 	order.OrderCreated = utils.GetTimeNow()
-	// for _, value := range order.SoldItems {
-
-	// 	println("MASUK SINI")
-	// 	product, _ := o.orderRepo.GetStock(value.ProductID)
-	// 	if product.ProductStock < value.Qty {
-	// 		message := fmt.Sprintf("%v Sementara Kosong", &product.ProductName)
-	// 		return &message, nil
-	// 	}
-	// }
-	// println("Masuk Order")
-	_, err := o.orderRepo.AddOrder(order)
+	err := validation.CheckEmpty(order)
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+	error, _ := o.orderRepo.AddOrder(order)
+	if error != nil {
+		return error, nil
+	}
+	return error, err
 }
 
 // GetOrderById

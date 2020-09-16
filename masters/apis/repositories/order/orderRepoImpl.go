@@ -17,6 +17,7 @@ func InitOrderRepoImpl(db *sql.DB) OrderRepo {
 	return &OrderRepoImpl{db: db}
 }
 
+// add order
 func (o OrderRepoImpl) AddOrder(order *models.Order) (*models.Order, error) {
 	orderID := guuid.New()
 	tx, err := o.db.Begin()
@@ -35,7 +36,6 @@ func (o OrderRepoImpl) AddOrder(order *models.Order) (*models.Order, error) {
 		return nil, err
 
 	}
-
 	stmt, err = tx.Prepare(utils.INSERT_ORDER_DETAIl)
 	defer stmt.Close()
 	if err != nil {
@@ -89,7 +89,7 @@ func (o OrderRepoImpl) GetOrderByID(orderID string) (*models.Order, error) {
 			log.Print(err)
 			return nil, err
 		}
-		order.SoldItems = append(order.SoldItems, &soldItem)
+		order.SoldItems = append(order.SoldItems, soldItem)
 	}
 
 	return &order, nil
@@ -135,7 +135,7 @@ func (o *OrderRepoImpl) GetAllOrderByStore(storeID string) ([]*models.Order, err
 				log.Print(err)
 				return nil, err
 			}
-			order.SoldItems = append(order.SoldItems, &soldItem)
+			order.SoldItems = append(order.SoldItems, soldItem)
 		}
 	}
 	return listOrder, nil
@@ -182,7 +182,7 @@ func (o *OrderRepoImpl) GetAllOrderByUser(userID string) ([]*models.Order, error
 				log.Print(err)
 				return nil, err
 			}
-			order.SoldItems = append(order.SoldItems, &soldItem)
+			order.SoldItems = append(order.SoldItems, soldItem)
 		}
 	}
 	return listOrder, nil

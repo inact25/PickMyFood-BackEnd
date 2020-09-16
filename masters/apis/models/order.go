@@ -1,10 +1,10 @@
 package models
 
 type Order struct {
-	OrderID      string       `json:"orderID"`
-	OrderCreated string       `json:"orderCreated"`
-	StoreID      string       `json:"storeID"`
-	SoldItems    []*SoldItems `json:"soldItems"`
+	OrderID      string      `json:"orderID"`
+	OrderCreated string      `json:"orderCreated"`
+	StoreID      string      `json:"storeID"`
+	SoldItems    []SoldItems `json:"soldItems"`
 }
 
 type SoldItems struct {
