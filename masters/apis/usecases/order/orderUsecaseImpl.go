@@ -17,6 +17,17 @@ func InitOrderUseCaseImpl(order orderRepositories.OrderRepo) OrderUsecase {
 
 // AddOrder usecase
 func (o *OrderUsecaseImpl) AddOrder(order *models.Order) (*models.Order, error) {
+	// for _, value := range order.SoldItems {
+	// 	product, err := o.orderRepo.GetStock(value.ProductID)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	if product.ProductStock < value.Qty {
+	// 		message := fmt.Sprintf("%v Out Of Stock", product.ProductName)
+	// 		return
+	// 	}
+
+	// }
 	order.OrderCreated = utils.GetTimeNow()
 	err := validation.CheckEmpty(order)
 	if err != nil {

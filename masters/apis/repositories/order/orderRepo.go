@@ -7,4 +7,5 @@ type OrderRepo interface {
 	GetOrderByID(orderID string) (*models.Order, error)
 	GetAllOrderByStore(storeID string) ([]*models.Order, error)
 	GetAllOrderByUser(userID string) ([]*models.Order, error)
+	GetStock(productID string) (*models.Product, error)
 }

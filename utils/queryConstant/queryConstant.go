@@ -4,7 +4,7 @@ const (
 	INSERT_USER             = "insert into tb_user (user_id,user_firstname,user_lastname,user_address,user_phone,user_email,user_status) values (?,?,?,?,?,?,?)"
 	INSERT_AUTH             = "insert into tb_auth(username,password,user_id) values (?,?,?)"
 	SELECT_USER_BY_ID       = "select user.user_id,auth.username, auth.password,user.user_email,user.user_image,user.user_poin,user.user_status, user.user_firstname, user.user_lastname, user.user_phone, user.user_address from tb_user user inner join tb_auth auth on auth.user_id = user.user_id where user.user_id = ?"
-	SELECT_ALL_USER         = "SELECT tu.user_id,tu.user_firstname,tu.user_lastname,tu.user_address,tu.user_phone,tu.user_poin,tu.user_email,tu.user_image,tu.user_status,ta.username,ta.password,ta.user_level_id,ta.user_status FROM tb_user tu JOIN tb_auth ta ON tu.user_id=ta.user_id WHERE tu.user_firstname OR tu.user_lastname LIKE ? LIMIT %s ,%s"
+	SELECT_ALL_USER         = "SELECT tu.user_id,tu.user_firstname,tu.user_lastname,tu.user_address,tu.user_phone,tu.user_poin,tu.user_email,tu.user_image,tu.user_status,ta.username,ta.password,ta.user_level_id,ta.user_status FROM tb_user tu JOIN tb_auth ta ON tu.user_id=ta.user_id WHERE tu.user_firstname OR tu.user_lastname LIKE ? AND ta.user_level_id = '1' LIMIT %s ,%s"
 	UPDATE_USER             = "UPDATE tb_user SET user_firstname=?,user_lastname=?,user_address=?,user_phone=?,user_image=?,user_status=? WHERE user_id=?"
 	UPDATE_AUTH             = "UPDATE tb_auth SET username=?,password=? WHERE user_id=?"
 	DELETE_AUTH             = "UPDATE tb_auth SET user_status = NA WHERE user_id = ?"
@@ -79,9 +79,11 @@ const (
 	UPDATE_POIN_USER_AFTER_PAYMENT = "UPDATE tb_user SET user_poin = user_poin + '1' WHERE user_id = ?"
 	// TRANSACTIOn
 	SELECT_ALL_TRANSACTION_BY_STORE = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE o.store_id = ? ORDER BY tr.transaction_created"
-	SELECT_ALL_TRANSACTION_BY_USER  = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE tr.user_id = ? ORDER BY tr.transaction_created"
+	SELECT_ALL_TRANSACTION_BY_USER  = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE tr.user_id = ? AND tr.transaction_status = 'Unpick' ORDER BY tr.transaction_created"
 	SELECT_TRANSACTION_BY_ID        = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE tr.transaction_id = ?"
 	// TOP UP
 	SELECT_ALL_TOP_UP       = "SELECT tp.top_up_id,tp.top_up_amount,tp.user_id,u.user_firstname,tp.top_up_date,tp.top_up_status FROM tb_top_up tp JOIN tb_user u ON tp.user_id=u.user_id ORDER BY tp.top_up_date"
 	SELECT_VALIDATION_ORDER = "select * from tb_order where order_id = ? and store_id = ?"
+	//GET_STOCK
+	GET_STOCK_PRODUCT_BY_ID = "SELECT product_stock FROM tb_product WHERE product_id"
 )

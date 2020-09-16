@@ -187,3 +187,16 @@ func (o *OrderRepoImpl) GetAllOrderByUser(userID string) ([]*models.Order, error
 	}
 	return listOrder, nil
 }
+func (o *OrderRepoImpl) GetStock(productID string) (*models.Product, error) {
+	stmt, err := o.db.Prepare(utils.GET_STOCK_PRODUCT_BY_ID)
+	product := models.Product{}
+	if err != nil {
+		return nil, err
+	}
+	errQuery := stmt.QueryRow(productID).Scan(&product.ProductStock)
+	if errQuery != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+	return &product, nil
+}

@@ -68,7 +68,6 @@ func (p *ProductRepoImpl) GetProductByID(id string) (*models.Product, error) {
 
 //get for customer
 func (p *ProductRepoImpl) GetAllProductByStore(storeID string) ([]*models.Product, error) {
-	println(storeID)
 	stmt, err := p.db.Prepare(utils.SELECT_ALL_PRODUCT_BY_STORE)
 	if err != nil {
 		return nil, err
@@ -79,7 +78,6 @@ func (p *ProductRepoImpl) GetAllProductByStore(storeID string) ([]*models.Produc
 	if err != nil {
 		return nil, err
 	}
-	println("MASUK SINI")
 	listProduct := []*models.Product{}
 	for rows.Next() {
 		product := models.Product{}
@@ -102,13 +100,11 @@ func (p *ProductRepoImpl) UpdateProductWithPrice(id string, product *models.Prod
 		tx.Rollback()
 		return err
 	}
-	println("MASUK QUERY UPDATE")
 	_, err = stmt.Exec(product.ProductName, product.ProductStock, product.ProductImage, product.ProductCategory.ProductCategoryID, id)
 	if err != nil {
 		tx.Rollback()
 		return err
 	}
-	println("MASUK UPDATE PRODUCT")
 
 	productPriceID := guuid.New()
 	stmt, err = tx.Prepare(utils.INSERT_PRODUCT_PRICE)
@@ -122,7 +118,6 @@ func (p *ProductRepoImpl) UpdateProductWithPrice(id string, product *models.Prod
 		tx.Rollback()
 		return err
 	}
-	println("MASUK INSERT PRICE")
 	return tx.Commit()
 }
 
