@@ -22,13 +22,13 @@ func StoreController(storeUsecase storeusecases.StoreUsecase) *StoreHandler {
 func (s *StoreHandler) StoreAPI(r *mux.Router) {
 	stores := r.PathPrefix("/stores").Subrouter()
 	stores.HandleFunc("", s.ListAllStore).Methods(http.MethodGet)
+	stores.HandleFunc("/NA", s.ListStoreNonAktif).Methods(http.MethodGet)
 
 	store := r.PathPrefix("/store").Subrouter()
 	store.HandleFunc("/{id}", s.GetStoreByID).Methods(http.MethodGet)
 	store.HandleFunc("/register", s.RegisterStore).Methods(http.MethodPost)
 	store.HandleFunc("/login", s.LoginStore).Methods(http.MethodPost)
-
-	// store.Use(middlewares.TokenValidationMiddleware)
+	store.HandleFunc("/changeActive/{id}", s.ChangeActive).Methods(http.MethodPut)
 	store.HandleFunc("/update/{id}", s.UpdateStore).Methods(http.MethodPut)
 	store.HandleFunc("/delete/{id}", s.DeleteStore).Methods(http.MethodDelete)
 }
@@ -131,6 +131,27 @@ func (s *StoreHandler) DeleteStore(w http.ResponseWriter, r *http.Request) {
 	id := utils.DecodePathVariabel("id", r)
 	if len(id) > 0 {
 		err := s.storeUsecase.DeleteStore(id)
+		if err != nil {
+			utils.HandleRequest(w, http.StatusNotFound)
+		} else {
+			utils.HandleRequest(w, http.StatusOK)
+		}
+	} else {
+		utils.HandleRequest(w, http.StatusBadRequest)
+	}
+}
+func (s *StoreHandler) ListStoreNonAktif(w http.ResponseWriter, r *http.Request) {
+	stores, err := s.storeUsecase.GetStoreNonAktif()
+	if err != nil {
+		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
+	} else {
+		utils.HandleResponse(w, http.StatusOK, stores)
+	}
+}
+func (s *StoreHandler) ChangeActive(w http.ResponseWriter, r *http.Request) {
+	id := utils.DecodePathVariabel("id", r)
+	if len(id) > 0 {
+		err := s.storeUsecase.ChangeActive(id)
 		if err != nil {
 			utils.HandleRequest(w, http.StatusNotFound)
 		} else {

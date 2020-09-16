@@ -71,3 +71,17 @@ func (s *StoreUsecaseImpl) Auth(username string) (*models.Store, error) {
 	}
 	return auth, nil
 }
+func (s *StoreUsecaseImpl) GetStoreNonAktif() ([]*models.Store, error) {
+	listStore, err := s.storeRepo.GetStoreNonAktif()
+	if err != nil {
+		return nil, err
+	}
+	return listStore, nil
+}
+func (s *StoreUsecaseImpl) ChangeActive(storeID string) error {
+	err := s.storeRepo.ChangeActive(storeID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

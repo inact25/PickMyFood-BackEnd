@@ -20,16 +20,21 @@ func UsersController(UserUsecases userUsecases.UserUseCase) *UsersHandler {
 }
 
 func (u *UsersHandler) Authenticate(r *mux.Router) {
+	usersNa := r.PathPrefix("/users").Subrouter()
+	usersNa.HandleFunc("/NA", u.ListUserNonAktif).Queries("keyword", "{keyword}", "page", "{page}", "limit", "{limit}").Methods(http.MethodGet)
+
 	user := r.PathPrefix("/user").Subrouter()
 	user.HandleFunc("/{id}", u.GetUserId).Methods(http.MethodGet)
 	user.HandleFunc("/register", u.Register).Methods(http.MethodPost)
 	user.HandleFunc("/login", u.Login).Methods(http.MethodPost)
 	user.HandleFunc("/update/{id}", u.UpdateUser).Methods(http.MethodPut)
+	user.HandleFunc("/changeActive/{id}", u.ChangeActive).Methods(http.MethodPut)
 	user.HandleFunc("/delete/{id}", u.DeleteUser).Methods(http.MethodDelete)
 
-	users := r.PathPrefix("/user").Subrouter()
+	users := r.PathPrefix("/users").Subrouter()
 	users.Use(middlewares.TokenValidationMiddleware)
 	users.HandleFunc("", u.ListAllUser).Queries("keyword", "{keyword}", "page", "{page}", "limit", "{limit}").Methods(http.MethodGet)
+
 }
 
 func (u *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
@@ -128,6 +133,31 @@ func (u *UsersHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id := utils.DecodePathVariabel("id", r)
 	if len(id) > 0 {
 		err := u.UserUsecases.DeleteUser(id)
+		if err != nil {
+			utils.HandleRequest(w, http.StatusNotFound)
+		} else {
+			utils.HandleRequest(w, http.StatusOK)
+		}
+	} else {
+		utils.HandleRequest(w, http.StatusBadRequest)
+	}
+}
+func (u *UsersHandler) ListUserNonAktif(w http.ResponseWriter, r *http.Request) {
+	var page string = mux.Vars(r)["page"]
+	var limit string = mux.Vars(r)["limit"]
+	var keyword string = mux.Vars(r)["keyword"]
+
+	users, err := u.UserUsecases.UserNonAktif(keyword, page, limit)
+	if err != nil {
+		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
+	} else {
+		utils.HandleResponse(w, http.StatusOK, users)
+	}
+}
+func (u *UsersHandler) ChangeActive(w http.ResponseWriter, r *http.Request) {
+	id := utils.DecodePathVariabel("id", r)
+	if len(id) > 0 {
+		err := u.UserUsecases.ChangeActive(id)
 		if err != nil {
 			utils.HandleRequest(w, http.StatusNotFound)
 		} else {

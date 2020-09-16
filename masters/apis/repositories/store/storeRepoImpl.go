@@ -145,3 +145,47 @@ func (s *StoreRepoImpl) Auth(username string) (*models.Store, error) {
 	defer stmt.Close()
 	return &store, nil
 }
+func (s *StoreRepoImpl) GetStoreNonAktif() ([]*models.Store, error) {
+	stmt, err := s.db.Prepare(utils.SELECT_ALL_STORE_NON_AKTIF)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		return nil, err
+	}
+	listStore := []*models.Store{}
+	for rows.Next() {
+		store := models.Store{}
+		err := rows.Scan(&store.StoreID, &store.StoreName, &store.StoreAddress, &store.StoreOwner, &store.StoreStatus, &store.StoreUsername, &store.StorePassword, &store.StoreImage, &store.QrPath, &store.StoreCategory.StoreCategoryID, &store.StoreCategory.StoreCategoryName)
+		if err != nil {
+			return nil, err
+		}
+		listStore = append(listStore, &store)
+	}
+	return listStore, nil
+}
+func (s *StoreRepoImpl) ChangeActive(storeID string) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	stmt, err := tx.Prepare(utils.CHANGE_ACTIVE_STORE)
+	defer stmt.Close()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	res, err := stmt.Exec(storeID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	count, err := res.RowsAffected()
+	if count == 0 {
+		return errors.New("gagal change, store id tidak di temukan")
+	}
+	return tx.Commit()
+}

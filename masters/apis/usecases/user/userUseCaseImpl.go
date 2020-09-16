@@ -65,10 +65,6 @@ func (u *UserUseCaseImpl) DeleteUser(userID string) error {
 }
 
 func (u *UserUseCaseImpl) Auth(username, password string) (*models.Auth, error) {
-	//err := validation.CheckEmpty(userModels.UserName, userModels.UserPassword)
-	//if err != nil {
-	//	return nil, err
-	//}
 	auth, err := u.userRepo.Auth(username, password)
 	if err != nil {
 		return nil, err
@@ -81,4 +77,18 @@ func (u *UserUseCaseImpl) ReadUserByUsername(username string) (*models.User, err
 		return nil, err
 	}
 	return user, nil
+}
+func (u *UserUseCaseImpl) UserNonAktif(keyword, page, limit string) ([]*models.User, error) {
+	listUser, err := u.userRepo.UserNonAktif(keyword, page, limit)
+	if err != nil {
+		return nil, err
+	}
+	return listUser, nil
+}
+func (u *UserUseCaseImpl) ChangeActive(userID string) error {
+	err := u.userRepo.ChangeActive(userID)
+	if err != nil {
+		return err
+	}
+	return nil
 }

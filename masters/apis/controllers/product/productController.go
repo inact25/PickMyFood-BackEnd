@@ -22,6 +22,7 @@ func InitProductController(productUsecase productUsecases.ProductUsecase) *Produ
 func (p *ProductHandler) ProductAPI(r *mux.Router) {
 	products := r.PathPrefix("/products").Subrouter()
 	products.HandleFunc("/{id}", p.ListAllProduct).Methods(http.MethodGet)
+	products.HandleFunc("/NA/{id}", p.ListProductNonAktif).Methods(http.MethodGet)
 
 	product := r.PathPrefix("/product").Subrouter()
 	product.HandleFunc("/{id}", p.GetProductByID).Methods(http.MethodGet)
@@ -30,6 +31,7 @@ func (p *ProductHandler) ProductAPI(r *mux.Router) {
 	productMid.Use(middlewares.TokenValidationMiddleware)
 	productMid.HandleFunc("/add/{id}", p.AddProduct).Methods(http.MethodPost)
 	productMid.HandleFunc("/update/{id}", p.UpdateProduct).Methods(http.MethodPut)
+	productMid.HandleFunc("/changeActive/{id}", p.ChangeProduct).Methods(http.MethodPut)
 	productMid.HandleFunc("/delete/{id}", p.DeleteProduct).Methods(http.MethodDelete)
 }
 
@@ -101,6 +103,28 @@ func (p *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	id := utils.DecodePathVariabel("id", r)
 	if len(id) > 0 {
 		err := p.productUsecase.DeleteProduct(id)
+		if err != nil {
+			utils.HandleRequest(w, http.StatusNotFound)
+		} else {
+			utils.HandleRequest(w, http.StatusOK)
+		}
+	} else {
+		utils.HandleRequest(w, http.StatusBadRequest)
+	}
+}
+func (p *ProductHandler) ListProductNonAktif(w http.ResponseWriter, r *http.Request) {
+	storeID := utils.DecodePathVariabel("id", r)
+	products, err := p.productUsecase.GetProductNonAktif(storeID)
+	if err != nil {
+		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
+	} else {
+		utils.HandleResponse(w, http.StatusOK, products)
+	}
+}
+func (p *ProductHandler) ChangeProduct(w http.ResponseWriter, r *http.Request) {
+	id := utils.DecodePathVariabel("id", r)
+	if len(id) > 0 {
+		err := p.productUsecase.ChangeActive(id)
 		if err != nil {
 			utils.HandleRequest(w, http.StatusNotFound)
 		} else {

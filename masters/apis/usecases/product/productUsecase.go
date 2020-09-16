@@ -8,4 +8,6 @@ type ProductUsecase interface {
 	GetAllProductByStore(storeID string) ([]*models.Product, error)
 	UpdateProductWithPrice(id string, product *models.Product) error
 	DeleteProduct(id string) error
+	GetProductNonAktif(storeID string) ([]*models.Product, error)
+	ChangeActive(id string) error
 }

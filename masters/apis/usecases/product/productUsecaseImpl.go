@@ -66,3 +66,17 @@ func (p *ProductUsecaseImpl) DeleteProduct(productID string) error {
 	}
 	return nil
 }
+func (p *ProductUsecaseImpl) GetProductNonAktif(storeID string) ([]*models.Product, error) {
+	listProduct, err := p.productRepo.GetProductNonAktif(storeID)
+	if err != nil {
+		return nil, err
+	}
+	return listProduct, nil
+}
+func (p *ProductUsecaseImpl) ChangeActive(productID string) error {
+	err := p.productRepo.ChangeActive(productID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -9,4 +9,6 @@ type StoreUsecase interface {
 	UpdateStore(id string, Store *models.Store) error
 	DeleteStore(id string) error
 	Auth(username string) (*models.Store, error)
+	GetStoreNonAktif() ([]*models.Store, error)
+	ChangeActive(id string) error
 }

@@ -196,3 +196,49 @@ func (u *UserRepoImpl) ReadUserByUsername(username string) (*models.User, error)
 	defer stmt.Close()
 	return &user, nil
 }
+func (u *UserRepoImpl) UserNonAktif(keyword, page, limit string) ([]*models.User, error) {
+	queryInput := fmt.Sprintf(utils.SELECT_ALL_USER_NON_AKTIF, page, limit)
+
+	rows, err := u.db.Query(queryInput, "%"+keyword+"%")
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	listUser := []*models.User{}
+	for rows.Next() {
+		p := models.User{}
+		err := rows.Scan(&p.UserID, &p.UserFirstName, &p.UserLastName, &p.UserAddress, &p.UserPhone, &p.UserPoin, &p.UserEmail, &p.UserImage, &p.UserStatus, &p.Auth.Username, &p.Auth.Password, &p.Auth.UserLevelID, &p.Auth.UserStatus)
+		if err != nil {
+			return nil, err
+		}
+		listUser = append(listUser, &p)
+	}
+
+	return listUser, nil
+}
+func (u *UserRepoImpl) ChangeActive(userID string) error {
+	tx, err := u.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	stmt, err := tx.Prepare(utils.CHANGE_ACTIVE_AUTH)
+	defer stmt.Close()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	res, err := stmt.Exec(userID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if count == 0 {
+		return errors.New("gagal change, user id tidak di temukan")
+	}
+
+	return tx.Commit()
+}

@@ -147,3 +147,51 @@ func (p *ProductRepoImpl) DeleteProduct(id string) error {
 
 	return tx.Commit()
 }
+func (p *ProductRepoImpl) GetProductNonAktif(storeID string) ([]*models.Product, error) {
+	stmt, err := p.db.Prepare(utils.SELECT_ALL_PRODUCT_NON_AKTIF_BY_STORE)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(storeID)
+	if err != nil {
+		return nil, err
+	}
+	listProduct := []*models.Product{}
+	for rows.Next() {
+		product := models.Product{}
+		err := rows.Scan(&product.ProductID, &product.ProductName, &product.ProductStock, &product.ProductImage, &product.ProductStatus, &product.ProductCategory.ProductCategoryName, &product.ProductPrice.Price, &product.ProductPrice.DateModified)
+		if err != nil {
+			return nil, err
+		}
+		listProduct = append(listProduct, &product)
+	}
+	return listProduct, nil
+}
+func (p *ProductRepoImpl) ChangeActive(id string) error {
+	tx, err := p.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	stmt, err := tx.Prepare(utils.ACTIVE_PRODUCT)
+	defer stmt.Close()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	res, err := stmt.Exec(id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if count == 0 {
+		return errors.New("gagal Change, product id tidak di temukan")
+	}
+
+	return tx.Commit()
+}

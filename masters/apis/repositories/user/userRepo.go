@@ -10,4 +10,6 @@ type UserRepo interface {
 	DeleteUser(id string) error
 	Auth(username, password string) (*models.Auth, error)
 	ReadUserByUsername(username string) (*models.User, error)
+	UserNonAktif(keyword, page, limit string) ([]*models.User, error)
+	ChangeActive(userID string) error
 }
