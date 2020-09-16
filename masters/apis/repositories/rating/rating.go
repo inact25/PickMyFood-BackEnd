@@ -13,10 +13,10 @@ type RatingRepoImpl struct {
 	db *sql.DB
 }
 
-func (s *RatingRepoImpl) GetRatings() ([]*models.RatingModels, error) {
+func (s *RatingRepoImpl) GetRatings(storeID string) ([]*models.RatingModels, error) {
 	var ratings []*models.RatingModels
 	query := utils.GET_ALL_RATING
-	rows, err := s.db.Query(query)
+	rows, err := s.db.Query(query, storeID)
 	if err != nil {
 		return nil, err
 	}

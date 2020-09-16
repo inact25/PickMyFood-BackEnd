@@ -20,7 +20,7 @@ func RatingController(ratingUsecases ratingUsecases.RatingUseCases) *RatingsHand
 
 func (s *RatingsHandler) RatingAPI(r *mux.Router) {
 	//	RatingsHandler := RatingsHandler{service}
-	r.HandleFunc("/ratings", s.GetRatings).Methods(http.MethodGet)
+	r.HandleFunc("/ratings/{id}", s.GetRatings).Methods(http.MethodGet)
 	r.HandleFunc("/rating/{sid}", s.GetRatingByID).Methods(http.MethodGet)
 	r.HandleFunc("/rating/post", s.PostRating).Methods(http.MethodPost)
 	r.HandleFunc("/rating/update/{sid}", s.UpdateRating).Methods(http.MethodPut)
@@ -29,7 +29,8 @@ func (s *RatingsHandler) RatingAPI(r *mux.Router) {
 }
 
 func (s *RatingsHandler) GetRatings(w http.ResponseWriter, r *http.Request) {
-	ratings, err := s.ratingUsecases.GetRatings()
+	storeID := utils.DecodePathVariabel("id", r)
+	ratings, err := s.ratingUsecases.GetRatings(storeID)
 	if err != nil {
 		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
 	} else {

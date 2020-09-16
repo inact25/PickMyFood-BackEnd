@@ -54,7 +54,7 @@ const (
 	UPDATE_POINT       = "UPDATE tb_poin SET store_id=? WHERE product_id=?"
 	DELETE_POINT       = "DELETE FROM tb_poin WHERE poin_id = ?"
 	UPDATE_USER_POINT  = "UPDATE tb_user SET user_poin = user_poin + 1 WHERE user_id=?"
-	GET_ALL_RATING     = "SELECT * FROM tb_rating"
+	GET_ALL_RATING     = "SELECT * FROM tb_rating WHERE store_id = ?"
 	GET_RATING_BY_ID   = "SELECT * FROM tb_rating WHERE rating_id = ?"
 	POST_RATING        = "INSERT INTO tb_rating(rating_id, store_id, user_id, rating_value, rating_description, rating_created) VALUES (?, ?, ?, ?, ?, ?)"
 	UPDATE_RATING      = "UPDATE tb_rating SET store_id=?, user_id=?, rating_value=?, rating_description=?, rating_created=? WHERE rating_id=?"

@@ -13,8 +13,8 @@ type RatingUsecaseImpl struct {
 	ratingRepo ratingRepositories.RatingRepo
 }
 
-func (s RatingUsecaseImpl) GetRatings() ([]*models.RatingModels, error) {
-	ratings, err := s.ratingRepo.GetRatings()
+func (s RatingUsecaseImpl) GetRatings(storeID string) ([]*models.RatingModels, error) {
+	ratings, err := s.ratingRepo.GetRatings(storeID)
 	if err != nil {
 		return nil, err
 	}
