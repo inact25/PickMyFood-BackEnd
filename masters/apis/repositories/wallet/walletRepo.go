@@ -7,4 +7,5 @@ type WalletRepo interface {
 	TopUpWallet(topUP *models.TopUp, userID string) error
 	UpdateAmountWallet(wallet *models.Wallet, userID string) error
 	GetAllTopUp() ([]*models.TopUp, error)
+	GetAllTopUpByUser(userID string) ([]*models.TopUp, error)
 }

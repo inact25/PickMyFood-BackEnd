@@ -20,6 +20,9 @@ func WalletController(WalletUsecases walletusecases.WalletUseCases) *WalletHandl
 }
 
 func (wa *WalletHandler) WalletApi(r *mux.Router) {
+	topUpuser := r.PathPrefix("/topUp").Subrouter()
+	topUpuser.HandleFunc("/user/{id}", wa.GetTopUpByUser).Methods(http.MethodGet)
+
 	wallet := r.PathPrefix("/wallet").Subrouter()
 	wallet.HandleFunc("/{id}", wa.WalletByID).Methods(http.MethodGet)
 	wallet.HandleFunc("/topUp/{id}", wa.WalletTopUp).Methods(http.MethodPost)
@@ -77,8 +80,18 @@ func (wa *WalletHandler) WalletUpdateAmount(w http.ResponseWriter, r *http.Reque
 }
 
 // all top up
-func (wa *WalletHandler) ListTopUp(w http.ResponseWriter, r *http.Request) {
+func (wa *WalletHandler) GetTopUpByUser(w http.ResponseWriter, r *http.Request) {
 	listTopUp, err := wa.WalletUsecases.GetAllTopUp()
+	if err != nil {
+		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
+	} else {
+		utils.HandleResponse(w, http.StatusOK, listTopUp)
+	}
+}
+
+func (wa *WalletHandler) ListTopUp(w http.ResponseWriter, r *http.Request) {
+	id := utils.DecodePathVariabel("id", r)
+	listTopUp, err := wa.WalletUsecases.GetAllTopUpByUser(id)
 	if err != nil {
 		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
 	} else {

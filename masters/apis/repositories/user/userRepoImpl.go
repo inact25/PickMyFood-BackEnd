@@ -242,3 +242,21 @@ func (u *UserRepoImpl) ChangeActive(userID string) error {
 
 	return tx.Commit()
 }
+func (u *UserRepoImpl) ChangeProfile(id string, user *models.User) error {
+	tx, err := u.db.Begin()
+	if err != nil {
+		return err
+	}
+	stmt, err := tx.Prepare(utils.UPDATE_PROFILE_ONLY)
+	defer stmt.Close()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	_, err = stmt.Exec(user.UserFirstName, user.UserLastName, user.UserAddress, user.UserPhone, user.UserEmail, user.UserStatus, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
+}

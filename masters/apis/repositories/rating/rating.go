@@ -23,7 +23,7 @@ func (s *RatingRepoImpl) GetRatings(storeID string) ([]*models.RatingModels, err
 
 	for rows.Next() {
 		rating := models.RatingModels{}
-		err := rows.Scan(&rating.RatingID, &rating.StoreID, &rating.UserID, &rating.RatingValue, &rating.RatingDescription, &rating.RatingCreated)
+		err := rows.Scan(&rating.RatingID, &rating.StoreID, &rating.UserID, &rating.RatingValue, &rating.RatingDescription, &rating.RatingCreated, &rating.UserFirstname, &rating.UserLastname)
 
 		if err != nil {
 			return nil, err

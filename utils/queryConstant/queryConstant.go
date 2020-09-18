@@ -4,7 +4,7 @@ const (
 	INSERT_USER               = "insert into tb_user (user_id,user_firstname,user_lastname,user_address,user_phone,user_email,user_status) values (?,?,?,?,?,?,?)"
 	INSERT_AUTH               = "insert into tb_auth(username,password,user_id) values (?,?,?)"
 	SELECT_USER_BY_ID         = "select user.user_id,auth.username, auth.password,user.user_email,user.user_image,user.user_poin,user.user_status, user.user_firstname, user.user_lastname, user.user_phone, user.user_address from tb_user user inner join tb_auth auth on auth.user_id = user.user_id where user.user_id = ?"
-	SELECT_ALL_USER           = "SELECT tu.user_id,tu.user_firstname,tu.user_lastname,tu.user_address,tu.user_phone,tu.user_poin,tu.user_email,tu.user_image,tu.user_status,ta.username,ta.password,ta.user_level_id,ta.user_status FROM tb_user tu JOIN tb_auth ta ON tu.user_id=ta.user_id WHERE tu.user_firstname OR tu.user_lastname LIKE ? AND ta.user_level_id = '1' LIMIT %s ,%s"
+	SELECT_ALL_USER           = "SELECT tu.user_id,tu.user_firstname,tu.user_lastname,tu.user_address,tu.user_phone,tu.user_poin,tu.user_email,tu.user_image,tu.user_status,ta.username,ta.password,ta.user_level_id,ta.user_status FROM tb_user tu JOIN tb_auth ta ON tu.user_id=ta.user_id WHERE tu.user_firstname OR tu.user_lastname LIKE ? AND ta.user_level_id = '1' AND ta.user_status = 'A' LIMIT %s ,%s"
 	SELECT_ALL_USER_NON_AKTIF = "SELECT tu.user_id,tu.user_firstname,tu.user_lastname,tu.user_address,tu.user_phone,tu.user_poin,tu.user_email,tu.user_image,tu.user_status,ta.username,ta.password,ta.user_level_id,ta.user_status FROM tb_user tu JOIN tb_auth ta ON tu.user_id=ta.user_id WHERE tu.user_firstname OR tu.user_lastname LIKE ? AND ta.user_level_id = '1' AND ta.user_status = 'NA' LIMIT %s ,%s"
 	UPDATE_USER               = "UPDATE tb_user SET user_firstname=?,user_lastname=?,user_address=?,user_phone=?,user_image=?,user_status=? WHERE user_id=?"
 	UPDATE_AUTH               = "UPDATE tb_auth SET username=?,password=? WHERE user_id=?"
@@ -12,6 +12,7 @@ const (
 	CHANGE_ACTIVE_AUTH        = "UPDATE tb_auth SET user_status = 'A' WHERE user_id = ?"
 	LOGIN                     = "select user_id, user_level_id, user_status from tb_auth where username = ? and password= ?;"
 	SELECT_AUTH_BY_USERNAME   = "SELECT tu.user_id,tu.user_firstname,tu.user_lastname,tu.user_address,tu.user_phone,tu.user_poin,tw.amount,tu.user_email,tu.user_image,tu.user_status,ta.username,ta.password,ta.user_level_id,ta.user_status FROM tb_user tu JOIN tb_auth ta ON tu.user_id=ta.user_id JOIN tb_wallet tw ON tu.user_id=tw.user_id WHERE ta.username = ?"
+	UPDATE_PROFILE_ONLY       = "UPDATE tb_user SET user_firstname=?,user_lastname=?,user_address=?,user_phone=?,user_email=?,user_status=? WHERE user_id=?"
 	INSERT_WALLET             = "INSERT INTO tb_wallet (wallet_id,user_id) values (?,?)"
 	SELECT_WALLET_USER_ID     = "SELECT wallet_id,amount,user_id FROM tb_wallet WHERE user_id = ?"
 	UPDATE_AMOUNT_WALLET      = "UPDATE tb_wallet SET amount = ? WHERE user_id = ?"
@@ -49,7 +50,7 @@ const (
 	ACTIVE_PRODUCT                        = "UPDATE tb_product SET_product_status = 'A' WHERE product_id = ?"
 
 	//Feedback
-	GET_ALL_FEEDBACK   = "SELECT * FROM tb_feedback ORDER feedback_created"
+	GET_ALL_FEEDBACK   = "SELECT tf.feedback_id,tf.store_id,tf.user_id,tf.feedback_value,tf.feedback_created,tu.user_firstname,tu.user_lastname FROM tb_feedback tf JOIN tb_user tu ON tf.user_id=tu.user_id ORDER BY feedback_created"
 	GET_FEEDBACK_BY_ID = "SELECT * FROM tb_feedback WHERE feedback_id = ?"
 	POST_FEEDBACK      = "INSERT INTO tb_feedback(feedback_id,store_id,user_id,feedback_value,feedback_created) VALUES (?, ?, ?, ?, ?)"
 	UPDATE_FEEDBACK    = "UPDATE tb_feedback SET store_id=?, feedback_value=?, feedback_created=? WHERE feedback_id=?"
@@ -60,7 +61,7 @@ const (
 	UPDATE_POINT       = "UPDATE tb_poin SET store_id=? WHERE product_id=?"
 	DELETE_POINT       = "DELETE FROM tb_poin WHERE poin_id = ?"
 	UPDATE_USER_POINT  = "UPDATE tb_user SET user_poin = user_poin + 1 WHERE user_id=?"
-	GET_ALL_RATING     = "SELECT * FROM tb_rating WHERE store_id = ?"
+	GET_ALL_RATING     = "SELECT tr.rating_id,tr.store_id,tr.user_id,tr.rating_value,tr.rating_description,tr.rating_created, tu.user_firstname,tu.user_lastname FROM tb_rating tr JOIN tb_user tu ON tr.user_id=tu.user_id WHERE store_id = ?"
 	GET_RATING_BY_ID   = "SELECT * FROM tb_rating WHERE rating_id = ?"
 	POST_RATING        = "INSERT INTO tb_rating(rating_id, store_id, user_id, rating_value, rating_description, rating_created) VALUES (?, ?, ?, ?, ?, ?)"
 	UPDATE_RATING      = "UPDATE tb_rating SET store_id=?, user_id=?, rating_value=?, rating_description=?, rating_created=? WHERE rating_id=?"
@@ -88,8 +89,9 @@ const (
 	SELECT_ALL_TRANSACTION_BY_USER  = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE tr.user_id = ? AND tr.transaction_status = 'Unpick' ORDER BY tr.transaction_created"
 	SELECT_TRANSACTION_BY_ID        = "SELECT tr.transaction_id,tr.order_id,tr.user_id,tu.user_firstname,tr.amount,tr.transaction_created,tr.transaction_status FROM tb_transaction tr JOIN tb_order o ON tr.order_id=o.order_id JOIN tb_user tu ON tr.user_id=tu.user_id WHERE tr.transaction_id = ?"
 	// TOP UP
-	SELECT_ALL_TOP_UP       = "SELECT tp.top_up_id,tp.top_up_amount,tp.user_id,u.user_firstname,tp.top_up_date,tp.top_up_status FROM tb_top_up tp JOIN tb_user u ON tp.user_id=u.user_id ORDER BY tp.top_up_date"
-	SELECT_VALIDATION_ORDER = "select * from tb_order where order_id = ? and store_id = ?"
+	SELECT_ALL_TOP_UP         = "SELECT tp.top_up_id,tp.top_up_amount,tp.user_id,u.user_firstname,tp.top_up_date,tp.top_up_status FROM tb_top_up tp JOIN tb_user u ON tp.user_id=u.user_id ORDER BY tp.top_up_date DESC"
+	SELECT_ALL_TOP_UP_BY_USER = "SELECT tp.top_up_id,tp.top_up_amount,tp.user_id,u.user_firstname,tp.top_up_date,tp.top_up_status FROM tb_top_up tp JOIN tb_user u ON tp.user_id=u.user_id WHERE tp.user_id = ? ORDER BY tp.top_up_date DESC"
+	SELECT_VALIDATION_ORDER   = "select * from tb_order where order_id = ? and store_id = ?"
 	//GET_STOCK
 	GET_STOCK_PRODUCT_BY_ID = "SELECT product_stock FROM tb_product WHERE product_id"
 )

@@ -13,4 +13,5 @@ type UserUseCase interface {
 	ReadUserByUsername(username string) (*models.User, error)
 	UserNonAktif(keyword, page, limit string) ([]*models.User, error)
 	ChangeActive(userID string) error
+	ChangeProfile(id string, user *models.User) error
 }

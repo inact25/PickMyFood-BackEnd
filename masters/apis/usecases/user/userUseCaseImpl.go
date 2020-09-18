@@ -92,3 +92,14 @@ func (u *UserUseCaseImpl) ChangeActive(userID string) error {
 	}
 	return nil
 }
+func (u *UserUseCaseImpl) ChangeProfile(id string, user *models.User) error {
+	err := validation.CheckEmpty(user)
+	if err != nil {
+		return err
+	}
+	error := u.userRepo.ChangeProfile(id, user)
+	if error != nil {
+		return error
+	}
+	return nil
+}

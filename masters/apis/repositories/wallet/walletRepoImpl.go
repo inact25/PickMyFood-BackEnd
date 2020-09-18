@@ -108,3 +108,25 @@ func (w *WalletRepoImpl) GetAllTopUp() ([]*models.TopUp, error) {
 	}
 	return listTopUp, nil
 }
+func (w *WalletRepoImpl) GetAllTopUpByUser(userID string) ([]*models.TopUp, error) {
+	stmt, err := w.db.Prepare(utils.SELECT_ALL_TOP_UP_BY_USER)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(userID)
+	if err != nil {
+		return nil, err
+	}
+	listTopUp := []*models.TopUp{}
+	for rows.Next() {
+		topUP := models.TopUp{}
+		err := rows.Scan(&topUP.TopUpID, &topUP.TopUpAmount, &topUP.UserID, &topUP.UserFirstName, &topUP.TopUpDate, &topUP.TopUpStatus)
+		if err != nil {
+			return nil, err
+		}
+		listTopUp = append(listTopUp, &topUP)
+	}
+	return listTopUp, nil
+}

@@ -7,4 +7,6 @@ type RatingModels struct {
 	RatingValue       string `json:"ratingValue"`
 	RatingDescription string `json:"ratingDescription"`
 	RatingCreated     string `json:"ratingCreated"`
+	UserFirstname     string `json:"userFirstname"`
+	UserLastname      string `json:"userLastname"`
 }

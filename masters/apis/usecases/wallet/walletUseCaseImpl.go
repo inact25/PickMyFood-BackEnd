@@ -72,3 +72,10 @@ func (w *WalletUseCaseImpl) GetAllTopUp() ([]*models.TopUp, error) {
 	}
 	return listTopUp, nil
 }
+func (w *WalletUseCaseImpl) GetAllTopUpByUser(userID string) ([]*models.TopUp, error) {
+	listTopUp, err := w.walletRepo.GetAllTopUpByUser(userID)
+	if err != nil {
+		return nil, err
+	}
+	return listTopUp, nil
+}

@@ -29,6 +29,7 @@ func (u *UsersHandler) Authenticate(r *mux.Router) {
 	user.HandleFunc("/login", u.Login).Methods(http.MethodPost)
 	user.HandleFunc("/update/{id}", u.UpdateUser).Methods(http.MethodPut)
 	user.HandleFunc("/changeActive/{id}", u.ChangeActive).Methods(http.MethodPut)
+	user.HandleFunc("/changeProfile/{id}", u.ChangeProfile).Methods(http.MethodPut)
 	user.HandleFunc("/delete/{id}", u.DeleteUser).Methods(http.MethodDelete)
 
 	users := r.PathPrefix("/users").Subrouter()
@@ -165,5 +166,22 @@ func (u *UsersHandler) ChangeActive(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		utils.HandleRequest(w, http.StatusBadRequest)
+	}
+}
+
+func (u *UsersHandler) ChangeProfile(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+	id := utils.DecodePathVariabel("id", r)
+	err := utils.JsonDecoder(&user, r)
+	if err != nil {
+		utils.HandleRequest(w, http.StatusBadRequest)
+	} else {
+		err = u.UserUsecases.ChangeProfile(id, &user)
+		if err != nil {
+			log.Print(err)
+			utils.HandleRequest(w, http.StatusBadGateway)
+		} else {
+			utils.HandleResponse(w, http.StatusOK, user)
+		}
 	}
 }

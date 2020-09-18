@@ -23,7 +23,7 @@ func (s *FeedbackRepoImpl) GetFeedbacks() ([]*models.FeedbackModels, error) {
 
 	for rows.Next() {
 		feedback := models.FeedbackModels{}
-		err := rows.Scan(&feedback.FeedbackID, &feedback.StoreID, &feedback.UserID, &feedback.FeedbackValue, &feedback.FeedbackCreated)
+		err := rows.Scan(&feedback.FeedbackID, &feedback.StoreID, &feedback.UserID, &feedback.FeedbackValue, &feedback.FeedbackCreated, &feedback.UserFirstName, &feedback.UserLastName)
 
 		if err != nil {
 			return nil, err
