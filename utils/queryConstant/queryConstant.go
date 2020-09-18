@@ -50,9 +50,9 @@ const (
 	ACTIVE_PRODUCT                        = "UPDATE tb_product SET_product_status = 'A' WHERE product_id = ?"
 
 	//Feedback
-	GET_ALL_FEEDBACK   = "SELECT tf.feedback_id,tf.store_id,tf.user_id,tf.feedback_value,tf.feedback_created,tu.user_firstname,tu.user_lastname FROM tb_feedback tf JOIN tb_user tu ON tf.user_id=tu.user_id ORDER BY feedback_created"
+	GET_ALL_FEEDBACK   = "SELECT tf.feedback_id,tf.store_id,tf.feedback_value,tf.feedback_created,ts.store_name FROM tb_feedback tf JOIN tb_store ts ON tf.store_id=ts.store_id ORDER BY feedback_created DESC"
 	GET_FEEDBACK_BY_ID = "SELECT * FROM tb_feedback WHERE feedback_id = ?"
-	POST_FEEDBACK      = "INSERT INTO tb_feedback(feedback_id,store_id,user_id,feedback_value,feedback_created) VALUES (?, ?, ?, ?, ?)"
+	POST_FEEDBACK      = "INSERT INTO tb_feedback(feedback_id,store_id,feedback_value,feedback_created) VALUES (?, ?, ?, ?)"
 	UPDATE_FEEDBACK    = "UPDATE tb_feedback SET store_id=?, feedback_value=?, feedback_created=? WHERE feedback_id=?"
 	DELETE_FEEDBACK    = "DELETE FROM tb_feedback WHERE feedback_id = ?"
 	GET_ALL_POINT      = "SELECT * FROM tb_poin"
@@ -61,7 +61,7 @@ const (
 	UPDATE_POINT       = "UPDATE tb_poin SET store_id=? WHERE product_id=?"
 	DELETE_POINT       = "DELETE FROM tb_poin WHERE poin_id = ?"
 	UPDATE_USER_POINT  = "UPDATE tb_user SET user_poin = user_poin + 1 WHERE user_id=?"
-	GET_ALL_RATING     = "SELECT tr.rating_id,tr.store_id,tr.user_id,tr.rating_value,tr.rating_description,tr.rating_created, tu.user_firstname,tu.user_lastname FROM tb_rating tr JOIN tb_user tu ON tr.user_id=tu.user_id WHERE store_id = ?"
+	GET_ALL_RATING     = "SELECT tr.rating_id,tr.store_id,tr.user_id,tr.rating_value,tr.rating_description,tr.rating_created, tu.user_firstname,tu.user_lastname FROM tb_rating tr JOIN tb_user tu ON tr.user_id=tu.user_id WHERE store_id = ? ORDER BY tr.rating_created DESC"
 	GET_RATING_BY_ID   = "SELECT * FROM tb_rating WHERE rating_id = ?"
 	POST_RATING        = "INSERT INTO tb_rating(rating_id, store_id, user_id, rating_value, rating_description, rating_created) VALUES (?, ?, ?, ?, ?, ?)"
 	UPDATE_RATING      = "UPDATE tb_rating SET store_id=?, user_id=?, rating_value=?, rating_description=?, rating_created=? WHERE rating_id=?"

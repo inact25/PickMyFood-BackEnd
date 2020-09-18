@@ -23,7 +23,7 @@ func (s *FeedbackRepoImpl) GetFeedbacks() ([]*models.FeedbackModels, error) {
 
 	for rows.Next() {
 		feedback := models.FeedbackModels{}
-		err := rows.Scan(&feedback.FeedbackID, &feedback.StoreID, &feedback.UserID, &feedback.FeedbackValue, &feedback.FeedbackCreated, &feedback.UserFirstName, &feedback.UserLastName)
+		err := rows.Scan(&feedback.FeedbackID, &feedback.StoreID, &feedback.FeedbackValue, &feedback.FeedbackCreated, &feedback.StoreName)
 
 		if err != nil {
 			return nil, err
@@ -40,7 +40,7 @@ func (s *FeedbackRepoImpl) GetFeedbackByID(ID string) (*models.FeedbackModels, e
 	results := s.db.QueryRow(utils.GET_FEEDBACK_BY_ID, ID)
 
 	var d models.FeedbackModels
-	err := results.Scan(&d.FeedbackID, &d.StoreID, &d.UserID, &d.FeedbackValue, &d.FeedbackCreated)
+	err := results.Scan(&d.FeedbackID, &d.StoreID, &d.FeedbackValue, &d.FeedbackCreated)
 	if err != nil {
 		return nil, errors.New("ID Not Found")
 	}
@@ -62,7 +62,7 @@ func (s *FeedbackRepoImpl) PostFeedback(d *models.FeedbackModels) error {
 		return err
 	}
 
-	if _, err := stmt.Exec(feedbackID, d.StoreID, d.UserID, d.FeedbackValue, d.FeedbackCreated); err != nil {
+	if _, err := stmt.Exec(feedbackID, d.StoreID, d.FeedbackValue, d.FeedbackCreated); err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -80,7 +80,7 @@ func (s *FeedbackRepoImpl) UpdateFeedback(ID string, data *models.FeedbackModels
 		tx.Rollback()
 		return err
 	}
-	_, err = stmt.Exec(data.StoreID, data.UserID, data.FeedbackValue, data.FeedbackCreated, ID)
+	_, err = stmt.Exec(data.StoreID, data.FeedbackValue, data.FeedbackCreated, ID)
 	if err != nil {
 		tx.Rollback()
 		return err

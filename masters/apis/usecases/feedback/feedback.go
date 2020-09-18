@@ -32,11 +32,6 @@ func (s FeedbackUsecaseImpl) GetFeedbackByID(ID string) (*models.FeedbackModels,
 
 func (s FeedbackUsecaseImpl) PostFeedback(d *models.FeedbackModels) error {
 	d.FeedbackCreated = utils.GetTimeNow()
-	if d.StoreID == "" {
-		d.StoreID = "Empty"
-	} else if d.UserID == "" {
-		d.UserID = "Empty"
-	}
 	err := validation.CheckEmpty(d)
 	if err != nil {
 		return err
