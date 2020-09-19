@@ -36,8 +36,8 @@ func (s *StoreUsecaseImpl) GetStoreByID(storeID string) (*models.Store, error) {
 	return store, nil
 }
 
-func (s *StoreUsecaseImpl) GetAllStore() ([]*models.Store, error) {
-	listStore, err := s.storeRepo.GetAllStore()
+func (s *StoreUsecaseImpl) GetAllStore(keyword string) ([]*models.Store, error) {
+	listStore, err := s.storeRepo.GetAllStore(keyword)
 	if err != nil {
 		return nil, err
 	}

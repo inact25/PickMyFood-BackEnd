@@ -22,7 +22,7 @@ const (
 	//STORE
 	INSERT_STORE                = "INSERT INTO tb_store (store_id,store_name,store_category_id,store_address,store_owner,store_username,store_password,qr_path) VALUES (?,?,?,?,?,?,?,000)"
 	SELECT_STORE_BY_ID          = "SELECT ts.store_id,ts.store_name,ts.store_address,ts.store_owner,ts.store_status,ts.store_username,ts.store_password,ts.store_images,ts.qr_path,tsc.store_category_id,tsc.store_category_name FROM tb_store ts JOIN tb_store_category tsc ON ts.store_category_id=tsc.store_category_id WHERE store_id = ?"
-	SELECT_ALL_STORE            = "SELECT ts.store_id,ts.store_name,ts.store_address,ts.store_owner,ts.store_status,ts.store_username,ts.store_password,ts.store_images,ts.qr_path,tsc.store_category_id,tsc.store_category_name FROM tb_store ts JOIN tb_store_category tsc ON ts.store_category_id=tsc.store_category_id WHERE ts.store_status = 'A'"
+	SELECT_ALL_STORE            = "SELECT ts.store_id,ts.store_name,ts.store_address,ts.store_owner,ts.store_status,ts.store_username,ts.store_password,ts.store_images,ts.qr_path,tsc.store_category_id,tsc.store_category_name FROM tb_store ts JOIN tb_store_category tsc ON ts.store_category_id=tsc.store_category_id WHERE ts.store_status = 'A' AND ts.store_name LIKE ?"
 	UPDATE_STORE                = "UPDATE tb_store SET store_name=?,store_category_id=?,store_address=?,store_owner=?,store_username=?,store_password=?,store_images=?,qr_path=? WHERE store_id=?"
 	DELETE_STORE                = "UPDATE tb_store SET store_status = 'NA' WHERE store_id = ?"
 	STORE_AUTH                  = "SELECT store_id,store_name,store_address,store_owner,store_status,store_username,store_password,store_images,qr_path,store_category_id FROM tb_store WHERE store_username = ?"

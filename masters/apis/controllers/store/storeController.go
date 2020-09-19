@@ -1,7 +1,6 @@
 package storeControllers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -21,7 +20,7 @@ func StoreController(storeUsecase storeusecases.StoreUsecase) *StoreHandler {
 
 func (s *StoreHandler) StoreAPI(r *mux.Router) {
 	stores := r.PathPrefix("/stores").Subrouter()
-	stores.HandleFunc("", s.ListAllStore).Methods(http.MethodGet)
+	stores.HandleFunc("", s.ListAllStore).Queries("keyword", "{keyword}").Methods(http.MethodGet)
 	stores.HandleFunc("/NA", s.ListStoreNonAktif).Methods(http.MethodGet)
 
 	store := r.PathPrefix("/store").Subrouter()
@@ -34,7 +33,6 @@ func (s *StoreHandler) StoreAPI(r *mux.Router) {
 }
 
 func (s *StoreHandler) RegisterStore(w http.ResponseWriter, r *http.Request) {
-
 	var store models.Store
 	err := utils.JsonDecoder(&store, r)
 	store.StorePassword = utils.Encrypt([]byte(store.StorePassword))
@@ -65,13 +63,7 @@ func (s *StoreHandler) LoginStore(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			utils.HandleResponseError(w, http.StatusBadGateway, utils.BAD_GATEWAY)
 		}
-		fmt.Println(store.StoreID)
-		fmt.Println(store.StoreUsername)
-		fmt.Println(storeTemp.StorePassword)
-		fmt.Println(store.StorePassword)
-
 		isValid := utils.CompareEncrypt(storeTemp.StorePassword, []byte(store.StorePassword))
-		fmt.Println(isValid)
 		if isValid {
 			token, err := utils.JwtEncoder(storeTemp.StoreUsername, "Rahasia")
 			if err != nil {
@@ -96,7 +88,8 @@ func (s *StoreHandler) GetStoreByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *StoreHandler) ListAllStore(w http.ResponseWriter, r *http.Request) {
-	stores, err := s.storeUsecase.GetAllStore()
+	var keyword string = mux.Vars(r)["keyword"]
+	stores, err := s.storeUsecase.GetAllStore(keyword)
 	if err != nil {
 		utils.HandleResponseError(w, http.StatusBadRequest, utils.BAD_REQUEST)
 	} else {

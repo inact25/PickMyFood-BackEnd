@@ -58,14 +58,14 @@ func (s *StoreRepoImpl) GetStoreByID(id string) (*models.Store, error) {
 }
 
 //GetAllUser for admin
-func (s *StoreRepoImpl) GetAllStore() ([]*models.Store, error) {
+func (s *StoreRepoImpl) GetAllStore(keyword string) ([]*models.Store, error) {
 	stmt, err := s.db.Prepare(utils.SELECT_ALL_STORE)
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query()
+	rows, err := stmt.Query("%" + keyword + "%")
 	if err != nil {
 		return nil, err
 	}
