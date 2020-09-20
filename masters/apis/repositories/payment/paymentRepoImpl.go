@@ -91,6 +91,7 @@ func (p *PaymentRepoImpl) UpdateTransaction(storeID, amount, orderID, userID str
 	}
 	return tx.Commit()
 }
+
 func (p *PaymentRepoImpl) GetAllTransactionByStore(storeID string) ([]*models.Payment, error) {
 	stmt, err := p.db.Prepare(utils.SELECT_ALL_TRANSACTION_BY_STORE)
 	if err != nil {
@@ -130,7 +131,7 @@ func (p *PaymentRepoImpl) GetAllTransactionByUser(userID string) ([]*models.Paym
 	listTransaction := []*models.Payment{}
 	for rows.Next() {
 		transaction := models.Payment{}
-		err := rows.Scan(&transaction.TransactionID, &transaction.OrderID, &transaction.UserID, &transaction.UserFirstName, &transaction.Amount, &transaction.TransactionCreated, &transaction.TransactionStatus)
+		err := rows.Scan(&transaction.TransactionID, &transaction.OrderID, &transaction.UserID, &transaction.UserFirstName, &transaction.StoreName, &transaction.Amount, &transaction.TransactionCreated, &transaction.TransactionStatus)
 		if err != nil {
 			return nil, err
 		}
@@ -138,6 +139,7 @@ func (p *PaymentRepoImpl) GetAllTransactionByUser(userID string) ([]*models.Paym
 	}
 	return listTransaction, nil
 }
+
 func (p *PaymentRepoImpl) GetTransactionByID(id string) (*models.Payment, error) {
 	stmt, err := p.db.Prepare(utils.SELECT_TRANSACTION_BY_ID)
 	transaction := models.Payment{}
