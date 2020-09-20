@@ -47,7 +47,7 @@ const (
 	UPDATE_PRODUCT_WITH_PRICE             = "UPDATE tb_product SET product_name = ?,product_stock = ?,product_images = ?,product_category_id = ? WHERE product_id = ?"
 	DELETE_PRODUCT                        = "UPDATE tb_product SET product_status = 'NA' WHERE product_id = ?"
 	SELECT_ALL_PRODUCT_NON_AKTIF_BY_STORE = "select pp.product_id, p.product_name, p.product_stock,p.product_images,p.product_status,pc.product_category_name, pp.price, pp.date_modified from tb_product_price pp inner join tb_product p on p.product_id = pp.product_id inner join tb_product_category pc on p.product_category_id = pc.product_category_id inner join (select product_id, max(date_modified) as maxDate from tb_product_price group by product_id) pj on pp.product_id = pj.product_id and pp.date_modified = pj.maxDate where p.store_id= ? AND p.product_status = 'NA'"
-	ACTIVE_PRODUCT                        = "UPDATE tb_product SET_product_status = 'A' WHERE product_id = ?"
+	ACTIVE_PRODUCT                        = "UPDATE tb_product SET product_status = 'A' WHERE product_id = ?"
 
 	//Feedback
 	GET_ALL_FEEDBACK   = "SELECT tf.feedback_id,tf.store_id,tf.feedback_value,tf.feedback_created,ts.store_name FROM tb_feedback tf JOIN tb_store ts ON tf.store_id=ts.store_id ORDER BY feedback_created DESC"

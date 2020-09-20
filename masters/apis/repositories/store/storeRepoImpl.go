@@ -3,7 +3,6 @@ package storerepositories
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 
 	guuid "github.com/google/uuid"
 	"github.com/inact25/PickMyFood-BackEnd/masters/apis/models"
@@ -141,7 +140,6 @@ func (s *StoreRepoImpl) Auth(username string) (*models.Store, error) {
 	if errQuery != nil {
 		return &store, err
 	}
-	fmt.Println(store.StorePassword)
 	defer stmt.Close()
 	return &store, nil
 }
